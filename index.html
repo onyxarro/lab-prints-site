@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LAB Prints — Custom DTF Printing, New Zealand</title>
+<meta name="description" content="LAB Prints — New Zealand's go-to for DTF transfers and custom printed garments. No minimums. Fast turnaround. Full colour every time."/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#3d90d8;
+  --purple:#7654b5;
+  --pink:#df4e9a;
+  --grad:linear-gradient(90deg,#3d90d8,#7654b5,#df4e9a);
+  --grad-135:linear-gradient(135deg,#3d90d8,#7654b5,#df4e9a);
+  --grad-r:linear-gradient(90deg,#df4e9a,#7654b5,#3d90d8);
+  --bg:#ffffff;
+  --bg2:#f7f4fc;
+  --dark:#18102a;
+  --text:#2d2040;
+  --muted:#64748b;
+  --border:#e5dff2;
+  --font:-apple-system,'Helvetica Neue',Arial,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+
+/* KEYFRAMES */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+/* GRAD UTILITIES */
+.grad-text{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.grad-bg{background:var(--grad)}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;padding:.9rem 4rem;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-logo img{height:40px;width:auto;display:block}
+.nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
+.nav-links a{color:var(--muted);font-size:.88rem;font-weight:600;text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--purple)}
+.nav-cta{padding:.55rem 1.4rem;border-radius:8px;background:var(--grad);color:#fff;font-size:.85rem;font-weight:700;text-decoration:none;transition:opacity .2s,transform .2s;white-space:nowrap}
+.nav-cta:hover{opacity:.88;transform:translateY(-1px)}
+
+/* HAMBURGER */
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--dark);border-radius:2px;transition:all .3s}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-nav{display:none;position:fixed;inset:0;background:#fff;z-index:99;flex-direction:column;align-items:center;justify-content:center;gap:2rem}
+.mobile-nav.open{display:flex}
+.mobile-nav a{font-size:1.4rem;font-weight:700;color:var(--dark);text-decoration:none}
+.mobile-nav .nav-cta{font-size:1rem;padding:.8rem 2.5rem}
+
+/* HERO */
+.hero{padding:6rem 4rem 5rem;text-align:center;position:relative;overflow:hidden;background:var(--bg)}
+.hero::before{content:'';position:absolute;top:-30%;left:-10%;width:60%;height:80%;background:radial-gradient(ellipse,rgba(61,144,216,.08) 0%,transparent 60%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-20%;right:-10%;width:60%;height:80%;background:radial-gradient(ellipse,rgba(223,78,154,.08) 0%,transparent 60%);pointer-events:none}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(90deg,rgba(61,144,216,.1),rgba(223,78,154,.1));border:1px solid rgba(118,84,181,.2);border-radius:100px;padding:.35rem 1rem;font-size:.7rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem;color:var(--purple)}
+.hero-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--grad);animation:pulse 2s ease-in-out infinite}
+.hero h1{font-size:clamp(2.8rem,6.5vw,5.5rem);font-weight:800;letter-spacing:-2.5px;line-height:1.0;margin-bottom:1.25rem;position:relative;z-index:1}
+.hero-sub{font-size:clamp(1rem,2vw,1.2rem);color:var(--muted);max-width:560px;margin:0 auto 2.5rem;line-height:1.7;position:relative;z-index:1}
+.hero-btns{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;position:relative;z-index:1}
+.btn-primary{padding:.85rem 2rem;border-radius:10px;background:var(--grad);color:#fff;font-size:.95rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:opacity .2s,transform .2s;box-shadow:0 4px 24px rgba(118,84,181,.25)}
+.btn-primary:hover{opacity:.88;transform:translateY(-2px)}
+.btn-outline{padding:.85rem 2rem;border-radius:10px;border:2px solid var(--border);color:var(--text);font-size:.95rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.btn-outline:hover{border-color:var(--purple);color:var(--purple)}
+.hero-proof{display:flex;align-items:center;justify-content:center;gap:2rem;margin-top:2.5rem;flex-wrap:wrap;position:relative;z-index:1}
+.hero-proof-item{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--muted)}
+.hero-proof-item strong{color:var(--text)}
+.proof-dot{width:4px;height:4px;border-radius:50%;background:var(--border)}
+
+/* MARQUEE */
+.marquee-wrap{padding:.9rem 0;background:var(--dark);overflow:hidden;border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04)}
+.marquee-track{display:flex;gap:0;white-space:nowrap;animation:marquee 28s linear infinite}
+.marquee-item{display:inline-flex;align-items:center;gap:1rem;padding:0 2.5rem;font-size:.72rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.marquee-item span{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--grad)}
+.marquee-item.highlight{color:#fff}
+.marquee-item.highlight span{background:var(--pink)}
+
+/* SECTION SHARED */
+section{padding:6rem 4rem}
+.section-tag{display:inline-flex;align-items:center;gap:6px;font-size:.65rem;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:.75rem;color:var(--purple)}
+.section-tag::before{content:'';width:18px;height:2px;border-radius:1px;background:var(--grad)}
+.section-h{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-1.5px;line-height:1.1;margin-bottom:.75rem}
+.section-p{color:var(--muted);font-size:.97rem;line-height:1.75;max-width:560px}
+
+/* SERVICES */
+.services{background:var(--bg2)}
+.services-head{text-align:center;margin-bottom:3.5rem}
+.services-head .section-p{margin:0 auto}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.scard{background:#fff;border-radius:18px;padding:2rem;border:1.5px solid var(--border);transition:transform .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden}
+.scard::before{content:'';position:absolute;inset:0;background:var(--grad-135);opacity:0;transition:opacity .25s;border-radius:17px}
+.scard:hover{transform:translateY(-4px);border-color:transparent;box-shadow:0 12px 40px rgba(118,84,181,.15)}
+.scard:hover::before{opacity:.04}
+.scard-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,rgba(61,144,216,.12),rgba(223,78,154,.12));display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;font-size:1.4rem;position:relative;z-index:1}
+.scard h3{font-size:1.05rem;font-weight:800;letter-spacing:-.5px;margin-bottom:.5rem;position:relative;z-index:1}
+.scard p{font-size:.85rem;color:var(--muted);line-height:1.65;position:relative;z-index:1}
+.scard-tag{display:inline-block;margin-top:.85rem;font-size:.62rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:.25rem .6rem;border-radius:4px;background:linear-gradient(90deg,rgba(61,144,216,.1),rgba(223,78,154,.1));color:var(--purple);position:relative;z-index:1}
+
+/* HOW IT WORKS */
+.process{background:var(--bg)}
+.process-head{text-align:center;margin-bottom:3.5rem}
+.process-head .section-p{margin:0 auto}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;position:relative}
+.steps::before{content:'';position:absolute;top:40px;left:12.5%;right:12.5%;height:2px;background:var(--grad);opacity:.2;border-radius:1px}
+.step{text-align:center;padding:1.75rem 1.25rem}
+.step-num{width:56px;height:56px;border-radius:50%;background:var(--grad);color:#fff;font-size:1.1rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;position:relative;z-index:1;box-shadow:0 4px 20px rgba(118,84,181,.3)}
+.step h3{font-size:.97rem;font-weight:800;letter-spacing:-.3px;margin-bottom:.4rem}
+.step p{font-size:.82rem;color:var(--muted);line-height:1.6}
+
+/* WHY US */
+.why{background:var(--dark);position:relative;overflow:hidden}
+.why::before{content:'';position:absolute;top:-20%;left:-10%;width:50%;height:80%;background:radial-gradient(ellipse,rgba(61,144,216,.12) 0%,transparent 60%);pointer-events:none}
+.why::after{content:'';position:absolute;bottom:-10%;right:-5%;width:45%;height:70%;background:radial-gradient(ellipse,rgba(223,78,154,.1) 0%,transparent 60%);pointer-events:none}
+.why-inner{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;position:relative;z-index:1}
+.why-left .section-tag{color:rgba(255,255,255,.5)}
+.why-left .section-tag::before{background:rgba(255,255,255,.2)}
+.why-left .section-h{color:#fff}
+.why-left .section-p{color:rgba(255,255,255,.5);max-width:440px}
+.why-list{display:flex;flex-direction:column;gap:1rem;margin-top:2rem}
+.why-item{display:flex;align-items:flex-start;gap:1rem;padding:1.25rem;background:rgba(255,255,255,.04);border-radius:14px;border:1px solid rgba(255,255,255,.06);transition:border-color .2s}
+.why-item:hover{border-color:rgba(255,255,255,.12)}
+.why-icon{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,rgba(61,144,216,.2),rgba(223,78,154,.2));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.why-item-text h4{font-size:.92rem;font-weight:800;color:#fff;margin-bottom:.25rem}
+.why-item-text p{font-size:.82rem;color:rgba(255,255,255,.45);line-height:1.55}
+.why-stats{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.why-stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:2rem 1.5rem;text-align:center;position:relative;overflow:hidden}
+.why-stat::after{content:'';position:absolute;inset:-1px;border-radius:18px;background:var(--grad);opacity:0;transition:opacity .25s;z-index:-1}
+.why-stat:hover::after{opacity:.1}
+.why-stat-num{font-size:2.6rem;font-weight:800;letter-spacing:-2px;line-height:1;margin-bottom:.3rem;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.why-stat-label{font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.why-stat-sub{font-size:.78rem;color:rgba(255,255,255,.3);margin-top:.25rem;line-height:1.4}
+
+/* PRODUCTS SHOWCASE */
+.showcase{background:var(--bg2)}
+.showcase-head{text-align:center;margin-bottom:3rem}
+.showcase-head .section-p{margin:0 auto}
+.showcase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.pcard{border-radius:18px;overflow:hidden;border:1.5px solid var(--border);background:#fff;transition:transform .25s,box-shadow .25s}
+.pcard:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(118,84,181,.12)}
+.pcard-img{height:220px;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;overflow:hidden}
+.pcard-img-tee{background:linear-gradient(135deg,rgba(61,144,216,.1),rgba(118,84,181,.15))}
+.pcard-img-dtf{background:linear-gradient(135deg,rgba(118,84,181,.1),rgba(223,78,154,.15))}
+.pcard-img-hoodie{background:linear-gradient(135deg,rgba(223,78,154,.1),rgba(61,144,216,.12))}
+.pcard-img-cap{background:linear-gradient(135deg,rgba(61,144,216,.12),rgba(223,78,154,.1))}
+.pcard-img-work{background:linear-gradient(135deg,rgba(118,84,181,.12),rgba(61,144,216,.1))}
+.pcard-img-sticker{background:linear-gradient(135deg,rgba(223,78,154,.1),rgba(118,84,181,.15))}
+.pcard-body{padding:1.25rem 1.5rem 1.5rem}
+.pcard-body h3{font-size:.97rem;font-weight:800;letter-spacing:-.3px;margin-bottom:.3rem}
+.pcard-body p{font-size:.82rem;color:var(--muted);line-height:1.55}
+.pcard-from{display:flex;align-items:center;justify-content:space-between;margin-top:.85rem;padding-top:.85rem;border-top:1px solid var(--border)}
+.pcard-price{font-size:.78rem;color:var(--muted);font-weight:600}
+.pcard-price strong{color:var(--purple);font-size:.92rem}
+.pcard-link{font-size:.75rem;font-weight:700;color:var(--purple);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap .2s}
+.pcard-link:hover{gap:8px}
+
+/* PRINT TYPES EXPLAINER */
+.dtf-explain{background:var(--bg)}
+.dtf-inner{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.dtf-visual{border-radius:24px;background:var(--dark);padding:2.5rem;position:relative;overflow:hidden;aspect-ratio:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1.5rem}
+.dtf-visual::before{content:'';position:absolute;top:-30%;left:-20%;width:70%;height:90%;background:radial-gradient(ellipse,rgba(61,144,216,.18) 0%,transparent 60%)}
+.dtf-visual::after{content:'';position:absolute;bottom:-20%;right:-15%;width:65%;height:80%;background:radial-gradient(ellipse,rgba(223,78,154,.15) 0%,transparent 60%)}
+.dtf-badge{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:1.25rem 1.5rem;width:100%;position:relative;z-index:1;text-align:center}
+.dtf-badge-label{font-size:.6rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.3rem}
+.dtf-badge-val{font-size:1.05rem;font-weight:800;color:#fff}
+.dtf-content .section-p{max-width:480px}
+.dtf-features{display:flex;flex-direction:column;gap:.75rem;margin-top:2rem}
+.dtf-feat{display:flex;align-items:center;gap:.75rem;font-size:.88rem;color:var(--text)}
+.dtf-feat::before{content:'';width:20px;height:20px;border-radius:50%;background:var(--grad);flex-shrink:0;background-size:cover}
+.check-icon{width:20px;height:20px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:.6rem;font-weight:900}
+
+/* CTA SECTION */
+.cta-section{background:var(--dark);position:relative;overflow:hidden;text-align:center;padding:7rem 4rem}
+.cta-section::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:80%;height:100%;background:radial-gradient(ellipse,rgba(118,84,181,.2) 0%,transparent 60%)}
+.cta-section .section-tag{color:rgba(255,255,255,.4);justify-content:center}
+.cta-section .section-tag::before{background:rgba(255,255,255,.15)}
+.cta-section .section-h{color:#fff;margin-bottom:.75rem}
+.cta-section .section-p{color:rgba(255,255,255,.5);margin:0 auto 2.5rem}
+.cta-btns{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;position:relative;z-index:1}
+.btn-white{padding:.85rem 2rem;border-radius:10px;background:#fff;color:var(--dark);font-size:.95rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:opacity .2s,transform .2s}
+.btn-white:hover{opacity:.92;transform:translateY(-2px)}
+.btn-ghost{padding:.85rem 2rem;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:.95rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.btn-ghost:hover{border-color:rgba(255,255,255,.4);color:#fff}
+.cta-trust{display:flex;align-items:center;justify-content:center;gap:2rem;margin-top:2rem;flex-wrap:wrap}
+.cta-trust-item{font-size:.75rem;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:.4rem}
+
+/* CONTACT */
+.contact{background:var(--bg2)}
+.contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.contact-info{display:flex;flex-direction:column;gap:1.5rem}
+.contact-detail{display:flex;align-items:flex-start;gap:1rem}
+.contact-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,rgba(61,144,216,.12),rgba(223,78,154,.12));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.contact-detail-text h4{font-size:.85rem;font-weight:800;margin-bottom:.15rem}
+.contact-detail-text p,.contact-detail-text a{font-size:.88rem;color:var(--muted);text-decoration:none;transition:color .2s}
+.contact-detail-text a:hover{color:var(--purple)}
+.contact-form{background:#fff;border-radius:20px;padding:2rem;border:1.5px solid var(--border)}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:1rem}
+.fg label{font-size:.62rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.fg input,.fg textarea,.fg select{background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:.65rem .9rem;font-size:.88rem;color:var(--text);font-family:var(--font);outline:none;transition:border-color .2s;width:100%;-webkit-appearance:none;appearance:none}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--purple);background:#fff}
+.fg textarea{resize:vertical;min-height:90px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.fsub{width:100%;padding:.9rem;border-radius:10px;background:var(--grad);color:#fff;font-size:.92rem;font-weight:700;border:none;cursor:pointer;font-family:var(--font);transition:opacity .2s,transform .2s;margin-top:.5rem}
+.fsub:hover{opacity:.88;transform:translateY(-1px)}
+
+/* FOOTER */
+footer{background:#0e0818;padding:3rem 4rem 2rem;border-top:1px solid rgba(255,255,255,.04)}
+.footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:3rem;margin-bottom:2rem}
+.footer-brand img{height:36px;margin-bottom:1rem}
+.footer-brand p{font-size:.82rem;color:rgba(255,255,255,.35);line-height:1.7;max-width:280px}
+.footer-col h4{font-size:.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:1rem}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+.footer-col ul a{font-size:.83rem;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
+.footer-col ul a:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.05);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-copy{font-size:.75rem;color:rgba(255,255,255,.2)}
+.footer-made{font-size:.72rem;color:rgba(255,255,255,.15)}
+.footer-made a{color:rgba(255,255,255,.3);text-decoration:none;font-weight:700;transition:color .2s}
+.footer-made a:hover{color:#fff}
+
+/* MOBILE */
+@media(max-width:900px){
+  nav{padding:.9rem 1.5rem}
+  .nav-links,.nav-cta-wrap{display:none}
+  .nav-hamburger{display:flex}
+  .hero{padding:4.5rem 1.5rem 3.5rem}
+  section{padding:4.5rem 1.5rem}
+  .services-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .steps::before{display:none}
+  .why-inner{grid-template-columns:1fr}
+  .why-stats{grid-template-columns:1fr 1fr}
+  .showcase-grid{grid-template-columns:1fr 1fr}
+  .dtf-inner{grid-template-columns:1fr}
+  .dtf-visual{aspect-ratio:auto;padding:2rem}
+  .contact-inner{grid-template-columns:1fr}
+  .cta-section{padding:5rem 1.5rem}
+  footer{padding:2.5rem 1.5rem 1.5rem}
+  .footer-top{grid-template-columns:1fr;gap:2rem}
+  .footer-bottom{flex-direction:column;text-align:center}
+  .hero-proof{gap:1rem}
+}
+@media(max-width:600px){
+  .steps{grid-template-columns:1fr}
+  .showcase-grid{grid-template-columns:1fr}
+  .frow{grid-template-columns:1fr}
+  .why-stats{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="https://labprints.co.nz/cdn/shop/files/LAB_LOGO_2025_Logo.png?v=1770546369&width=400" alt="LAB Prints"/>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">How It Works</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta nav-cta-wrap">Get a Quote</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobile-nav">
+  <a href="#services" onclick="closeMobile()">Services</a>
+  <a href="#process" onclick="closeMobile()">How It Works</a>
+  <a href="#products" onclick="closeMobile()">Products</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+  <a href="#contact" class="nav-cta" onclick="closeMobile()">Get a Quote</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">DTF Printing · New Zealand</div>
+  <h1>Your brand.<br><span class="grad-text">Printed perfectly.</span></h1>
+  <p class="hero-sub">Custom DTF transfers and printed garments — no minimums, full colour, fast turnaround. From one piece to bulk orders, we've got you.</p>
+  <div class="hero-btns">
+    <a href="#contact" class="btn-primary">Get a Quote &#8594;</a>
+    <a href="#services" class="btn-outline">See What We Print</a>
+  </div>
+  <div class="hero-proof">
+    <div class="hero-proof-item"><strong>No minimums</strong></div>
+    <div class="proof-dot"></div>
+    <div class="hero-proof-item"><strong>Full colour</strong> every time</div>
+    <div class="proof-dot"></div>
+    <div class="hero-proof-item">Ships <strong>nationwide NZ</strong></div>
+    <div class="proof-dot"></div>
+    <div class="hero-proof-item"><strong>Fast turnaround</strong></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <div class="marquee-item highlight">DTF Transfers <span></span></div>
+    <div class="marquee-item">Custom T-Shirts <span></span></div>
+    <div class="marquee-item highlight">No Minimums <span></span></div>
+    <div class="marquee-item">Hoodies &amp; Sweats <span></span></div>
+    <div class="marquee-item highlight">Full Colour Prints <span></span></div>
+    <div class="marquee-item">Workwear &amp; Uniforms <span></span></div>
+    <div class="marquee-item highlight">Fast Turnaround <span></span></div>
+    <div class="marquee-item">Caps &amp; Headwear <span></span></div>
+    <div class="marquee-item highlight">Ships Nationwide NZ <span></span></div>
+    <div class="marquee-item">Stickers &amp; Labels <span></span></div>
+    <div class="marquee-item highlight">DTF Transfers <span></span></div>
+    <div class="marquee-item">Custom T-Shirts <span></span></div>
+    <div class="marquee-item highlight">No Minimums <span></span></div>
+    <div class="marquee-item">Hoodies &amp; Sweats <span></span></div>
+    <div class="marquee-item highlight">Full Colour Prints <span></span></div>
+    <div class="marquee-item">Workwear &amp; Uniforms <span></span></div>
+    <div class="marquee-item highlight">Fast Turnaround <span></span></div>
+    <div class="marquee-item">Caps &amp; Headwear <span></span></div>
+    <div class="marquee-item highlight">Ships Nationwide NZ <span></span></div>
+    <div class="marquee-item">Stickers &amp; Labels <span></span></div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="services-head reveal">
+    <div class="section-tag">What We Do</div>
+    <h2 class="section-h">Everything you need, <span class="grad-text">printed right.</span></h2>
+    <p class="section-p">Whether you need one shirt or a thousand, a DTF transfer or a full garment run — we handle it all with the same attention to detail.</p>
+  </div>
+  <div class="services-grid">
+    <div class="scard reveal d1">
+      <div class="scard-icon">🎨</div>
+      <h3>DTF Transfers</h3>
+      <p>Print-ready heat transfers for any garment type. Full colour, soft feel, wash durable. Send us your artwork and we'll send you transfer-ready prints.</p>
+      <div class="scard-tag">Most popular</div>
+    </div>
+    <div class="scard reveal d2">
+      <div class="scard-icon">👕</div>
+      <h3>Custom T-Shirts</h3>
+      <p>Single pieces or bulk runs — your design on quality tees. Perfect for events, businesses, sports teams, and personal orders.</p>
+      <div class="scard-tag">No minimum</div>
+    </div>
+    <div class="scard reveal d3">
+      <div class="scard-icon">🧥</div>
+      <h3>Hoodies &amp; Sweats</h3>
+      <p>Premium custom hoodies with full-colour prints. Ideal for teams, brands, schools, and anyone who wants their logo looking sharp all year.</p>
+      <div class="scard-tag">Bulk discounts</div>
+    </div>
+    <div class="scard reveal d1">
+      <div class="scard-icon">🧢</div>
+      <h3>Caps &amp; Headwear</h3>
+      <p>Branded caps, beanies, and headwear with custom prints or patches. Great for outdoor brands, sports clubs, and corporate gifting.</p>
+      <div class="scard-tag">Fast turnaround</div>
+    </div>
+    <div class="scard reveal d2">
+      <div class="scard-icon">🦺</div>
+      <h3>Workwear &amp; Uniforms</h3>
+      <p>Professional branded workwear for your whole team. Durable prints built to handle the job site, kitchen, or wherever your team works.</p>
+      <div class="scard-tag">Team orders</div>
+    </div>
+    <div class="scard reveal d3">
+      <div class="scard-icon">✂️</div>
+      <h3>Stickers &amp; Labels</h3>
+      <p>Custom cut stickers, labels, and decals. Waterproof, vibrant, and built to last. Perfect for products, packaging, and promotions.</p>
+      <div class="scard-tag">Any shape</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="process" id="process">
+  <div class="process-head reveal">
+    <div class="section-tag">How It Works</div>
+    <h2 class="section-h">From idea to <span class="grad-text">in your hands.</span></h2>
+    <p class="section-p">Simple process, zero headaches. Here's how we go from your design brief to finished product.</p>
+  </div>
+  <div class="steps">
+    <div class="step reveal d1">
+      <div class="step-num">1</div>
+      <h3>Send Your Design</h3>
+      <p>Upload your artwork or brief us on what you need. We accept most file types — AI, PNG, PDF, PSD.</p>
+    </div>
+    <div class="step reveal d2">
+      <div class="step-num">2</div>
+      <h3>We Prepare &amp; Confirm</h3>
+      <p>We check your file, prep it for print, and send a confirmation with your price and turnaround time.</p>
+    </div>
+    <div class="step reveal d3">
+      <div class="step-num">3</div>
+      <h3>We Print &amp; Press</h3>
+      <p>Your order goes into production. Quality checked before it leaves — every single time.</p>
+    </div>
+    <div class="step reveal d4">
+      <div class="step-num">4</div>
+      <h3>Delivered to You</h3>
+      <p>Packed and shipped to your door anywhere in New Zealand. Track your order the whole way.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY LAB PRINTS -->
+<section class="why">
+  <div class="why-inner">
+    <div class="why-left">
+      <div class="section-tag reveal">Why LAB Prints</div>
+      <h2 class="section-h reveal d1">Built for <span class="grad-text">businesses that move fast.</span></h2>
+      <p class="section-p reveal d2">No agency delays, no confusing quote processes, no minimums holding you back. Just quality prints, fast.</p>
+      <div class="why-list">
+        <div class="why-item reveal d2">
+          <div class="why-icon">⚡</div>
+          <div class="why-item-text">
+            <h4>No Minimum Orders</h4>
+            <p>Need one shirt or one transfer? No problem. Order exactly what you need, nothing more.</p>
+          </div>
+        </div>
+        <div class="why-item reveal d3">
+          <div class="why-icon">🎨</div>
+          <div class="why-item-text">
+            <h4>Full Colour, No Setup Fees</h4>
+            <p>Unlimited colours in your design at no extra cost. What you see on screen is what you get on fabric.</p>
+          </div>
+        </div>
+        <div class="why-item reveal d4">
+          <div class="why-icon">🇳🇿</div>
+          <div class="why-item-text">
+            <h4>New Zealand Based</h4>
+            <p>Fast local shipping, NZD pricing, and a real person to talk to when you need help.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="why-stats reveal d2">
+      <div class="why-stat">
+        <div class="why-stat-num">1</div>
+        <div class="why-stat-label">Minimum Order</div>
+        <div class="why-stat-sub">Order as little as a single piece</div>
+      </div>
+      <div class="why-stat">
+        <div class="why-stat-num">24hr</div>
+        <div class="why-stat-label">Transfer Turnaround</div>
+        <div class="why-stat-sub">DTF transfers ready next business day</div>
+      </div>
+      <div class="why-stat">
+        <div class="why-stat-num">100%</div>
+        <div class="why-stat-label">Full Colour</div>
+        <div class="why-stat-sub">No colour limits, no setup fees</div>
+      </div>
+      <div class="why-stat">
+        <div class="why-stat-num">NZ</div>
+        <div class="why-stat-label">Nationwide Shipping</div>
+        <div class="why-stat-sub">Fast delivery to your door</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DTF EXPLAINER -->
+<section class="dtf-explain">
+  <div class="dtf-inner">
+    <div class="dtf-visual reveal">
+      <div class="dtf-badge">
+        <div class="dtf-badge-label">Print Method</div>
+        <div class="dtf-badge-val">Direct to Film (DTF)</div>
+      </div>
+      <div class="dtf-badge">
+        <div class="dtf-badge-label">Works On</div>
+        <div class="dtf-badge-val">Cotton · Polyester · Blends · Nylon</div>
+      </div>
+      <div class="dtf-badge">
+        <div class="dtf-badge-label">Finish</div>
+        <div class="dtf-badge-val">Soft feel · Vibrant colours · Wash durable</div>
+      </div>
+      <div class="dtf-badge">
+        <div class="dtf-badge-label">Minimum</div>
+        <div class="dtf-badge-val">1 transfer · No setup fee</div>
+      </div>
+    </div>
+    <div class="dtf-content">
+      <div class="section-tag reveal">What is DTF?</div>
+      <h2 class="section-h reveal d1">The print tech that <span class="grad-text">does it all.</span></h2>
+      <p class="section-p reveal d2">DTF (Direct to Film) is the latest in garment printing — full colour, soft feel, works on almost any fabric, and no minimum orders required. It's replaced screen printing for most custom jobs.</p>
+      <div class="dtf-features reveal d3">
+        <div class="dtf-feat">
+          <div class="check-icon">✓</div>
+          <span>Works on cotton, polyester, nylon, and most fabric blends</span>
+        </div>
+        <div class="dtf-feat">
+          <div class="check-icon">✓</div>
+          <span>Full colour — no colour limits, no gradient restrictions</span>
+        </div>
+        <div class="dtf-feat">
+          <div class="check-icon">✓</div>
+          <span>Soft, flexible feel that moves with the garment</span>
+        </div>
+        <div class="dtf-feat">
+          <div class="check-icon">✓</div>
+          <span>Wash durable — holds up through regular laundering</span>
+        </div>
+        <div class="dtf-feat">
+          <div class="check-icon">✓</div>
+          <span>Apply yourself with a heat press or order finished garments</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS SHOWCASE -->
+<section class="showcase" id="products">
+  <div class="showcase-head reveal">
+    <div class="section-tag">Products</div>
+    <h2 class="section-h">Whatever you need, <span class="grad-text">we print it.</span></h2>
+    <p class="section-p">Browse our range. Don't see what you're after? Get in touch — we can print on most items.</p>
+  </div>
+  <div class="showcase-grid">
+    <div class="pcard reveal d1">
+      <div class="pcard-img pcard-img-dtf">🖨️</div>
+      <div class="pcard-body">
+        <h3>DTF Transfers</h3>
+        <p>Ready to press transfers in any size. Send your design, receive your transfers, press &amp; go.</p>
+        <div class="pcard-from">
+          <span class="pcard-price">From <strong>$<!-- TODO: add pricing -->—</strong></span>
+          <a href="#contact" class="pcard-link">Get a quote ›</a>
+        </div>
+      </div>
+    </div>
+    <div class="pcard reveal d2">
+      <div class="pcard-img pcard-img-tee">👕</div>
+      <div class="pcard-body">
+        <h3>Custom T-Shirts</h3>
+        <p>Quality tees with your design. Singlets, tees, long sleeves — your choice of garment and colour.</p>
+        <div class="pcard-from">
+          <span class="pcard-price">From <strong>$<!-- TODO: add pricing -->—</strong></span>
+          <a href="#contact" class="pcard-link">Get a quote ›</a>
+        </div>
+      </div>
+    </div>
+    <div class="pcard reveal d3">
+      <div class="pcard-img pcard-img-hoodie">🧥</div>
+      <div class="pcard-body">
+        <h3>Hoodies &amp; Sweats</h3>
+        <p>Pullover and zip-up hoodies with full-colour custom prints. Bulk pricing available.</p>
+        <div class="pcard-from">
+          <span class="pcard-price">From <strong>$<!-- TODO: add pricing -->—</strong></span>
+          <a href="#contact" class="pcard-link">Get a quote ›</a>
+        </div>
+      </div>
+    </div>
+    <div class="pcard reveal d1">
+      <div class="pcard-img pcard-img-cap">🧢</div>
+      <div class="pcard-body">
+        <h3>Caps &amp; Headwear</h3>
+        <p>Custom branded caps, snapbacks, and beanies. Great for teams, brands, and events.</p>
+        <div class="pcard-from">
+          <span class="pcard-price">From <strong>$<!-- TODO: add pricing -->—</strong></span>
+          <a href="#contact" class="pcard-link">Get a quote ›</a>
+        </div>
+      </div>
+    </div>
+    <div class="pcard reveal d2">
+      <div class="pcard-img pcard-img-work">🦺</div>
+      <div class="pcard-body">
+        <h3>Workwear &amp; Uniforms</h3>
+        <p>Branded staff uniforms and workwear built to last. Bulk orders, fast setup, consistent quality.</p>
+        <div class="pcard-from">
+          <span class="pcard-price">From <strong>$<!-- TODO: add pricing -->—</strong></span>
+          <a href="#contact" class="pcard-link">Get a quote ›</a>
+        </div>
+      </div>
+    </div>
+    <div class="pcard reveal d3">
+      <div class="pcard-img pcard-img-sticker">✂️</div>
+      <div class="pcard-body">
+        <h3>Stickers &amp; Labels</h3>
+        <p>Custom cut stickers, product labels, and decals. Waterproof finish, vibrant colours.</p>
+        <div class="pcard-from">
+          <span class="pcard-price">From <strong>$<!-- TODO: add pricing -->—</strong></span>
+          <a href="#contact" class="pcard-link">Get a quote ›</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-section">
+  <div class="section-tag reveal">Ready to print?</div>
+  <h2 class="section-h reveal d1">Get your <span class="grad-text">quote in minutes.</span></h2>
+  <p class="section-p reveal d2">Tell us what you need and we'll come back to you fast. No commitments, no lengthy forms — just a quick, honest quote.</p>
+  <div class="cta-btns reveal d3">
+    <a href="#contact" class="btn-primary">Get a Quote &#8594;</a>
+    <a href="mailto:<!-- TODO: add email -->" class="btn-ghost">Email Us Directly</a>
+  </div>
+  <div class="cta-trust reveal d4">
+    <span class="cta-trust-item">✓ No minimums</span>
+    <span class="cta-trust-item">✓ Fast response</span>
+    <span class="cta-trust-item">✓ NZ based</span>
+    <span class="cta-trust-item">✓ Full colour</span>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div>
+      <div class="section-tag reveal">Get In Touch</div>
+      <h2 class="section-h reveal d1">Let's get your <span class="grad-text">order started.</span></h2>
+      <p class="section-p reveal d2">Fill in the form and we'll get back to you with a quote, usually within a few hours during business hours.</p>
+      <div class="contact-info" style="margin-top:2rem">
+        <div class="contact-detail reveal d3">
+          <div class="contact-icon">📧</div>
+          <div class="contact-detail-text">
+            <h4>Email</h4>
+            <!-- TODO: replace with real email -->
+            <a href="mailto:hello@labprints.co.nz">hello@labprints.co.nz</a>
+          </div>
+        </div>
+        <div class="contact-detail reveal d3">
+          <div class="contact-icon">📍</div>
+          <div class="contact-detail-text">
+            <h4>Location</h4>
+            <!-- TODO: confirm location -->
+            <p>Napier, Hawke's Bay, New Zealand</p>
+          </div>
+        </div>
+        <div class="contact-detail reveal d4">
+          <div class="contact-icon">⏱️</div>
+          <div class="contact-detail-text">
+            <h4>Turnaround</h4>
+            <p>DTF transfers from 24hrs · Garments from 5–7 business days</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-form reveal d2">
+      <form action="https://formspree.io/f/<!-- TODO: add Formspree ID for LAB Prints -->" method="POST">
+        <div class="frow">
+          <div class="fg"><label>Your Name</label><input type="text" name="name" placeholder="Jane Smith" required/></div>
+          <div class="fg"><label>Email</label><input type="email" name="email" placeholder="jane@business.com" required/></div>
+        </div>
+        <div class="fg"><label>Business Name (optional)</label><input type="text" name="business" placeholder="Acme Co."/></div>
+        <div class="fg">
+          <label>What do you need?</label>
+          <select name="product">
+            <option value="">Select a product...</option>
+            <option>DTF Transfers</option>
+            <option>Custom T-Shirts</option>
+            <option>Hoodies / Sweats</option>
+            <option>Caps / Headwear</option>
+            <option>Workwear / Uniforms</option>
+            <option>Stickers / Labels</option>
+            <option>Something else</option>
+          </select>
+        </div>
+        <div class="fg"><label>Tell us more</label><textarea name="message" placeholder="How many do you need? What size? Any other details..."></textarea></div>
+        <button type="submit" class="fsub">Send My Quote Request &#8594;</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <img src="https://labprints.co.nz/cdn/shop/files/LAB_LOGO_2025_Logo.png?v=1770546369&width=400" alt="LAB Prints"/>
+      <p>Custom DTF printing and garments for businesses, teams, and individuals across New Zealand. No minimums. Full colour. Fast.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#services">DTF Transfers</a></li>
+        <li><a href="#services">Custom T-Shirts</a></li>
+        <li><a href="#services">Hoodies &amp; Sweats</a></li>
+        <li><a href="#services">Workwear</a></li>
+        <li><a href="#services">Stickers &amp; Labels</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#contact">Get a Quote</a></li>
+        <li><a href="mailto:hello@labprints.co.nz">hello@labprints.co.nz</a></li>
+        <li><a href="#contact">Napier, New Zealand</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">&copy; 2026 LAB Prints. All rights reserved.</p>
+    <p class="footer-made">Website by <a href="https://onyxarro.com" target="_blank">Onyxarro</a></p>
+  </div>
+</footer>
+
+<script>
+/* HAMBURGER */
+var ham=document.getElementById('hamburger'),mob=document.getElementById('mobile-nav');
+ham.addEventListener('click',function(){
+  ham.classList.toggle('open');
+  mob.classList.toggle('open');
+  document.body.style.overflow=mob.classList.contains('open')?'hidden':'';
+});
+function closeMobile(){ham.classList.remove('open');mob.classList.remove('open');document.body.style.overflow='';}
+
+/* SCROLL REVEAL */
+var revealEls=document.querySelectorAll('.reveal');
+var ro=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');ro.unobserve(e.target);}});
+},{threshold:.12});
+revealEls.forEach(function(el){ro.observe(el);});
+</script>
+</body>
+</html>
