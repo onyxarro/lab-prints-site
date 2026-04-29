@@ -1,0 +1,44 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "eyebrow": "Build Your Own",
+        "heading": "Gang Sheets.",
+        "lede": "Pack as many designs as you want onto a single A3 sheet. Maximum value, minimum waste. From $11 per sheet."
+      }
+    },
+    "instructions": {
+      "type": "instructions",
+      "settings": {
+        "eyebrow": "How it works",
+        "heading": "Build a sheet in 4 steps."
+      },
+      "blocks": {
+        "s1": { "type": "step", "settings": { "num": "01", "title": "Open the builder", "body": "Use the canvas below to lay out your designs on an A3 sheet. Drag, drop, resize." } },
+        "s2": { "type": "step", "settings": { "num": "02", "title": "Add your artwork", "body": "Upload PNGs with transparent backgrounds at 300 DPI. The builder snaps them to a print-safe grid." } },
+        "s3": { "type": "step", "settings": { "num": "03", "title": "Pack it tight", "body": "Fill every inch — multiple sizes, multiple designs. Tighter packing means lower per-design cost." } },
+        "s4": { "type": "step", "settings": { "num": "04", "title": "Order & ship", "body": "Add to cart and check out. We print and ship within 24 hours via NZ Post tracked." } }
+      },
+      "block_order": ["s1", "s2", "s3", "s4"]
+    },
+    "builder": {
+      "type": "app-block",
+      "settings": {
+        "eyebrow": "Builder",
+        "heading": "Build your gang sheet."
+      }
+    },
+    "cta": {
+      "type": "cta-banner",
+      "settings": {
+        "eyebrow": "Need help?",
+        "heading": "We'll lay it out for you.",
+        "sub": "Send us your PNGs and we'll arrange them on a sheet for the lowest cost. No charge.",
+        "primary_label": "Get a Quote",
+        "primary_url": "/pages/contact"
+      }
+    }
+  },
+  "order": ["header", "instructions", "builder", "cta"]
+}

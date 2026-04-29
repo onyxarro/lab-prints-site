@@ -1,0 +1,97 @@
+<section>
+  <div class="container">
+    <div class="pdp">
+      <div class="pdp-gallery">
+        {%- if product.media.size > 0 -%}
+          {%- for media in product.media limit: 4 -%}
+            <div class="pdp-thumb{% if forloop.first %} full{% endif %}">
+              {{ media | image_url: width: 1600 | image_tag: alt: media.alt | default: product.title, loading: forloop.first }}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <div class="pdp-thumb full">
+            <img src="https://placehold.co/1600x2000/111111/FFFFFF.png?text={{ product.title | url_encode | upcase }}" alt="{{ product.title }}">
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="pdp-info">
+        <div class="eyebrow">{{ product.type | default: 'Print' }}</div>
+        <h1 class="display display-m" style="line-height:0.9">{{ product.title }}</h1>
+
+        <div class="price">{{ product.selected_or_first_available_variant.price | money }}</div>
+        {%- if product.compare_at_price > product.price -%}
+          <div class="price-note muted">Was {{ product.compare_at_price | money }}</div>
+        {%- else -%}
+          <div class="price-note">{{ product.metafields.custom.price_note | default: 'Inc. GST · Ships NZ-wide' }}</div>
+        {%- endif -%}
+
+        <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="pdp-options">
+          <input type="hidden" name="form_type" value="product">
+          <input type="hidden" name="utf8" value="✓">
+
+          {%- unless product.has_only_default_variant -%}
+            {%- for option in product.options_with_values -%}
+              <div class="pdp-option-row" data-swatch-group>
+                <div class="label">{{ option.name }}</div>
+                <div class="swatches">
+                  {%- for value in option.values -%}
+                    <button type="button" class="pdp-swatch{% if option.selected_value == value %} active{% endif %}" data-value="{{ value }}">{{ value }}</button>
+                  {%- endfor -%}
+                </div>
+                <input type="hidden" name="options[{{ option.name }}]" value="{{ option.selected_value }}">
+              </div>
+            {%- endfor -%}
+          {%- endunless -%}
+
+          <div class="pdp-option-row">
+            <div class="label">Quantity</div>
+            <div class="swatches" data-qty>
+              <button type="button" class="pdp-swatch" data-qty="dec" aria-label="Decrease">−</button>
+              <input type="number" name="quantity" value="1" min="1" max="999" style="width:80px;height:40px;border-radius:30px;border:1.5px solid var(--grey-300);text-align:center;font-family:var(--body);font-weight:500">
+              <button type="button" class="pdp-swatch" data-qty="inc" aria-label="Increase">+</button>
+            </div>
+          </div>
+
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block" {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}>
+            {%- if product.selected_or_first_available_variant.available -%}
+              Add to Cart
+            {%- else -%}
+              Sold Out
+            {%- endif -%}
+          </button>
+        </form>
+
+        {%- if product.description != blank -%}
+          <div class="pdp-tabs" data-tabs>
+            <div class="pdp-tab-bar">
+              <button type="button" class="pdp-tab active">Description</button>
+              {%- if product.metafields.custom.spec != blank -%}
+                <button type="button" class="pdp-tab">Specifications</button>
+              {%- endif -%}
+              {%- if product.metafields.custom.care != blank -%}
+                <button type="button" class="pdp-tab">Care</button>
+              {%- endif -%}
+            </div>
+            <div class="pdp-tab-panel active">{{ product.description }}</div>
+            {%- if product.metafields.custom.spec != blank -%}
+              <div class="pdp-tab-panel">{{ product.metafields.custom.spec }}</div>
+            {%- endif -%}
+            {%- if product.metafields.custom.care != blank -%}
+              <div class="pdp-tab-panel">{{ product.metafields.custom.care }}</div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": []
+}
+{% endschema %}

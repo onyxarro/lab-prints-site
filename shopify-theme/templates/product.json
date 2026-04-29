@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "main": { "type": "main-product" },
+    "cta": {
+      "type": "cta-banner",
+      "settings": {
+        "eyebrow": "Need something custom?",
+        "heading": "Get a quote in minutes.",
+        "sub": "Bulk orders, custom apparel, or a question? We'll come back fast.",
+        "primary_label": "Get a Quote",
+        "primary_url": "/pages/contact",
+        "secondary_label": "Shop All",
+        "secondary_url": "/collections/all"
+      }
+    }
+  },
+  "order": ["main", "cta"]
+}

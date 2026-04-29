@@ -1,0 +1,14 @@
+{
+  "current": {
+    "color_black": "#111111",
+    "color_white": "#FFFFFF",
+    "container_width": 1440
+  },
+  "presets": {
+    "Default": {
+      "color_black": "#111111",
+      "color_white": "#FFFFFF",
+      "container_width": 1440
+    }
+  }
+}

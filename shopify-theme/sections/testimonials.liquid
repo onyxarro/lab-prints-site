@@ -1,0 +1,63 @@
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div class="left">
+        {%- if section.settings.eyebrow != blank -%}
+          <div class="eyebrow">{{ section.settings.eyebrow }}</div>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="display display-l">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+      </div>
+    </div>
+    <div class="test-grid">
+      {%- for block in section.blocks -%}
+        <div class="test-card" {{ block.shopify_attributes }}>
+          <div class="test-stars">{{ '★★★★★' | slice: 0, block.settings.stars | times: 1 }}{% for i in (1..block.settings.stars) %}★{% endfor %}</div>
+          <p class="test-text">{{ block.settings.quote }}</p>
+          <div class="test-author">
+            <div class="test-avatar">{{ block.settings.initials }}</div>
+            <div>
+              <div class="test-name">{{ block.settings.name }}</div>
+              <div class="test-role">{{ block.settings.role }}</div>
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Reviews" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What our customers say." }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "range", "id": "stars", "min": 1, "max": 5, "step": 1, "default": 5, "label": "Stars" },
+        { "type": "textarea", "id": "quote", "label": "Quote", "default": "Ordered DTF transfers for our team jerseys and the quality blew us away." },
+        { "type": "text", "id": "initials", "label": "Initials", "default": "MT" },
+        { "type": "text", "id": "name", "label": "Name", "default": "Marcus T." },
+        { "type": "text", "id": "role", "label": "Role / Location", "default": "Sports Team Manager" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        { "type": "review", "settings": { "quote": "Ordered DTF transfers for our team jerseys and the quality blew us away. Colours are vibrant, the feel is soft, and they survived a whole season of washes. Will be back for more.", "initials": "MT", "name": "Marcus T.", "role": "Sports Team Manager" } },
+        { "type": "review", "settings": { "quote": "I run a small merch brand and LAB Prints makes it easy. No minimums means I can test new designs without committing to bulk. Turnaround is insanely fast too.", "initials": "JR", "name": "Jade R.", "role": "Brand Owner, Auckland" } },
+        { "type": "review", "settings": { "quote": "We needed branded workwear for our crew — polos, hi-vis, and caps. LAB Prints sorted us out fast with great quality. The gang sheet option saved us heaps on transfers.", "initials": "DK", "name": "Dave K.", "role": "Trades Business Owner" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

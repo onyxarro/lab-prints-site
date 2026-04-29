@@ -1,0 +1,17 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "promo": {
+      "type": "promo-banner",
+      "settings": {
+        "message": "FREE NZ-WIDE SHIPPING ON ORDERS OVER $50 — 24HR DTF TURNAROUND"
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {}
+    }
+  },
+  "order": ["promo", "header"]
+}

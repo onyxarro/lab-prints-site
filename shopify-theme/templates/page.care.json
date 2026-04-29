@@ -1,0 +1,35 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "eyebrow": "Application Guide",
+        "heading": "How to apply your transfer.",
+        "lede": "Heat-press your DTF transfer onto any cotton, polyester, blend, or nylon garment in six steps. Works with a household iron in a pinch."
+      }
+    },
+    "instructions": {
+      "type": "instructions",
+      "blocks": {
+        "s1": { "type": "step", "settings": { "num": "01", "title": "Set up your press", "body": "Pre-heat your heat press to 150°C. A household iron also works — set to its highest cotton setting and turn off the steam.", "spec": "Temperature: 150°C\nPressure: Medium-firm\nSteam: Off" } },
+        "s2": { "type": "step", "settings": { "num": "02", "title": "Position the transfer", "body": "Place the garment flat on the press. Put the DTF transfer onto the print area with the film side facing up and the ink side touching the fabric. Cover with the included parchment paper.", "spec": "Garment: Cotton, Poly, Blend, or Nylon\nFilm side: Up\nCover: Parchment paper" } },
+        "s3": { "type": "step", "settings": { "num": "03", "title": "First press", "body": "Press for 15 seconds at 150°C with medium-firm pressure. The film bonds the ink into the fabric weave during this initial press.", "spec": "Time: 15s\nTemp: 150°C\nPressure: Medium-firm" } },
+        "s4": { "type": "step", "settings": { "num": "04", "title": "Cool peel", "body": "Let the transfer cool fully before peeling — about 60 seconds. Peel the film off slowly at a low angle. If any ink lifts with the film, lay it back down and press again for 5 seconds.", "spec": "Cool time: 60s\nPeel angle: Low\nPeel speed: Slow" } },
+        "s5": { "type": "step", "settings": { "num": "05", "title": "Second press", "body": "Cover the print with parchment paper and press again for 10 seconds. This locks in the durability and softens the hand of the print.", "spec": "Time: 10s\nCover: Parchment paper\nPressure: Medium-firm" } },
+        "s6": { "type": "step", "settings": { "num": "06", "title": "Wash care", "body": "Wait 24 hours before the first wash. Always wash inside-out on cold. Tumble dry low or air dry. Iron only on the reverse side. Prints are rated for 100+ washes when cared for this way.", "spec": "First wash: 24hr after\nWater: Cold\nDirection: Inside-out\nDry: Low or air" } }
+      },
+      "block_order": ["s1", "s2", "s3", "s4", "s5", "s6"]
+    },
+    "cta": {
+      "type": "cta-banner",
+      "settings": {
+        "eyebrow": "Stuck on a job?",
+        "heading": "Talk to us.",
+        "sub": "If a transfer isn't behaving, send us a photo. We'll diagnose the issue and replace the print at no charge if it was on us.",
+        "primary_label": "Get in Touch",
+        "primary_url": "/pages/contact"
+      }
+    }
+  },
+  "order": ["header", "instructions", "cta"]
+}

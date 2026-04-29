@@ -1,0 +1,67 @@
+<section>
+  <div class="container">
+    <div class="page-header" style="border:0;padding:48px 0 16px">
+      <div class="eyebrow">Cart</div>
+      <h1 class="display display-l">Your cart{% if cart.item_count > 0 %} ({{ cart.item_count }}){% endif %}</h1>
+    </div>
+
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post" novalidate>
+        <div style="display:grid;grid-template-columns:1fr 360px;gap:48px;align-items:start">
+          <div>
+            {%- for item in cart.items -%}
+              <div style="display:grid;grid-template-columns:120px 1fr auto;gap:24px;padding:24px 0;border-bottom:1px solid var(--grey-200);align-items:start">
+                <a href="{{ item.url }}" style="aspect-ratio:1/1;background:var(--grey-100);overflow:hidden;display:block">
+                  {%- if item.image -%}
+                    {{ item.image | image_url: width: 240 | image_tag: alt: item.title }}
+                  {%- endif -%}
+                </a>
+                <div>
+                  <a href="{{ item.url }}" class="h2" style="display:block;margin-bottom:4px">{{ item.product.title }}</a>
+                  {%- unless item.product.has_only_default_variant -%}
+                    <div class="muted" style="font-size:14px;margin-bottom:8px">{{ item.variant.title }}</div>
+                  {%- endunless -%}
+                  <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+                    <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" max="999" data-line="{{ item.index | plus: 1 }}" style="width:80px;height:36px;border-radius:30px;border:1.5px solid var(--grey-300);text-align:center;font-family:var(--body);font-weight:500">
+                    <a href="{{ item.url_to_remove }}" class="muted" style="font-size:14px;text-decoration:underline;text-underline-offset:3px">Remove</a>
+                  </div>
+                </div>
+                <div style="text-align:right">
+                  <div style="font-weight:500">{{ item.final_line_price | money }}</div>
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+
+          <aside style="position:sticky;top:80px;background:var(--snow);padding:32px;border-radius:var(--r-card)">
+            <h3 class="h2" style="margin-bottom:16px">Summary</h3>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--grey-200)">
+              <span class="muted">Subtotal</span>
+              <span style="font-weight:500">{{ cart.items_subtotal_price | money }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:16px 0">
+              <span style="font-weight:500">Total</span>
+              <span class="h2" style="font-weight:500">{{ cart.total_price | money }}</span>
+            </div>
+            <p class="muted" style="font-size:12px;margin-bottom:16px">Shipping calculated at checkout.</p>
+            <button type="submit" name="checkout" class="btn btn-primary btn-block btn-lg">Checkout</button>
+            <button type="submit" name="update" class="btn btn-secondary btn-block" style="margin-top:8px">Update Cart</button>
+            <a href="{{ routes.all_products_collection_url }}" class="muted" style="display:block;text-align:center;margin-top:16px;font-size:14px;text-decoration:underline;text-underline-offset:3px">Continue shopping</a>
+          </aside>
+        </div>
+      </form>
+    {%- else -%}
+      <div style="padding:96px 0;text-align:center">
+        <p class="lede" style="margin-bottom:32px">Your cart is empty.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn-primary">Shop Now</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": []
+}
+{% endschema %}

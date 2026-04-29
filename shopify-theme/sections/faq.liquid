@@ -1,0 +1,60 @@
+<section id="{{ section.settings.anchor | default: 'faq' }}" class="bg-snow">
+  <div class="container">
+    <div class="section-head center">
+      <div class="left">
+        {%- if section.settings.eyebrow != blank -%}
+          <div class="eyebrow">{{ section.settings.eyebrow }}</div>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="display display-l">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+      </div>
+    </div>
+    <div class="faq-grid">
+      {%- for block in section.blocks -%}
+        <div class="faq-item{% if forloop.first %} open{% endif %}" {{ block.shopify_attributes }}>
+          <button class="faq-q" type="button">
+            <span>{{ block.settings.question }}</span>
+            <span class="icon" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-a">{{ block.settings.answer }}</div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "max_blocks": 24,
+  "settings": [
+    { "type": "text", "id": "anchor", "label": "Anchor ID", "default": "faq" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "FAQ" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Common questions." }
+  ],
+  "blocks": [
+    {
+      "type": "qa",
+      "name": "Q&A",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "What is a DTF transfer?" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>DTF (Direct to Film) transfers are custom prints on a special film that you heat press onto garments. They work on almost any fabric — cotton, polyester, nylon, blends — and produce vibrant, full-colour results with a soft feel.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        { "type": "qa", "settings": { "question": "What is a DTF transfer?", "answer": "<p>DTF (Direct to Film) transfers are custom prints on a special film that you heat press onto garments. They work on almost any fabric — cotton, polyester, nylon, blends — and produce vibrant, full-colour results with a soft feel.</p>" } },
+        { "type": "qa", "settings": { "question": "Do I need special equipment?", "answer": "<p>A heat press gives the best results, but a household iron works too. Set to 150°C, press for 15–20 seconds, peel, and press again for 10 seconds. Full instructions included with every order.</p>" } },
+        { "type": "qa", "settings": { "question": "What's the minimum order?", "answer": "<p>There is no minimum. Order as few as one transfer or one garment. We cater to individuals, small businesses, and large-scale orders equally.</p>" } },
+        { "type": "qa", "settings": { "question": "How fast is shipping?", "answer": "<p>DTF transfers ship within 24 hours of order. Custom garments take 5–7 business days. We ship NZ-wide via NZ Post with tracking on every order.</p>" } },
+        { "type": "qa", "settings": { "question": "What file format do you need?", "answer": "<p>PNG files with transparent backgrounds at 300 DPI minimum. If you're unsure, send us what you have — we'll optimise it for print at no extra charge.</p>" } },
+        { "type": "qa", "settings": { "question": "How durable are the prints?", "answer": "<p>Our DTF transfers are rated for 100+ washes. They stretch and rebound without cracking, fading, or peeling. Machine wash inside-out on cold for best results.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

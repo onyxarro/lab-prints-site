@@ -1,0 +1,38 @@
+<section class="info-strip" style="padding:0">
+  <div class="info-grid">
+    {%- for block in section.blocks -%}
+      <div class="info-item" {{ block.shopify_attributes }}>
+        <div class="info-num">{{ block.settings.value }}</div>
+        <div class="info-label">{{ block.settings.label }}</div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Info strip",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        { "type": "text", "id": "value", "label": "Value", "default": "24HR" },
+        { "type": "text", "id": "label", "label": "Label", "default": "DTF turnaround" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Info strip",
+      "blocks": [
+        { "type": "stat", "settings": { "value": "24HR", "label": "DTF turnaround" } },
+        { "type": "stat", "settings": { "value": "1", "label": "Minimum order" } },
+        { "type": "stat", "settings": { "value": "100+", "label": "Wash durability" } },
+        { "type": "stat", "settings": { "value": "NZ", "label": "Based & shipped" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,46 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "eyebrow": "Help",
+        "heading": "Common questions.",
+        "lede": "Answers to the questions we get most often. Can't find yours? Send us a note."
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "settings": {
+        "anchor": "faq",
+        "eyebrow": "FAQ",
+        "heading": "Everything you need to know."
+      },
+      "blocks": {
+        "q1": { "type": "qa", "settings": { "question": "What is a DTF transfer?", "answer": "<p>DTF (Direct to Film) transfers are custom prints on a special film that you heat-press onto garments. They work on almost any fabric — cotton, polyester, nylon, blends — and produce vibrant, full-colour results with a soft feel.</p>" } },
+        "q2": { "type": "qa", "settings": { "question": "Do I need special equipment?", "answer": "<p>A heat press gives the best results, but a household iron works for small jobs. Set to 150°C, press for 15–20 seconds, peel, and press again for 10 seconds. Full instructions ship with every order.</p>" } },
+        "q3": { "type": "qa", "settings": { "question": "What's the minimum order?", "answer": "<p>There is no minimum. Order as few as one transfer or one garment. We cater to individuals, small businesses, and bulk orders equally.</p>" } },
+        "q4": { "type": "qa", "settings": { "question": "How fast is shipping?", "answer": "<p>DTF transfers ship within 24 hours of order. Custom garments take 5–7 business days. We ship NZ-wide via NZ Post with tracking on every order.</p>" } },
+        "q5": { "type": "qa", "settings": { "question": "What file format do you need?", "answer": "<p>PNG with transparent background at 300 DPI minimum is ideal. If you're unsure, send what you have — we'll optimise it for print at no extra charge.</p>" } },
+        "q6": { "type": "qa", "settings": { "question": "How durable are the prints?", "answer": "<p>Our DTF transfers are rated for 100+ washes. They stretch and rebound without cracking, fading, or peeling. Wash inside-out on cold for best results.</p>" } },
+        "q7": { "type": "qa", "settings": { "question": "Can you print on dark garments?", "answer": "<p>Yes. DTF includes a white underlay layer, so colours print bright and accurate on black, navy, charcoal, and any other dark fabric.</p>" } },
+        "q8": { "type": "qa", "settings": { "question": "What's a gang sheet?", "answer": "<p>A gang sheet is a single A3 transfer film packed with multiple designs of any size. You get more prints per dollar — perfect for bulk orders or testing multiple designs at once. From $11 per sheet.</p>" } },
+        "q9": { "type": "qa", "settings": { "question": "Do you do bulk garment orders?", "answer": "<p>Yes — t-shirts, hoodies, polos, hi-vis, caps, bags. Bulk pricing kicks in at 25+ pieces. <a href=\"/pages/contact\">Get a quote</a> with your specs.</p>" } },
+        "q10": { "type": "qa", "settings": { "question": "Can I get a sample first?", "answer": "<p>For first-time bulk orders, we'll send one sample at no charge so you can confirm the quality before committing. Send us a note via the <a href=\"/pages/contact\">contact form</a>.</p>" } },
+        "q11": { "type": "qa", "settings": { "question": "What's your return policy?", "answer": "<p>If a transfer is defective or not as ordered, we replace it at no charge. Custom-printed items can't be returned for change-of-mind, but we'll always make it right if something is wrong on our end. See <a href=\"/pages/shipping\">Shipping & Returns</a>.</p>" } },
+        "q12": { "type": "qa", "settings": { "question": "Do you offer rush turnaround?", "answer": "<p>Standard DTF turnaround is 24 hours. Same-day production is available for urgent NZ orders — call or email and we'll see what's possible.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10", "q11", "q12"]
+    },
+    "cta": {
+      "type": "cta-banner",
+      "settings": {
+        "eyebrow": "Still have questions?",
+        "heading": "Talk to a real human.",
+        "sub": "We answer email within hours during business days. No call centres, no script.",
+        "primary_label": "Get in Touch",
+        "primary_url": "/pages/contact"
+      }
+    }
+  },
+  "order": ["header", "faq", "cta"]
+}

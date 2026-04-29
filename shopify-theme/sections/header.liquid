@@ -1,0 +1,72 @@
+<nav class="nav" id="nav" role="navigation">
+  <div class="nav-inner">
+    <a href="{{ routes.root_url }}" class="nav-logo" aria-label="{{ shop.name }} home">
+      {%- if section.settings.logo != blank -%}
+        {{ section.settings.logo | image_url: width: 240 | image_tag: alt: shop.name, height: 24 }}
+      {%- else -%}
+        <span style="font-family:var(--display);text-transform:uppercase;font-size:24px;line-height:1">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+
+    <ul class="nav-links">
+      {%- for link in section.settings.menu.links -%}
+        <li>
+          <a href="{{ link.url }}"{% if link.active %} class="active"{% endif %}>{{ link.title }}</a>
+        </li>
+      {%- endfor -%}
+    </ul>
+
+    <div class="nav-right">
+      {%- if section.settings.cta_label != blank -%}
+        <a href="{{ section.settings.cta_url }}" class="btn btn-primary btn-sm">{{ section.settings.cta_label }}</a>
+      {%- endif -%}
+
+      <a href="{{ routes.cart_url }}" class="nav-icon" aria-label="Cart ({{ cart.item_count }})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </a>
+
+      <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  {%- for link in section.settings.menu.links -%}
+    <a href="{{ link.url }}">{{ link.title }}</a>
+  {%- endfor -%}
+  {%- if section.settings.cta_label != blank -%}
+    <a href="{{ section.settings.cta_url }}">{{ section.settings.cta_label }}</a>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image (24px height)"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Header CTA label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Header CTA URL"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,146 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "eyebrow": "NZ's Fastest DTF Transfers",
+        "heading": "Custom prints. No limits.",
+        "sub": "Premium DTF transfers and custom printed garments — no minimums, full colour, 24-hour turnaround. From one shirt to a thousand.",
+        "primary_label": "Order Transfers",
+        "primary_url": "/collections/all",
+        "secondary_label": "Get a Quote",
+        "secondary_url": "/pages/contact"
+      }
+    },
+    "info_strip": {
+      "type": "info-strip",
+      "blocks": {
+        "s1": { "type": "stat", "settings": { "value": "24HR", "label": "DTF turnaround" } },
+        "s2": { "type": "stat", "settings": { "value": "1", "label": "Minimum order" } },
+        "s3": { "type": "stat", "settings": { "value": "100+", "label": "Wash durability" } },
+        "s4": { "type": "stat", "settings": { "value": "NZ", "label": "Based & shipped" } }
+      },
+      "block_order": ["s1", "s2", "s3", "s4"]
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "anchor": "products",
+        "eyebrow": "Shop",
+        "heading": "DTF transfers & custom garments.",
+        "product_count": 3,
+        "link_label": "All Products",
+        "link_url": "/collections/all"
+      },
+      "blocks": {
+        "c1": { "type": "card", "settings": { "title": "DTF Transfers", "eyebrow": "By Size", "price": "From $2.50 / transfer", "cta": "Shop", "url": "/products/dtf-transfers" } },
+        "c2": { "type": "card", "settings": { "title": "Gang Sheets", "eyebrow": "Build Your Own", "price": "From $11 / sheet", "cta": "Build", "url": "/pages/gang-sheets" } },
+        "c3": { "type": "card", "settings": { "title": "Custom Garments", "eyebrow": "Printed & Ready", "price": "From $25 / garment", "cta": "Quote", "url": "/pages/contact" } }
+      },
+      "block_order": ["c1", "c2", "c3"]
+    },
+    "price_tiers": {
+      "type": "price-tiers",
+      "blocks": {
+        "t1": { "type": "tier", "settings": { "tag": "Single transfers", "name": "DTF Transfers by Size", "amount": "$2.50", "unit": "per transfer · any size", "bullets": "Any design, any colour\nEasy to apply at home\nWorks on any fabric\n100+ wash durability\nNo minimum order", "cta_label": "Order Transfers", "cta_url": "/products/dtf-transfers" } },
+        "t2": { "type": "tier", "settings": { "featured": true, "tag": "Most popular", "name": "Gang Sheets", "amount": "$11.00", "unit": "per sheet · build your own", "bullets": "Upload your own layout\nMultiple designs per sheet\nMaximum value per print\nFull colour, fine detail\nReady to press", "cta_label": "Build Gang Sheet", "cta_url": "/pages/gang-sheets" } },
+        "t3": { "type": "tier", "settings": { "tag": "Finished apparel", "name": "Custom Garments", "amount": "$25+", "unit": "per garment · printed & ready", "bullets": "T-shirts, hoodies, workwear\nCaps, bags, and more\nBulk pricing available\nYour design, our garments\n5–7 business day turnaround", "cta_label": "Get a Quote", "cta_url": "/pages/contact" } }
+      },
+      "block_order": ["t1", "t2", "t3"]
+    },
+    "process": {
+      "type": "process",
+      "settings": {
+        "anchor": "how",
+        "eyebrow": "How It Works",
+        "heading": "Order in minutes. Delivered fast."
+      },
+      "blocks": {
+        "p1": { "type": "step", "settings": { "num": "01", "title": "Upload Your Design", "body": "Send us your artwork as a PNG. We optimise it for print at no extra cost." } },
+        "p2": { "type": "step", "settings": { "num": "02", "title": "Choose Your Product", "body": "DTF transfers, tees, hoodies, workwear — pick what you need and the quantity." } },
+        "p3": { "type": "step", "settings": { "num": "03", "title": "We Print & Ship", "body": "Your order goes into production. Quality checked, packed, and shipped NZ wide." } },
+        "p4": { "type": "step", "settings": { "num": "04", "title": "Press & Wear", "body": "Heat press your transfers at home or receive finished garments ready to go." } }
+      },
+      "block_order": ["p1", "p2", "p3", "p4"]
+    },
+    "why": {
+      "type": "why-us",
+      "settings": {
+        "anchor": "why",
+        "eyebrow": "Why LAB Prints",
+        "heading": "Built for businesses that move fast.",
+        "lede": "No agency delays. No confusing quotes. No minimums holding you back. Just quality prints, fast.",
+        "show_stats": true
+      },
+      "blocks": {
+        "p1": { "type": "point", "settings": { "num": "01", "title": "24-Hour Turnaround", "body": "DTF transfers printed and ready to ship next business day." } },
+        "p2": { "type": "point", "settings": { "num": "02", "title": "Full Colour, No Setup Fees", "body": "Unlimited colours in your design. What you see on screen is what you get on fabric." } },
+        "p3": { "type": "point", "settings": { "num": "03", "title": "No Minimum Orders", "body": "Need one transfer or one shirt? No problem. Order exactly what you need." } },
+        "p4": { "type": "point", "settings": { "num": "04", "title": "100% NZ Based", "body": "Fast local shipping, NZD pricing, and a real person to talk to." } },
+        "s1": { "type": "stat", "settings": { "num": "1", "label": "Minimum Order", "sub": "As little as a single piece" } },
+        "s2": { "type": "stat", "settings": { "num": "24HR", "label": "DTF Turnaround", "sub": "Ready next business day" } },
+        "s3": { "type": "stat", "settings": { "num": "100%", "label": "Full Colour", "sub": "No limits, no extra cost" } },
+        "s4": { "type": "stat", "settings": { "num": "100+", "label": "Wash Durability", "sub": "Prints that last" } }
+      },
+      "block_order": ["p1", "p2", "p3", "p4", "s1", "s2", "s3", "s4"]
+    },
+    "dtf": {
+      "type": "dtf-explainer",
+      "settings": {
+        "eyebrow": "What is DTF?",
+        "heading": "The print tech that does it all.",
+        "lede": "DTF (Direct to Film) is the latest in garment printing — full colour, soft feel, works on almost any fabric, and zero minimum orders. It's replaced screen printing for most custom jobs."
+      },
+      "blocks": {
+        "f1": { "type": "fact", "settings": { "label": "Print Method", "val": "Direct to Film (DTF)" } },
+        "f2": { "type": "fact", "settings": { "label": "Works On", "val": "Cotton · Poly · Blends · Nylon" } },
+        "f3": { "type": "fact", "settings": { "label": "Finish", "val": "Soft feel · Vibrant · Wash durable" } },
+        "f4": { "type": "fact", "settings": { "label": "Minimum", "val": "1 transfer · $0 setup fee" } }
+      },
+      "block_order": ["f1", "f2", "f3", "f4"]
+    },
+    "reviews": {
+      "type": "testimonials",
+      "settings": {
+        "eyebrow": "Reviews",
+        "heading": "What our customers say."
+      },
+      "blocks": {
+        "r1": { "type": "review", "settings": { "stars": 5, "quote": "Ordered DTF transfers for our team jerseys and the quality blew us away. Colours are vibrant, the feel is soft, and they survived a whole season of washes. Will be back for more.", "initials": "MT", "name": "Marcus T.", "role": "Sports Team Manager" } },
+        "r2": { "type": "review", "settings": { "stars": 5, "quote": "I run a small merch brand and LAB Prints makes it easy. No minimums means I can test new designs without committing to bulk. Turnaround is insanely fast too.", "initials": "JR", "name": "Jade R.", "role": "Brand Owner, Auckland" } },
+        "r3": { "type": "review", "settings": { "stars": 5, "quote": "We needed branded workwear for our crew — polos, hi-vis, and caps. LAB Prints sorted us out fast with great quality. The gang sheet option saved us heaps on transfers.", "initials": "DK", "name": "Dave K.", "role": "Trades Business Owner" } }
+      },
+      "block_order": ["r1", "r2", "r3"]
+    },
+    "faq": {
+      "type": "faq",
+      "settings": {
+        "anchor": "faq",
+        "eyebrow": "FAQ",
+        "heading": "Common questions."
+      },
+      "blocks": {
+        "q1": { "type": "qa", "settings": { "question": "What is a DTF transfer?", "answer": "<p>DTF (Direct to Film) transfers are custom prints on a special film that you heat press onto garments. They work on almost any fabric — cotton, polyester, nylon, blends — and produce vibrant, full-colour results with a soft feel.</p>" } },
+        "q2": { "type": "qa", "settings": { "question": "Do I need special equipment?", "answer": "<p>A heat press gives the best results, but a household iron works too. Set to 150°C, press for 15–20 seconds, peel, and press again for 10 seconds. Full instructions included with every order.</p>" } },
+        "q3": { "type": "qa", "settings": { "question": "What's the minimum order?", "answer": "<p>There is no minimum. Order as few as one transfer or one garment. We cater to individuals, small businesses, and large-scale orders equally.</p>" } },
+        "q4": { "type": "qa", "settings": { "question": "How fast is shipping?", "answer": "<p>DTF transfers ship within 24 hours of order. Custom garments take 5–7 business days. We ship NZ-wide via NZ Post with tracking on every order.</p>" } },
+        "q5": { "type": "qa", "settings": { "question": "What file format do you need?", "answer": "<p>PNG files with transparent backgrounds at 300 DPI minimum. If you're unsure, send us what you have — we'll optimise it for print at no extra charge.</p>" } },
+        "q6": { "type": "qa", "settings": { "question": "How durable are the prints?", "answer": "<p>Our DTF transfers are rated for 100+ washes. They stretch and rebound without cracking, fading, or peeling. Machine wash inside-out on cold for best results.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5", "q6"]
+    },
+    "cta": {
+      "type": "cta-banner",
+      "settings": {
+        "eyebrow": "Ready to print?",
+        "heading": "Get your quote in minutes.",
+        "sub": "Tell us what you need. No commitments, no lengthy forms — just a quick, honest quote.",
+        "primary_label": "Get a Quote",
+        "primary_url": "/pages/contact",
+        "secondary_label": "Shop Online",
+        "secondary_url": "/collections/all"
+      }
+    }
+  },
+  "order": ["hero", "info_strip", "featured", "price_tiers", "process", "why", "dtf", "reviews", "faq", "cta"]
+}

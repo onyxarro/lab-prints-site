@@ -1,0 +1,60 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "eyebrow": "About",
+        "heading": "A print laboratory in Napier.",
+        "lede": "We turn ideas into wearable garments fast, with no minimums and no setup fees. Built for sports teams, schools, streetwear brands, trades crews, and anyone who needs prints they can rely on."
+      }
+    },
+    "why": {
+      "type": "why-us",
+      "settings": {
+        "eyebrow": "What we do",
+        "heading": "Custom prints. No limits.",
+        "lede": "From a single transfer to a thousand garments — same quality, same speed, same direct line to a real person.",
+        "show_stats": true
+      },
+      "blocks": {
+        "p1": { "type": "point", "settings": { "num": "01", "title": "DTF transfers", "body": "Print-ready film transfers you heat-press at home. Any design, any colour, $2.50 each." } },
+        "p2": { "type": "point", "settings": { "num": "02", "title": "Gang sheets", "body": "Pack as many designs as you want onto a single A3 sheet. Maximum value, minimum waste. From $11." } },
+        "p3": { "type": "point", "settings": { "num": "03", "title": "Custom garments", "body": "T-shirts, hoodies, caps, polos, hi-vis, workwear. Your design on our garments, printed and ready to ship." } },
+        "p4": { "type": "point", "settings": { "num": "04", "title": "100% NZ", "body": "Based in Napier, Hawke's Bay. Tracked NZ Post shipping NZ-wide. NZD pricing. A real person on every email." } },
+        "s1": { "type": "stat", "settings": { "num": "1", "label": "Minimum order", "sub": "As little as a single piece" } },
+        "s2": { "type": "stat", "settings": { "num": "24HR", "label": "DTF turnaround", "sub": "Ready next business day" } },
+        "s3": { "type": "stat", "settings": { "num": "100%", "label": "Full colour", "sub": "No setup fees, no limits" } },
+        "s4": { "type": "stat", "settings": { "num": "100+", "label": "Wash durability", "sub": "Prints that last" } }
+      },
+      "block_order": ["p1", "p2", "p3", "p4", "s1", "s2", "s3", "s4"]
+    },
+    "dtf": {
+      "type": "dtf-explainer",
+      "settings": {
+        "eyebrow": "The technology",
+        "heading": "Why DTF beats screen printing.",
+        "lede": "Direct to Film printing replaced screen printing for most custom jobs because it does what screen printing can't: full colour without setup fees, soft feel on any fabric, and a single-piece minimum."
+      },
+      "blocks": {
+        "f1": { "type": "fact", "settings": { "label": "Print Method", "val": "Direct to Film (DTF)" } },
+        "f2": { "type": "fact", "settings": { "label": "Works On", "val": "Cotton · Poly · Blends · Nylon" } },
+        "f3": { "type": "fact", "settings": { "label": "Finish", "val": "Soft feel · Vibrant · Wash durable" } },
+        "f4": { "type": "fact", "settings": { "label": "Minimum", "val": "1 transfer · $0 setup fee" } }
+      },
+      "block_order": ["f1", "f2", "f3", "f4"]
+    },
+    "cta": {
+      "type": "cta-banner",
+      "settings": {
+        "eyebrow": "Let's print something",
+        "heading": "Get a quote in minutes.",
+        "sub": "No commitments, no lengthy forms. Just a quick honest quote from a real person.",
+        "primary_label": "Get a Quote",
+        "primary_url": "/pages/contact",
+        "secondary_label": "Shop All",
+        "secondary_url": "/collections/all"
+      }
+    }
+  },
+  "order": ["header", "why", "dtf", "cta"]
+}

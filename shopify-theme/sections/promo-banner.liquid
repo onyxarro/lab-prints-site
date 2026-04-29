@@ -1,0 +1,22 @@
+{%- if section.settings.message != blank -%}
+  <div class="promo">{{ section.settings.message }}</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Promo banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "message",
+      "label": "Message",
+      "default": "FREE NZ-WIDE SHIPPING ON ORDERS OVER $50 — 24HR DTF TURNAROUND"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promo banner"
+    }
+  ]
+}
+{% endschema %}

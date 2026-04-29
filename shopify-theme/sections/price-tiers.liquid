@@ -1,0 +1,57 @@
+<section style="padding-top:0">
+  <div class="container">
+    <div class="price-grid">
+      {%- for block in section.blocks -%}
+        <div class="price-card{% if block.settings.featured %} featured{% endif %}" {{ block.shopify_attributes }}>
+          <div class="tag">{{ block.settings.tag }}</div>
+          <div class="name">{{ block.settings.name }}</div>
+          <div class="amount">{{ block.settings.amount }}</div>
+          <div class="unit">{{ block.settings.unit }}</div>
+          {%- if block.settings.bullets != blank -%}
+            <ul>
+              {%- assign bullets = block.settings.bullets | newline_to_br | split: '<br />' -%}
+              {%- for bullet in bullets -%}
+                {%- assign clean = bullet | strip -%}
+                {%- if clean != blank -%}<li>{{ clean }}</li>{%- endif -%}
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+          <a href="{{ block.settings.cta_url }}" class="btn {% if block.settings.featured %}btn-primary-on-dark{% else %}btn-secondary{% endif %}">{{ block.settings.cta_label }}</a>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Price tiers",
+  "max_blocks": 3,
+  "blocks": [
+    {
+      "type": "tier",
+      "name": "Tier",
+      "settings": [
+        { "type": "checkbox", "id": "featured", "label": "Featured (inverted black)", "default": false },
+        { "type": "text", "id": "tag", "label": "Tag", "default": "Single transfers" },
+        { "type": "text", "id": "name", "label": "Name", "default": "DTF Transfers by Size" },
+        { "type": "text", "id": "amount", "label": "Amount", "default": "$2.50" },
+        { "type": "text", "id": "unit", "label": "Unit", "default": "per transfer · any size" },
+        { "type": "textarea", "id": "bullets", "label": "Bullets (one per line)", "default": "Any design, any colour\nEasy to apply at home\nWorks on any fabric\n100+ wash durability\nNo minimum order" },
+        { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Order Transfers" },
+        { "type": "url", "id": "cta_url", "label": "CTA URL" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Price tiers",
+      "blocks": [
+        { "type": "tier", "settings": { "tag": "Single transfers", "name": "DTF Transfers by Size", "amount": "$2.50", "unit": "per transfer · any size" } },
+        { "type": "tier", "settings": { "featured": true, "tag": "Most popular", "name": "Gang Sheets", "amount": "$11.00", "unit": "per sheet · build your own", "bullets": "Upload your own layout\nMultiple designs per sheet\nMaximum value per print\nFull colour, fine detail\nReady to press", "cta_label": "Build Gang Sheet" } },
+        { "type": "tier", "settings": { "tag": "Finished apparel", "name": "Custom Garments", "amount": "$25+", "unit": "per garment · printed & ready", "bullets": "T-shirts, hoodies, workwear\nCaps, bags, and more\nBulk pricing available\nYour design, our garments\n5–7 business day turnaround", "cta_label": "Get a Quote" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

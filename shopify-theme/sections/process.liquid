@@ -1,0 +1,57 @@
+<section id="{{ section.settings.anchor | default: 'how' }}" class="bg-snow">
+  <div class="container">
+    <div class="section-head">
+      <div class="left">
+        {%- if section.settings.eyebrow != blank -%}
+          <div class="eyebrow">{{ section.settings.eyebrow }}</div>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="display display-l">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+      </div>
+    </div>
+    <div class="steps">
+      {%- for block in section.blocks -%}
+        <div class="step" {{ block.shopify_attributes }}>
+          <div class="step-num">{{ block.settings.num }}</div>
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.body }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Process / Steps",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "anchor", "label": "Anchor ID", "default": "how" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "How It Works" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Order in minutes. Delivered fast." }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "text", "id": "num", "label": "Number", "default": "01" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Upload Your Design" },
+        { "type": "textarea", "id": "body", "label": "Body", "default": "Send us your artwork as a PNG. We optimise it for print at no extra cost." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Process",
+      "blocks": [
+        { "type": "step", "settings": { "num": "01", "title": "Upload Your Design", "body": "Send us your artwork as a PNG. We optimise it for print at no extra cost." } },
+        { "type": "step", "settings": { "num": "02", "title": "Choose Your Product", "body": "DTF transfers, tees, hoodies, workwear — pick what you need and the quantity." } },
+        { "type": "step", "settings": { "num": "03", "title": "We Print & Ship", "body": "Your order goes into production. Quality checked, packed, and shipped NZ wide." } },
+        { "type": "step", "settings": { "num": "04", "title": "Press & Wear", "body": "Heat press your transfers at home or receive finished garments ready to go." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

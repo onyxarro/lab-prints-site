@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "eyebrow": "Search",
+        "heading": "Search results."
+      }
+    },
+    "main": { "type": "main-collection" }
+  },
+  "order": ["header", "main"]
+}

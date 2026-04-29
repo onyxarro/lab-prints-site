@@ -1,0 +1,79 @@
+<section>
+  <div class="container">
+    <div style="max-width:880px;margin:0 auto">
+      {%- if section.settings.eyebrow != blank -%}
+        <div class="eyebrow" style="margin-bottom:12px">{{ section.settings.eyebrow }}</div>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="display display-m" style="margin-bottom:32px">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.lede != blank -%}
+        <p class="lede" style="margin-bottom:48px">{{ section.settings.lede }}</p>
+      {%- endif -%}
+
+      <div class="instruction-list">
+        {%- for block in section.blocks -%}
+          <div class="instruction" {{ block.shopify_attributes }}>
+            <div class="num">{{ block.settings.num }}</div>
+            <div class="body">
+              <h3>{{ block.settings.title }}</h3>
+              <p>{{ block.settings.body }}</p>
+              {%- if block.settings.spec != blank -%}
+                <div class="spec">
+                  {%- assign rows = block.settings.spec | newline_to_br | split: '<br />' -%}
+                  {%- for r in rows -%}
+                    {%- assign clean = r | strip -%}
+                    {%- if clean contains ':' -%}
+                      {%- assign parts = clean | split: ':' -%}
+                      <div class="s">
+                        <div class="s-key">{{ parts[0] | strip }}</div>
+                        <div class="s-val">{{ parts[1] | strip }}</div>
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Instructions / Steps with specs",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Application Guide" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "How to apply your transfer." },
+    { "type": "textarea", "id": "lede", "label": "Lede" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "text", "id": "num", "label": "Number", "default": "01" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Set up your press" },
+        { "type": "textarea", "id": "body", "label": "Body", "default": "Pre-heat your heat press to the required temperature. A household iron works for small jobs but a heat press gives the best results." },
+        { "type": "textarea", "id": "spec", "label": "Spec rows (key: value, one per line)", "default": "Temperature: 150°C\nPressure: Medium-firm\nTime: 15–20s" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Instructions",
+      "blocks": [
+        { "type": "step", "settings": { "num": "01", "title": "Set up your press", "spec": "Temperature: 150°C\nPressure: Medium-firm\nTime: 15s" } },
+        { "type": "step", "settings": { "num": "02", "title": "Position the transfer", "body": "Place the garment flat on the press. Position the DTF transfer film side up, ink side down, on the area you want to print. Cover with the included parchment paper.", "spec": "Garment: Cotton, Poly, or Blend\nFilm side: Up\nCover: Parchment paper" } },
+        { "type": "step", "settings": { "num": "03", "title": "First press", "body": "Press for 15 seconds at 150°C with medium-firm pressure. The film bonds the ink into the fabric weave during this initial press." } },
+        { "type": "step", "settings": { "num": "04", "title": "Cool peel", "body": "Let the transfer cool fully before peeling — about 60 seconds. Peel the film off slowly at a low angle.", "spec": "Cool time: 60s\nPeel angle: Low\nPeel speed: Slow" } },
+        { "type": "step", "settings": { "num": "05", "title": "Second press", "body": "Cover the print with parchment paper and press again for 10 seconds. This locks in the durability and softens the hand.", "spec": "Time: 10s\nCover: Parchment paper" } },
+        { "type": "step", "settings": { "num": "06", "title": "Wash care", "body": "Wait 24 hours before first wash. Always wash inside-out on cold, tumble dry low or air dry. Prints are rated for 100+ washes.", "spec": "First wash: 24hr after\nWater: Cold\nDirection: Inside-out" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

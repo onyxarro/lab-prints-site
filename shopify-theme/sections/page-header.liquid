@@ -1,0 +1,23 @@
+<section class="page-header">
+  <div class="container">
+    {%- if section.settings.eyebrow != blank -%}
+      <div class="eyebrow">{{ section.settings.eyebrow }}</div>
+    {%- endif -%}
+    <h1 class="display display-l">{{ section.settings.heading | default: page.title }}</h1>
+    {%- if section.settings.lede != blank -%}
+      <p class="lede">{{ section.settings.lede }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page header",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading (defaults to page title if blank)" },
+    { "type": "textarea", "id": "lede", "label": "Lede" }
+  ],
+  "presets": [{ "name": "Page header" }]
+}
+{% endschema %}

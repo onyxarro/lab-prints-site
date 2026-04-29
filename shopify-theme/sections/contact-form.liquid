@@ -1,0 +1,105 @@
+<section id="{{ section.settings.anchor | default: 'contact' }}">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info">
+        {%- if section.settings.eyebrow != blank -%}
+          <div class="eyebrow">{{ section.settings.eyebrow }}</div>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="display display-l">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.lede != blank -%}
+          <p class="lede">{{ section.settings.lede }}</p>
+        {%- endif -%}
+        <div class="contact-list">
+          {%- for block in section.blocks -%}
+            <div class="contact-row" {{ block.shopify_attributes }}>
+              <div class="key">{{ block.settings.key }}</div>
+              <div class="val">{{ block.settings.val }}</div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <div class="form">
+        <h3>{{ section.settings.form_heading | default: 'Request a Quote' }}</h3>
+        {% form 'contact', class: 'lab-contact-form' %}
+          {%- if form.posted_successfully? -%}
+            <p style="padding:16px;background:var(--snow);border-radius:var(--r-input);margin-bottom:16px;font-size:14px">Thanks — we'll get back to you within a few hours during business hours.</p>
+          {%- endif -%}
+
+          {%- if form.errors -%}
+            <p style="padding:16px;background:#FFE5E5;border-radius:var(--r-input);margin-bottom:16px;font-size:14px;color:var(--red)">{{ form.errors | default_errors }}</p>
+          {%- endif -%}
+
+          <div class="frow">
+            <div class="fg">
+              <label for="ContactName">Name</label>
+              <input type="text" id="ContactName" name="contact[name]" placeholder="Jane Smith" required>
+            </div>
+            <div class="fg">
+              <label for="ContactEmail">Email</label>
+              <input type="email" id="ContactEmail" name="contact[email]" placeholder="jane@business.com" required>
+            </div>
+          </div>
+          <div class="fg">
+            <label for="ContactBusiness">Business (optional)</label>
+            <input type="text" id="ContactBusiness" name="contact[business]" placeholder="Acme Co.">
+          </div>
+          <div class="fg">
+            <label for="ContactProduct">Product</label>
+            <select id="ContactProduct" name="contact[product]">
+              <option value="">Select a product...</option>
+              <option>DTF Transfers</option>
+              <option>Gang Sheet</option>
+              <option>Custom T-Shirts</option>
+              <option>Hoodies / Sweats</option>
+              <option>Caps / Headwear</option>
+              <option>Workwear / Uniforms</option>
+              <option>Something else</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label for="ContactMessage">Details</label>
+            <textarea id="ContactMessage" name="contact[body]" placeholder="How many? What size? Any other info..."></textarea>
+          </div>
+          <button type="submit" class="fsub">Send Quote Request</button>
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "anchor", "label": "Anchor ID", "default": "contact" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Get In Touch" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Let's get your order started." },
+    { "type": "textarea", "id": "lede", "label": "Lede", "default": "Fill in the form and we'll get back to you with a quote — usually within a few hours during business hours." },
+    { "type": "text", "id": "form_heading", "label": "Form heading", "default": "Request a Quote" }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Contact row",
+      "settings": [
+        { "type": "text", "id": "key", "label": "Key", "default": "Email" },
+        { "type": "richtext", "id": "val", "label": "Value", "default": "<p><a href=\"mailto:hello@labprints.co.nz\">hello@labprints.co.nz</a></p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact form",
+      "blocks": [
+        { "type": "row", "settings": { "key": "Email", "val": "<p><a href=\"mailto:hello@labprints.co.nz\">hello@labprints.co.nz</a></p>" } },
+        { "type": "row", "settings": { "key": "Location", "val": "<p>Napier, Hawke's Bay, New Zealand</p>" } },
+        { "type": "row", "settings": { "key": "Turnaround", "val": "<p>DTF: 24hrs · Garments: 5–7 business days</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

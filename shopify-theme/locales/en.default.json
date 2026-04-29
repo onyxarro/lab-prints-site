@@ -1,0 +1,60 @@
+{
+  "general": {
+    "accessibility": {
+      "skip_to_content": "Skip to content",
+      "close": "Close",
+      "menu": "Menu"
+    },
+    "search": {
+      "title": "Search",
+      "placeholder": "Search products",
+      "submit": "Search",
+      "no_results_html": "No results for \"<strong>{{ terms }}</strong>\"."
+    },
+    "cart": {
+      "title": "Your cart",
+      "empty": "Your cart is empty.",
+      "subtotal": "Subtotal",
+      "total": "Total",
+      "checkout": "Checkout",
+      "update": "Update Cart",
+      "remove": "Remove",
+      "continue": "Continue shopping",
+      "shipping_note": "Shipping calculated at checkout."
+    },
+    "404": {
+      "title": "Page not found",
+      "subtext": "The page you're looking for doesn't exist or has moved.",
+      "link": "Back to Home"
+    },
+    "newsletter": {
+      "label": "Email",
+      "placeholder": "your@email.com",
+      "submit": "Subscribe",
+      "success": "Thanks — you're subscribed."
+    }
+  },
+  "products": {
+    "general": {
+      "from": "From {{ price }}",
+      "sold_out": "Sold Out",
+      "add_to_cart": "Add to Cart",
+      "quantity": "Quantity"
+    },
+    "product": {
+      "description": "Description",
+      "spec": "Specifications",
+      "care": "Care"
+    }
+  },
+  "contact": {
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "message": "Message",
+      "send": "Send Quote Request",
+      "success": "Thanks — we'll get back to you within a few hours during business hours."
+    }
+  }
+}

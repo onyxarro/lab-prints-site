@@ -1,0 +1,29 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "eyebrow": "Contact",
+        "heading": "Let's get your order started.",
+        "lede": "Tell us what you need and we'll come back with a quote — usually within a few hours during business hours."
+      }
+    },
+    "form": {
+      "type": "contact-form",
+      "settings": {
+        "anchor": "contact",
+        "eyebrow": "Get In Touch",
+        "heading": "Request a Quote",
+        "lede": "Fill in the form and we'll get back to you with a quote — usually within a few hours during business hours.",
+        "form_heading": "Quote Form"
+      },
+      "blocks": {
+        "r1": { "type": "row", "settings": { "key": "Email", "val": "<p><a href=\"mailto:hello@labprints.co.nz\">hello@labprints.co.nz</a></p>" } },
+        "r2": { "type": "row", "settings": { "key": "Location", "val": "<p>Napier, Hawke's Bay, New Zealand</p>" } },
+        "r3": { "type": "row", "settings": { "key": "Turnaround", "val": "<p>DTF: 24hrs · Garments: 5–7 business days</p>" } }
+      },
+      "block_order": ["r1", "r2", "r3"]
+    }
+  },
+  "order": ["header", "form"]
+}

@@ -1,0 +1,97 @@
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        {%- if section.settings.logo != blank -%}
+          {{ section.settings.logo | image_url: width: 240 | image_tag: alt: shop.name, height: 24 }}
+        {%- else -%}
+          <span style="font-family:var(--display);text-transform:uppercase;font-size:24px;line-height:1;color:var(--white)">{{ shop.name }}</span>
+        {%- endif -%}
+        {%- if section.settings.tagline != blank -%}
+          <p>{{ section.settings.tagline }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'menu' -%}
+          <div class="footer-col" {{ block.shopify_attributes }}>
+            <h4>{{ block.settings.heading }}</h4>
+            {%- if block.settings.menu != blank -%}
+              {%- for link in block.settings.menu.links -%}
+                <a href="{{ link.url }}">{{ link.title }}</a>
+              {%- endfor -%}
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p>
+      {%- if section.settings.credit != blank -%}
+        <p>{{ section.settings.credit }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Footer logo (white version)"
+    },
+    {
+      "type": "textarea",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Custom DTF printing and garments for businesses, teams, and individuals across New Zealand. No minimums. Full colour. Fast."
+    },
+    {
+      "type": "richtext",
+      "id": "credit",
+      "label": "Credit line",
+      "default": "<p>Website by <a href=\"https://onyxarro.com\">Onyxarro</a></p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shop"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "menu",
+        "settings": { "heading": "Products" }
+      },
+      {
+        "type": "menu",
+        "settings": { "heading": "Company" }
+      },
+      {
+        "type": "menu",
+        "settings": { "heading": "Contact" }
+      }
+    ]
+  }
+}
+{% endschema %}

@@ -1,0 +1,78 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "LAB Prints",
+    "theme_version": "1.0.0",
+    "theme_author": "Onyxarro",
+    "theme_documentation_url": "https://github.com/onyxarro/lab-prints-theme",
+    "theme_support_url": "mailto:hello@onyxarro.com"
+  },
+  {
+    "name": "Branding",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon (32×32)",
+        "info": "Square logo for browser tab."
+      },
+      {
+        "type": "image_picker",
+        "id": "share_image",
+        "label": "Default social-share image (1200×630)",
+        "info": "Used when a page has no specific image."
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Locked monochrome system",
+        "info": "Per LAB-PRINTS-BRAND.md, the LAB palette is monochrome. Color enters the page only through printed-garment photography. These tokens are exposed for transparency but should not be edited without a brand review."
+      },
+      {
+        "type": "color",
+        "id": "color_black",
+        "label": "LAB Black",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "color_white",
+        "label": "LAB White",
+        "default": "#FFFFFF"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Locked type system",
+        "info": "Bebas Neue (display, uppercase) + Inter Tight (body). Fonts loaded from Google Fonts in layout/theme.liquid."
+      },
+      {
+        "type": "paragraph",
+        "content": "Display: Bebas Neue · Body: Inter Tight (weight 500)."
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "container_width",
+        "min": 1200,
+        "max": 1600,
+        "step": 40,
+        "default": 1440,
+        "unit": "px",
+        "label": "Max content width"
+      }
+    ]
+  }
+]

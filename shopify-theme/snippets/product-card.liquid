@@ -1,0 +1,28 @@
+{%- comment -%}
+  product-card snippet
+  Usage: {% render 'product-card', product: product %}
+{%- endcomment -%}
+
+<a href="{{ product.url }}" class="product-card">
+  <div class="thumb">
+    {%- if product.featured_image -%}
+      {{ product.featured_image | image_url: width: 800 | image_tag: alt: product.title, loading: 'lazy', widths: '400,800,1200' }}
+    {%- else -%}
+      <img src="https://placehold.co/800x1000/111111/FFFFFF.png?text={{ product.title | url_encode | upcase }}" alt="{{ product.title }}" loading="lazy">
+    {%- endif -%}
+  </div>
+  <div class="name">{{ product.title }}</div>
+  {%- if product.type != blank -%}
+    <div class="meta">{{ product.type }}</div>
+  {%- endif -%}
+  <div class="price">
+    {%- if product.price_varies -%}
+      From {{ product.price_min | money }}
+    {%- else -%}
+      {{ product.price | money }}
+    {%- endif -%}
+    {%- if product.compare_at_price > product.price -%}
+      <span class="muted" style="text-decoration:line-through;margin-left:6px">{{ product.compare_at_price | money }}</span>
+    {%- endif -%}
+  </div>
+</a>
