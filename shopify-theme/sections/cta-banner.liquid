@@ -2,7 +2,7 @@
   {%- if section.settings.image != blank -%}
     {{ section.settings.image | image_url: width: 2400 | image_tag: class: 'cta-img', alt: section.settings.heading, loading: 'lazy', widths: '800,1200,1600,2000,2400' }}
   {%- else -%}
-    <img class="cta-img" src="https://placehold.co/1920x1080/111111/FFFFFF.png?text=CTA+%E2%80%94+CUSTOM+TEE+CLOSE-UP" alt="" loading="lazy">
+    <img class="cta-img" src="{{ 'cta.jpg' | asset_url }}" alt="" loading="lazy">
   {%- endif -%}
   <div class="cta-content">
     {%- if section.settings.eyebrow != blank -%}

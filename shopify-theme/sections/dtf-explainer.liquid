@@ -24,7 +24,7 @@
         {%- if section.settings.image != blank -%}
           {{ section.settings.image | image_url: width: 1200 | image_tag: alt: section.settings.heading, loading: 'lazy' }}
         {%- else -%}
-          <img src="https://placehold.co/800x1000/111111/FFFFFF.png?text=PRINT+CLOSE-UP" alt="DTF print close-up" loading="lazy">
+          <img src="{{ 'print-closeup.jpg' | asset_url }}" alt="DTF print close-up" loading="lazy">
         {%- endif -%}
       </div>
     </div>

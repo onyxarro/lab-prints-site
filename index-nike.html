@@ -5,9 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>LAB PRINTS — CUSTOM DTF TRANSFERS &amp; PRINTED APPAREL | NZ</title>
 <meta name="description" content="LAB Prints — NZ's fastest custom DTF transfers and printed garments. No minimums, full colour, 24hr turnaround. T-shirts, hoodies, workwear, caps & more."/>
+<meta name="theme-color" content="#111111">
+<link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- LCP hero preload. When 2560w AVIF/WebP exports land, replace href with hero-2560.avif and uncomment imagesrcset/imagesizes. -->
+<link rel="preload" as="image" href="assets/img/hero.jpg" fetchpriority="high">
 <link rel="stylesheet" href="assets/css/theme.css">
 </head>
 <body>
@@ -19,7 +23,9 @@
 <nav class="nav" id="nav">
   <div class="nav-inner">
     <a href="#" class="nav-logo" aria-label="LAB Prints home">
-      <img src="https://labprints.co.nz/cdn/shop/files/LAB_LOGO_2025_Logo.png?v=1770546369&width=400" alt="LAB Prints"/>
+      <svg class="logo-svg" viewBox="0 0 360 60" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LAB Prints">
+        <text x="0" y="48" font-size="56" letter-spacing="2" fill="currentColor" style="font-family:'Bebas Neue','Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:400;">LAB PRINTS</text>
+      </svg>
     </a>
     <ul class="nav-links">
       <li><a href="#products">Products</a></li>
@@ -46,8 +52,15 @@
 </div>
 
 <!-- HERO -->
-<section class="hero">
-  <img class="hero-img" src="https://placehold.co/1920x1080/111111/FFFFFF.png?text=HERO+%E2%80%94+STACKED+PRINTED+TEES" alt="Stacked freshly printed tees"/>
+<section class="hero" id="heroSection">
+  <picture>
+    <!-- Phase 3: when 2560w hero-2560.avif / hero-2560.webp ship, uncomment these and the JPG below stays as ultimate fallback. -->
+    <!-- <source srcset="assets/img/hero-2560.avif 2560w, assets/img/hero-1920.avif 1920w, assets/img/hero-1280.avif 1280w" sizes="100vw" type="image/avif"> -->
+    <!-- <source srcset="assets/img/hero-2560.webp 2560w, assets/img/hero-1920.webp 1920w, assets/img/hero-1280.webp 1280w" sizes="100vw" type="image/webp"> -->
+    <img class="hero-img hero-layer hero-layer-base" src="assets/img/hero.jpg" alt="Stacked freshly printed tees" fetchpriority="high"/>
+  </picture>
+  <!-- Scroll-driven cross-fade layer. Phase 3 will add hero-layer-3 (cured transfer powder) and hero-layer-4 (raw artwork) once those frames are generated. -->
+  <img class="hero-layer hero-layer-2" src="assets/img/print-closeup.jpg" alt="" aria-hidden="true"/>
   <div class="hero-scrim"></div>
   <div class="hero-content">
     <div class="hero-content-inner">
@@ -84,7 +97,7 @@
     </div>
     <div class="cat-grid">
       <a href="https://labprints.co.nz" target="_blank" rel="noopener" class="cat-card">
-        <img src="https://placehold.co/800x1000/111111/FFFFFF.png?text=DTF+TRANSFERS" alt="DTF transfers"/>
+        <img src="assets/img/dtf-transfers.jpg" alt="DTF transfers"/>
         <div class="scrim"></div>
         <div class="meta">
           <div class="meta-eyebrow">By Size</div>
@@ -96,7 +109,7 @@
         </div>
       </a>
       <a href="https://labprints.co.nz" target="_blank" rel="noopener" class="cat-card">
-        <img src="https://placehold.co/800x1000/111111/FFFFFF.png?text=GANG+SHEETS" alt="Gang sheets"/>
+        <img src="assets/img/gang-sheets.jpg" alt="Gang sheets"/>
         <div class="scrim"></div>
         <div class="meta">
           <div class="meta-eyebrow">Build Your Own</div>
@@ -108,7 +121,7 @@
         </div>
       </a>
       <a href="#contact" class="cat-card">
-        <img src="https://placehold.co/800x1000/111111/FFFFFF.png?text=CUSTOM+GARMENTS" alt="Custom printed garments"/>
+        <img src="assets/img/custom-garments.jpg" alt="Custom printed garments"/>
         <div class="scrim"></div>
         <div class="meta">
           <div class="meta-eyebrow">Printed &amp; Ready</div>
@@ -212,7 +225,7 @@
   <div class="container">
     <div class="split">
       <div class="split-img">
-        <img src="https://placehold.co/800x1000/111111/FFFFFF.png?text=ATELIER+%E2%80%94+DTF+PRESS" alt="LAB Prints atelier"/>
+        <img src="assets/img/atelier.jpg" alt="LAB Prints atelier"/>
       </div>
       <div class="split-content">
         <div class="eyebrow">Why LAB Prints</div>
@@ -251,7 +264,7 @@
         </div>
       </div>
       <div class="split-img">
-        <img src="https://placehold.co/800x1000/111111/FFFFFF.png?text=PRINT+CLOSE-UP" alt="DTF print close-up"/>
+        <img src="assets/img/print-closeup.jpg" alt="DTF print close-up"/>
       </div>
     </div>
   </div>
@@ -308,7 +321,7 @@
 
 <!-- CTA -->
 <section class="cta" style="padding:0">
-  <img class="cta-img" src="https://placehold.co/1920x1080/111111/FFFFFF.png?text=CTA+%E2%80%94+CUSTOM+TEE+CLOSE-UP" alt=""/>
+  <img class="cta-img" src="assets/img/cta.jpg" alt=""/>
   <div class="cta-content">
     <div class="eyebrow cta-eyebrow">Ready to print?</div>
     <h2 class="display display-l cta-title">Get your quote in minutes.</h2>
@@ -368,7 +381,9 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <img src="https://labprints.co.nz/cdn/shop/files/LAB_LOGO_2025_Logo.png?v=1770546369&width=400" alt="LAB Prints"/>
+        <svg class="logo-svg" viewBox="0 0 360 60" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LAB Prints">
+          <text x="0" y="48" font-size="56" letter-spacing="2" fill="currentColor" style="font-family:'Bebas Neue','Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:400;">LAB PRINTS</text>
+        </svg>
         <p>Custom DTF printing and garments for businesses, teams, and individuals across New Zealand. No minimums. Full colour. Fast.</p>
       </div>
       <div class="footer-col">
@@ -400,5 +415,34 @@
 </footer>
 
 <script src="assets/js/theme.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+<script defer>
+// LAB Prints — restrained hero crossfade. Layer A (finished tee) → Layer B (cured transfer detail).
+// Phase 3: extend to 4-state sequence with raw artwork and powder-cure frames once those assets ship.
+window.addEventListener('DOMContentLoaded', function () {
+  if (!window.gsap || !window.ScrollTrigger) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var hero = document.getElementById('heroSection');
+  var base = document.querySelector('.hero-layer-base');
+  var second = document.querySelector('.hero-layer-2');
+  var content = document.querySelector('.hero-content');
+  if (!hero || !base || !second) return;
+  gsap.registerPlugin(window.ScrollTrigger);
+  gsap.set(base, { scale: 1, opacity: 1 });
+  gsap.set(second, { scale: 1.04, opacity: 0 });
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: hero,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 0.4
+    }
+  })
+    .to(base,    { scale: 1.04, opacity: 0.55, ease: 'none' }, 0)
+    .to(second,  { scale: 1.0,  opacity: 0.7,  ease: 'none' }, 0)
+    .to(content, { opacity: 0.45, y: -16, ease: 'none' }, 0);
+});
+</script>
 </body>
 </html>

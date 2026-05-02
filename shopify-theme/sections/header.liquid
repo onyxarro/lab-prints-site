@@ -4,7 +4,9 @@
       {%- if section.settings.logo != blank -%}
         {{ section.settings.logo | image_url: width: 240 | image_tag: alt: shop.name, height: 24 }}
       {%- else -%}
-        <span style="font-family:var(--display);text-transform:uppercase;font-size:24px;line-height:1">{{ shop.name }}</span>
+        <svg class="logo-svg" viewBox="0 0 360 60" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="{{ shop.name }}">
+          <text x="0" y="48" font-size="56" letter-spacing="2" fill="currentColor" style="font-family:'Bebas Neue','Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:400;">LAB PRINTS</text>
+        </svg>
       {%- endif -%}
     </a>
 

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 60" role="img" aria-label="LAB Prints">
+  <title>LAB Prints</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;display=swap');
+    text { font-family: 'Bebas Neue', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; }
+  </style>
+  <text x="0" y="48" font-size="56" letter-spacing="2" fill="#111111">LAB PRINTS</text>
+</svg>
