@@ -17,7 +17,7 @@ Then Settings > Customer emails: turn on **Successful payments**. (Stripe does n
 
 ## Sending tracking numbers
 When a courier order ships, open the payment in Stripe, copy the customer's email and order number, and email
-them the tracking number from hello@labprints.co.nz. For pickup orders, email the pickup address and times.
+them the tracking number from sales@labprints.co.nz. For pickup orders, email the pickup address and times.
 (If volume gets big, this can be automated with a branded email later.)
 
 Prices, the deal and the deadline are all enforced in `api/checkout.js`, so nobody can edit them in their browser.
@@ -30,7 +30,7 @@ Prices, the deal and the deadline are all enforced in `api/checkout.js`, so nobo
    - `COURIER_NZD` = courier price in dollars, e.g. `6` (defaults to 6 if not set; currently 6)
 3. Redeploy.
 
-Until `STRIPE_SECRET_KEY` is set, the Checkout button opens a pre-filled order email to hello@labprints.co.nz instead.
+Until `STRIPE_SECRET_KEY` is set, the Checkout button opens a pre-filled order email to sales@labprints.co.nz instead.
 
 ## Changing things
 - **Prices / sizes / deal:** edit the top of `api/checkout.js` (what's charged) AND the matching values in `index.html` (what's shown).

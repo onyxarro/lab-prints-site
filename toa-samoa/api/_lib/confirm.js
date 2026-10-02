@@ -1,7 +1,7 @@
 // Order confirmation email via Brevo. Sent once per paid order: the Stripe PaymentIntent is
 // stamped with metadata.confirm_email = 'sent' afterwards, so retries and page reloads skip it.
 // Files under api/_lib are not routes (Vercel ignores underscore paths).
-// Env: STRIPE_SECRET_KEY, BREVO_API_KEY, BREVO_SENDER_EMAIL (default hello@labprints.co.nz),
+// Env: STRIPE_SECRET_KEY, BREVO_API_KEY, BREVO_SENDER_EMAIL (default sales@labprints.co.nz),
 //      BREVO_REPLY_TO (where customer replies go, default the sender),
 //      BREVO_SENDER_NAME (default LAB Prints), CUSTOMER_EMAILS ('on' to email customers),
 //      ORDER_NOTIFY_EMAIL (owner gets a new-order alert), BREVO_NOTIFY_SENDER (verified sender for it,
@@ -141,7 +141,7 @@ async function sendConfirmation(sessionId, site) {
   if (pi && pi.metadata && pi.metadata.confirm_email === 'sent') return 'already';
 
   const { html, text } = render(o, site);
-  const sender = { name: process.env.BREVO_SENDER_NAME || 'LAB Prints', email: process.env.BREVO_SENDER_EMAIL || 'hello@labprints.co.nz' };
+  const sender = { name: process.env.BREVO_SENDER_NAME || 'LAB Prints', email: process.env.BREVO_SENDER_EMAIL || 'sales@labprints.co.nz' };
   const msg = {
     sender, replyTo: { email: process.env.BREVO_REPLY_TO || sender.email, name: sender.name },
     to: [{ email: o.email, name: o.name || undefined }],
