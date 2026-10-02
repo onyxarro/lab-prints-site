@@ -1,5 +1,6 @@
 // GET /api/order?id=cs_...  ->  paid order summary for the confirmation screen.
 // The Checkout Session id is long and unguessable, and only comes back to the buyer's browser.
+const { sendConfirmation } = require('./_lib/confirm');
 
 module.exports = async (req, res) => {
   const id = String((req.query && req.query.id) || '');
@@ -15,6 +16,11 @@ module.exports = async (req, res) => {
     if (s.payment_status !== 'paid') return res.status(402).json({ error: 'Payment not completed.' });
 
     const m = s.metadata || {};
+    // Without the webhook, the confirmation screen is what triggers the email (sent once only).
+    if (!process.env.STRIPE_WEBHOOK_SECRET) {
+      const site = `https://${req.headers['x-forwarded-host'] || req.headers.host}`;
+      await sendConfirmation(id, site).catch(e => console.error('confirm email', e.message));
+    }
     res.setHeader('Cache-Control', 'no-store');
     return res.status(200).json({
       ref: m.order_ref || s.client_reference_id,
