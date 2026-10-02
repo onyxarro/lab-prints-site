@@ -39,7 +39,8 @@ function render(o, site) {
 <div style="display:none;max-height:0;overflow:hidden">Order ${esc(o.ref)} is confirmed. Fa'afetai for repping the 685.</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F3F1EC"><tr><td align="center" style="padding:24px 12px">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#fff;border-radius:10px;overflow:hidden">
-    <tr><td style="background:#111;padding:22px 28px" align="left"><img src="${site}/logo-white-web.png" width="72" alt="LAB Prints" style="display:block"></td></tr>
+    <!-- Header is one solid image: Gmail dark mode recolours a black cell but never an image. -->
+    <tr><td style="background:#111;padding:0;line-height:0"><img src="${site}/email-header.png" width="560" alt="LAB Prints" style="display:block;width:100%;max-width:560px;height:auto;border:0"></td></tr>
     <tr><td style="padding:30px 28px 8px">
       <p style="margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C42A0E">Order confirmed</p>
       <h1 style="margin:0 0 12px;font-size:30px;line-height:1.1;font-weight:800;text-transform:uppercase">Fa'afetai, ${first}!</h1>
