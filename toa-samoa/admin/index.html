@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Toa Samoa Orders</title>
+<link rel="icon" href="../icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFFFF; --bg-2:#F3F1EC; --bg-4:#ECE9E1;
+  --ink:#111111; --ink-2:#2A2A28; --ink-3:#6B6B66; --ink-4:#9A9A93;
+  --line:#E3DFD3; --line-2:#D7D2C2;
+  --heat:#E2381A; --heat-text:#C42A0E;
+  --ok:#1F7A45; --ok-bg:#E3F2E8; --warn-bg:#FDEBE6;
+  --display:"Bebas Neue","Arial Narrow",sans-serif;
+  --body:"Inter Tight","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg-2);color:var(--ink);font-family:var(--body);font-weight:500;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2{font-family:var(--display);font-weight:400;letter-spacing:.01em;line-height:.95;margin:0;text-transform:uppercase}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header{background:var(--ink);color:#fff}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:14px;padding-bottom:14px}
+header h1{font-size:28px}
+header .sub{font-size:12px;color:#B9B9B2;letter-spacing:.08em;text-transform:uppercase}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:10px 16px;border:1.5px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn.ghost{background:transparent;color:var(--ink)}
+header .btn{border-color:#fff;background:transparent;color:#fff}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* login */
+.login{max-width:380px;margin:12vh auto;background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px}
+.login h2{font-size:34px;margin-bottom:6px}
+.login p{color:var(--ink-3);margin:0 0 18px}
+.login input{width:100%;padding:13px 14px;border:1.5px solid var(--line-2);border-radius:10px;margin-bottom:12px;background:#fff}
+.login .btn{width:100%;justify-content:center;padding:14px}
+.err{color:var(--heat-text);font-weight:600;font-size:14px;min-height:20px;margin-top:10px}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:18px 0}
+.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.stat b{display:block;font-family:var(--display);font-size:34px;font-weight:400;line-height:1}
+.stat span{font-size:12px;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+
+/* tabs + toolbar */
+.tabs{display:flex;gap:6px;border-bottom:1.5px solid var(--line-2);margin-bottom:14px}
+.tab{background:none;border:0;padding:10px 14px;font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1.5px}
+.tab[aria-selected=true]{color:var(--ink);border-bottom-color:var(--heat)}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.toolbar input[type=search]{flex:1 1 220px;min-width:0;padding:10px 14px;border:1.5px solid var(--line-2);border-radius:999px;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--line-2);background:#fff;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:700;letter-spacing:.04em;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip .n{opacity:.6;margin-left:4px}
+
+/* orders */
+.orders{display:grid;gap:10px;margin-bottom:40px}
+.order{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;grid-template-columns:1.1fr 1.4fr auto;gap:18px;align-items:start}
+.order.done{opacity:.62}
+.order .ref{font-family:var(--display);font-size:26px;line-height:1}
+.order .date{font-size:12px;color:var(--ink-3)}
+.order .who{margin-top:8px;font-weight:700}
+.order a{color:var(--ink-2)}
+.order .contact{font-size:14px;display:grid;gap:2px}
+.order .del{margin-top:8px;font-size:13px}
+.order .notes{margin-top:8px;font-size:13px;background:var(--bg-2);border-radius:8px;padding:8px 10px}
+.items{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.items li{display:flex;justify-content:space-between;gap:10px;font-size:14px;border-bottom:1px dashed var(--line);padding-bottom:6px}
+.items .g{font-weight:700}
+.items .meta{color:var(--ink-3)}
+.total{margin-top:8px;font-weight:700;display:flex;justify-content:space-between}
+.side{display:grid;gap:8px;justify-items:end;min-width:150px}
+.side select{padding:9px 12px;border:1.5px solid var(--line-2);border-radius:10px;background:#fff;font-weight:700;width:100%}
+.badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:4px 9px;background:var(--bg-4);color:var(--ink-2)}
+.badge.courier{background:var(--ink);color:#fff}
+.badge.refund,.badge.test{background:var(--warn-bg);color:var(--heat-text)}
+.badge.saved{background:var(--ok-bg);color:var(--ok)}
+.empty{background:#fff;border:1px dashed var(--line-2);border-radius:14px;padding:30px;text-align:center;color:var(--ink-3)}
+
+/* print list */
+.plist{display:grid;gap:14px;margin-bottom:40px}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;overflow-x:auto}
+.pcard h2{font-size:24px;margin-bottom:10px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left;font-weight:700}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+td.z{color:var(--ink-4)}
+tr.sum td{font-weight:700;border-bottom:0}
+.note{font-size:13px;color:var(--ink-3);margin:0 0 12px}
+
+@media (max-width:760px){
+  .order{grid-template-columns:1fr;gap:12px}
+  .side{justify-items:stretch;grid-template-columns:1fr auto;align-items:center}
+  header h1{font-size:22px}
+}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div><h1>Toa Samoa Orders</h1><div class="sub">LAB Prints · 685 pre-order</div></div>
+    <div id="hdrBtns" hidden style="display:flex;gap:8px">
+      <button class="btn" id="refresh">Refresh</button>
+      <button class="btn" id="logout">Log out</button>
+    </div>
+  </div>
+</header>
+
+<form class="login" id="login">
+  <h2>Orders login</h2>
+  <p>Enter the admin password to see orders.</p>
+  <input type="password" id="pw" placeholder="Password" autocomplete="current-password" required>
+  <button class="btn" type="submit">Open orders</button>
+  <div class="err" id="loginErr" role="alert"></div>
+</form>
+
+<main class="wrap" id="app" hidden>
+  <div class="stats" id="stats"></div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-tab="orders">Orders</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="print">Print list</button>
+  </div>
+
+  <section id="tab-orders">
+    <div class="toolbar">
+      <input type="search" id="q" placeholder="Search name, order no., phone, email…">
+      <button class="btn ghost" id="csv">Download CSV</button>
+    </div>
+    <div class="toolbar">
+      <div class="chips" id="statusChips"></div>
+      <div class="chips" id="delChips"></div>
+    </div>
+    <div class="err" id="appErr" role="alert"></div>
+    <div class="orders" id="orders"></div>
+  </section>
+
+  <section id="tab-print" hidden>
+    <p class="note">Every tee to print, from paid orders. Refunded and test orders are left out.</p>
+    <div class="plist" id="plist"></div>
+  </section>
+</main>
+
+<script>
+const STATUSES = [['new','New'],['printed','Printed'],['packed','Packed'],['sent','Sent (courier)'],['collected','Picked up']];
+const SIZE_ORDER = ['2','4','6','8','10','12','14','XS','S','M','L','XL','2XL','3XL','4XL','5XL'];
+const COLOUR_ORDER = ['Black','Royal Blue','Grey','Heather Grey','White'];
+let KEY = '', ORDERS = [], fStatus = 'open', fDel = 'all';
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = n => '$' + Number(n || 0).toFixed(2);
+const fmtDate = t => new Date(t * 1000).toLocaleString('en-NZ', { day:'numeric', month:'short', hour:'numeric', minute:'2-digit' });
+const live = o => !o.refund && !o.test;   // counts toward print list and totals
+const tees = o => o.items.reduce((n, i) => n + i.qty, 0);
+const store = {
+  get(){ try { return sessionStorage.getItem('lab-admin') || ''; } catch(e) { return ''; } },
+  set(v){ try { v ? sessionStorage.setItem('lab-admin', v) : sessionStorage.removeItem('lab-admin'); } catch(e) {} },
+};
+
+async function api(method, body) {
+  const r = await fetch('/api/admin', { method, headers: { 'x-admin-key': KEY, 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(j.error || 'Something went wrong.'); e.status = r.status; throw e; }
+  return j;
+}
+
+async function load() {
+  $('refresh').disabled = true; $('appErr').textContent = '';
+  try {
+    ORDERS = (await api('GET')).orders.sort((a, b) => b.created - a.created);
+    render();
+  } catch (e) {
+    if (e.status === 401) return logout('Wrong password.');
+    $('appErr').textContent = e.message;
+  } finally { $('refresh').disabled = false; }
+}
+
+function showApp(on) {
+  $('login').hidden = on; $('app').hidden = !on; $('hdrBtns').hidden = !on;
+}
+function logout(msg) { KEY = ''; store.set(''); showApp(false); $('loginErr').textContent = msg || ''; }
+
+$('login').addEventListener('submit', async e => {
+  e.preventDefault(); KEY = $('pw').value; $('loginErr').textContent = '';
+  try { ORDERS = (await api('GET')).orders.sort((a, b) => b.created - a.created); store.set(KEY); showApp(true); render(); }
+  catch (err) { KEY = ''; $('loginErr').textContent = err.message; }
+});
+$('logout').onclick = () => logout();
+$('refresh').onclick = load;
+
+// ---------- render ----------
+function render() { renderStats(); renderChips(); renderOrders(); renderPrint(); }
+
+function renderStats() {
+  const ok = ORDERS.filter(live);
+  const todo = ok.filter(o => o.status !== 'sent' && o.status !== 'collected');
+  const cards = [
+    [ok.length, 'Paid orders'],
+    [ok.reduce((n, o) => n + tees(o), 0), 'Tees to print'],
+    [money(ok.reduce((n, o) => n + o.total, 0)), 'Taken (NZD)'],
+    [todo.length, 'Still to hand over'],
+    [ok.filter(o => o.delivery === 'courier').length, 'Courier orders'],
+  ];
+  $('stats').innerHTML = cards.map(([b, s]) => `<div class="stat"><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join('');
+}
+
+function renderChips() {
+  const count = f => ORDERS.filter(f).length;
+  const sOpts = [['open','To do', o => live(o) && o.status !== 'sent' && o.status !== 'collected'], ['all','All', () => true],
+    ...STATUSES.map(([v, l]) => [v, l, o => o.status === v]), ['refund','Refunded/test', o => !live(o)]];
+  $('statusChips').innerHTML = sOpts.map(([v, l, f]) =>
+    `<button class="chip" data-s="${v}" aria-pressed="${fStatus === v}">${esc(l)}<span class="n">${count(f)}</span></button>`).join('');
+  $('delChips').innerHTML = [['all','Any delivery'],['pickup','Pickup'],['courier','Courier']].map(([v, l]) =>
+    `<button class="chip" data-d="${v}" aria-pressed="${fDel === v}">${l}</button>`).join('');
+}
+$('statusChips').onclick = e => { const b = e.target.closest('[data-s]'); if (b) { fStatus = b.dataset.s; renderChips(); renderOrders(); } };
+$('delChips').onclick = e => { const b = e.target.closest('[data-d]'); if (b) { fDel = b.dataset.d; renderChips(); renderOrders(); } };
+$('q').oninput = () => renderOrders();
+
+function visible() {
+  const q = $('q').value.trim().toLowerCase();
+  return ORDERS.filter(o => {
+    if (fStatus === 'open' && !(live(o) && o.status !== 'sent' && o.status !== 'collected')) return false;
+    if (fStatus === 'refund' && live(o)) return false;
+    if (!['open','all','refund'].includes(fStatus) && o.status !== fStatus) return false;
+    if (fDel !== 'all' && o.delivery !== fDel) return false;
+    if (q && ![o.ref, o.name, o.email, o.phone, o.address].join(' ').toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+function renderOrders() {
+  const list = visible();
+  if (!list.length) { $('orders').innerHTML = `<div class="empty">${ORDERS.length ? 'No orders match.' : 'No paid orders yet.'}</div>`; return; }
+  $('orders').innerHTML = list.map(o => {
+    const done = o.status === 'sent' || o.status === 'collected' || !live(o);
+    const statusOpts = STATUSES.filter(([v]) => o.delivery === 'courier' ? v !== 'collected' : v !== 'sent')
+      .map(([v, l]) => `<option value="${v}"${o.status === v ? ' selected' : ''}>${l}</option>`).join('');
+    return `<article class="order${done ? ' done' : ''}">
+      <div>
+        <div class="ref">${esc(o.ref)}</div>
+        <div class="date">${esc(fmtDate(o.created))}</div>
+        <div class="who">${esc(o.name)}</div>
+        <div class="contact">
+          ${o.phone ? `<a href="tel:${esc(o.phone.replace(/\s/g, ''))}">${esc(o.phone)}</a>` : ''}
+          ${o.email ? `<a href="mailto:${esc(o.email)}?subject=${encodeURIComponent('Your Toa Samoa order ' + o.ref)}">${esc(o.email)}</a>` : ''}
+        </div>
+        <div class="del">${o.delivery === 'courier' ? `<span class="badge courier">Courier</span> ${esc(o.address)}` : '<span class="badge">Pickup · Hastings</span>'}</div>
+        ${o.notes ? `<div class="notes">${esc(o.notes)}</div>` : ''}
+      </div>
+      <div>
+        <ul class="items">${o.items.map(i => `<li><span><span class="g">${i.qty} × ${esc(shortGarment(i.garment))}</span><br><span class="meta">${esc(i.colour)} · Size ${esc(i.size)}</span></span><span>${money(i.amount)}</span></li>`).join('')}</ul>
+        <div class="total"><span>Total paid${o.shipping ? ` (incl. ${money(o.shipping)} courier)` : ''}</span><span>${money(o.total)}</span></div>
+      </div>
+      <div class="side">
+        ${o.test ? '<span class="badge test">Test order</span>' : ''}
+        ${o.refund ? `<span class="badge refund">${o.refund === 'full' ? 'Refunded' : 'Part refunded'}</span>` : ''}
+        ${o.pi ? `<select data-pi="${esc(o.pi)}" aria-label="Status for ${esc(o.ref)}">${statusOpts}</select>` : ''}
+        <span class="badge saved" data-saved="${esc(o.pi)}" hidden>Saved</span>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+$('orders').addEventListener('change', async e => {
+  const sel = e.target.closest('select[data-pi]'); if (!sel) return;
+  const o = ORDERS.find(x => x.pi === sel.dataset.pi), prev = o.status;
+  sel.disabled = true;
+  try {
+    await api('POST', { pi: o.pi, status: sel.value });
+    o.status = sel.value; renderStats(); renderChips();
+    const tag = document.querySelector(`[data-saved="${o.pi}"]`);
+    if (tag) { tag.hidden = false; setTimeout(() => { renderOrders(); }, 900); }
+  } catch (err) { sel.value = prev; $('appErr').textContent = err.message; }
+  finally { sel.disabled = false; }
+});
+
+const shortGarment = g => g.startsWith('Heavyweight') ? 'Heavyweight Box Fit' : g.startsWith('Standard') ? 'Standard Adult' : g.startsWith('Kids') ? 'Kids' : g;
+
+function renderPrint() {
+  const grid = {};   // garment -> colour -> size -> qty
+  ORDERS.filter(live).forEach(o => o.items.forEach(i => {
+    const g = shortGarment(i.garment);
+    ((grid[g] = grid[g] || {})[i.colour] = grid[g][i.colour] || {})[i.size] = (grid[g][i.colour][i.size] || 0) + i.qty;
+  }));
+  const gs = Object.keys(grid);
+  if (!gs.length) { $('plist').innerHTML = '<div class="empty">Nothing to print yet.</div>'; return; }
+  const byOrder = (arr, ord) => arr.sort((a, b) => (ord.indexOf(a) + 1 || 99) - (ord.indexOf(b) + 1 || 99));
+  $('plist').innerHTML = gs.map(g => {
+    const colours = byOrder(Object.keys(grid[g]), COLOUR_ORDER);
+    const sizes = byOrder([...new Set(colours.flatMap(c => Object.keys(grid[g][c])))], SIZE_ORDER);
+    let total = 0;
+    const rows = colours.map(c => {
+      const sum = sizes.reduce((n, s) => n + (grid[g][c][s] || 0), 0); total += sum;
+      return `<tr><td>${esc(c)}</td>${sizes.map(s => grid[g][c][s] ? `<td>${grid[g][c][s]}</td>` : '<td class="z">·</td>').join('')}<td><b>${sum}</b></td></tr>`;
+    }).join('');
+    const colSums = sizes.map(s => colours.reduce((n, c) => n + (grid[g][c][s] || 0), 0));
+    return `<div class="pcard"><h2>${esc(g)} · ${total} tees</h2><table>
+      <thead><tr><th>Colour</th>${sizes.map(s => `<th>${esc(s)}</th>`).join('')}<th>Total</th></tr></thead>
+      <tbody>${rows}<tr class="sum"><td>All colours</td>${colSums.map(n => `<td>${n}</td>`).join('')}<td>${total}</td></tr></tbody></table></div>`;
+  }).join('');
+}
+
+// ---------- tabs + csv ----------
+document.querySelector('.tabs').onclick = e => {
+  const t = e.target.closest('[data-tab]'); if (!t) return;
+  document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-selected', b === t));
+  $('tab-orders').hidden = t.dataset.tab !== 'orders'; $('tab-print').hidden = t.dataset.tab !== 'print';
+};
+
+$('csv').onclick = () => {
+  const cell = v => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
+  const rows = [['Order','Date','Name','Phone','Email','Delivery','Address','Garment','Colour','Size','Qty','Line total','Order total','Status','Refund','Notes']];
+  ORDERS.forEach(o => o.items.forEach(i => rows.push([o.ref, new Date(o.created * 1000).toLocaleString('en-NZ'), o.name, o.phone, o.email,
+    o.delivery, o.address, shortGarment(i.garment), i.colour, i.size, i.qty, i.amount.toFixed(2), o.total.toFixed(2),
+    o.status, o.refund || (o.test ? 'test' : ''), o.notes])));
+  const blob = new Blob([rows.map(r => r.map(cell).join(',')).join('\r\n')], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = `toa-samoa-orders-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+
+// stay logged in for this browser tab
+KEY = store.get();
+if (KEY) { showApp(true); load(); }
+</script>
+</body>
+</html>
