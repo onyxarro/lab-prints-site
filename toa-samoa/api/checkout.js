@@ -2,7 +2,7 @@
 //   ->  { url }  (Stripe Checkout). Stripe emails the receipt to customer.email.
 // GET  /api/checkout  ->  { courier }  (courier price shown on the page)
 // Prices, deal and deadline are enforced here. The browser only says what was picked.
-// Env: STRIPE_SECRET_KEY (required), COURIER_NZD (default 10)
+// Env: STRIPE_SECRET_KEY (required), COURIER_NZD (default 6)
 
 const DEADLINE = Date.parse('2026-10-09T23:59:00+13:00');
 const MULTI_BUY_MIN = 2;      // tees in the order
@@ -32,7 +32,7 @@ function form(obj, prefix, out) {
 }
 
 module.exports = async (req, res) => {
-  if (req.method === 'GET') return res.status(200).json({ courier: Number(process.env.COURIER_NZD || 10) });
+  if (req.method === 'GET') return res.status(200).json({ courier: Number(process.env.COURIER_NZD || 6) });
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
   if (!process.env.STRIPE_SECRET_KEY) return res.status(503).json({ error: 'Checkout is not set up yet.' });
   if (Date.now() > DEADLINE) return res.status(410).json({ error: 'Pre-orders have closed.' });
@@ -65,7 +65,7 @@ module.exports = async (req, res) => {
   const totalTees = items.reduce((n, it) => n + it.q, 0);
   const deal = totalTees >= MULTI_BUY_MIN;
   const site = `https://${req.headers['x-forwarded-host'] || req.headers.host}`;
-  const courier = Math.round(Number(process.env.COURIER_NZD || 10) * 100);
+  const courier = Math.round(Number(process.env.COURIER_NZD || 6) * 100);
   const ref = 'TS-' + Math.random().toString(36).slice(2, 8).toUpperCase();
   const addressText = courierChosen ? [addr.line1, addr.line2, addr.city, addr.postal_code].filter(Boolean).join(', ') : '';
 

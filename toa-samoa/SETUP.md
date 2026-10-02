@@ -27,7 +27,7 @@ Prices, the deal and the deadline are all enforced in `api/checkout.js`, so nobo
    Test first with the test key (`sk_test_...`) and card `4242 4242 4242 4242`.
 2. Vercel project > Settings > Environment Variables:
    - `STRIPE_SECRET_KEY` = your secret key
-   - `COURIER_NZD` = courier price in dollars, e.g. `10` (defaults to 10 if not set)
+   - `COURIER_NZD` = courier price in dollars, e.g. `6` (defaults to 6 if not set; currently 6)
 3. Redeploy.
 
 Until `STRIPE_SECRET_KEY` is set, the Checkout button opens a pre-filled order email to hello@labprints.co.nz instead.

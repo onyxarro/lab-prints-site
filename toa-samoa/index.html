@@ -537,7 +537,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
           <fieldset class="deliv">
             <legend>Getting your tees</legend>
             <label class="opt"><input type="radio" name="delivery" value="pickup" checked><span><b>Pickup in Hastings</b><small>Free. We will email pickup details when your order is ready.</small></span><em>Free</em></label>
-            <label class="opt"><input type="radio" name="delivery" value="courier"><span><b>NZ-wide courier</b><small>Tracking number emailed when it ships.</small></span><em data-courier>$10</em></label>
+            <label class="opt"><input type="radio" name="delivery" value="courier"><span><b>NZ-wide courier</b><small>Tracking number emailed when it ships.</small></span><em data-courier>$6</em></label>
           </fieldset>
 
           <div class="fgrid" id="addr" hidden>
@@ -747,7 +747,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
   });
 
   // ---- customer details ----
-  var form = $('details'), COURIER = 10;
+  var form = $('details'), COURIER = 6;
   function isCourier(){ return form.delivery.value === 'courier'; }
   function details(){
     var d = {};
