@@ -2,6 +2,7 @@
 // stamped with metadata.confirm_email = 'sent' afterwards, so retries and page reloads skip it.
 // Files under api/_lib are not routes (Vercel ignores underscore paths).
 // Env: STRIPE_SECRET_KEY, BREVO_API_KEY, BREVO_SENDER_EMAIL (default hello@labprints.co.nz),
+//      BREVO_REPLY_TO (where customer replies go, default the sender),
 //      BREVO_SENDER_NAME (default LAB Prints), CUSTOMER_EMAILS ('on' to email customers),
 //      ORDER_NOTIFY_EMAIL (owner gets a new-order alert), BREVO_NOTIFY_SENDER (verified sender for it,
 //      default ORDER_NOTIFY_EMAIL).
@@ -59,7 +60,7 @@ function render(o, site) {
       <p style="margin:0;font-size:15px;line-height:1.55">Pre-orders close Friday 9 October at 11:59pm. Then we print every tee locally in Hastings and let you know as soon as yours is ready.</p>
     </td></tr>
     <tr><td style="padding:28px 28px 30px">
-      <p style="margin:0;font-size:14px;line-height:1.55;color:#6B6B66">Questions? Just reply to this email or write to <a href="mailto:hello@labprints.co.nz" style="color:#111">hello@labprints.co.nz</a> with your order number.</p>
+      <p style="margin:0;font-size:14px;line-height:1.55;color:#6B6B66">Questions? Just reply to this email with your order number.</p>
     </td></tr>
     <tr><td style="background:#111;color:#9A9A93;padding:18px 28px;font-size:12px">LAB Prints · Printed locally in Hastings, NZ</td></tr>
   </table>
@@ -72,7 +73,7 @@ function render(o, site) {
     o.shipping ? `Courier  ${money(o.shipping)}` : '', `Total paid  ${money(o.total)}`, '',
     o.delivery === 'courier' ? `NZ courier to: ${o.address}. Tracking number emailed when it ships.` : 'Free pickup in Hastings. Pickup details emailed when your order is ready.',
     'Pre-orders close Fri 9 Oct, 11:59pm. Then we print every tee locally in Hastings.', '',
-    'Questions? Reply to this email or write to hello@labprints.co.nz with your order number.',
+    'Questions? Just reply to this email with your order number.',
   ].filter(l => l !== null).join('\n');
   return { html, text };
 }
@@ -141,7 +142,7 @@ async function sendConfirmation(sessionId, site) {
   const { html, text } = render(o, site);
   const sender = { name: process.env.BREVO_SENDER_NAME || 'LAB Prints', email: process.env.BREVO_SENDER_EMAIL || 'hello@labprints.co.nz' };
   const msg = {
-    sender, replyTo: { email: sender.email, name: sender.name },
+    sender, replyTo: { email: process.env.BREVO_REPLY_TO || sender.email, name: sender.name },
     to: [{ email: o.email, name: o.name || undefined }],
     subject: `Order ${o.ref} confirmed: your Toa Samoa tees`,
     htmlContent: html, textContent: text, tags: ['toa-samoa', 'order-confirmation'],
