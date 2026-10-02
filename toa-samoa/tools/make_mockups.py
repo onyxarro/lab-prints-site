@@ -21,6 +21,7 @@ SIZE = 900                    # output px
 BG = (243, 241, 236)          # page --bg-2, so white tees still read
 A3_W_CM, A3_H_CM = 42.0, 29.7
 FLAG_W_CM = 9.0               # adult sleeve flag width
+LIGHT_EXTRA = {("boxfit", "grey")}   # light garments (besides white) that get the white-tee artwork
 
 # Per-garment geometry, measured on the blank photos (pixels in the source image).
 #   px_cm: pixels per cm at the chest   cx: chest centre x   top: print top y
@@ -148,7 +149,7 @@ def main(art_path, light_art_path=None):
             tee.putalpha(mask)
             base.alpha_composite(tee)
 
-            a = light_print if colour == "white" else dark_print
+            a = light_print if colour == "white" or (g, colour) in LIGHT_EXTRA else dark_print
             place(base, a, round(cfg["cx"] - a.width / 2), cfg["top"])
             sx, sy, _ = cfg["sleeve"]
             place(base, flag, round(sx - flag.width / 2), round(sy - flag.height / 2), clip=mask)

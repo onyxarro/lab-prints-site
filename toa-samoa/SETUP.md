@@ -48,7 +48,7 @@ It trims the artwork, fits it inside an A3 landscape box (42 × 29.7 cm) on the 
 (Black, Royal Blue, Grey, White × box fit, adult and kids; kids use an A4 landscape box), adds a 9 cm Samoa flag
 (7 cm on kids) centred on the top seam of the left sleeve (top edge toward the shoulder, long edge parallel to
 the sleeve opening), and overwrites `img/`. The sleeve flag uses the same red and blue as the flag in the artwork.
-Box fit grey = Urban Collab Heather Grey. Adult and kids grey = Cloke Dark Grey. Kids = Cloke T102 Outline Tee Kids.
+Box fit grey = Urban Collab Heather Grey (light, so it gets the white-tee artwork too; see `LIGHT_EXTRA`). Adult and kids grey = Cloke Dark Grey. Kids = Cloke T102 Outline Tee Kids.
 Also replace `og.jpg` (the share image).
 
 ## After the 9th
