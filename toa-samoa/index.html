@@ -30,7 +30,7 @@
   --bg:#FFFFFF; --bg-2:#F3F1EC; --bg-4:#ECE9E1;
   --ink:#111111; --ink-2:#2A2A28; --ink-3:#6B6B66; --ink-4:#9A9A93;
   --line:#E3DFD3; --line-2:#D7D2C2;
-  --heat:#E2381A;
+  --heat:#E2381A; --heat-text:#C42A0E; --heat-on-ink:#FF6A4D;
   --pad:clamp(20px,4vw,64px); --maxw:1240px;
   --display:"Bebas Neue","Helvetica Neue Condensed","Arial Narrow",sans-serif;
   --body:"Inter Tight","Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -94,6 +94,8 @@ a,button,select,input,label{touch-action:manipulation;-webkit-tap-highlight-colo
 .toggle{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
 .tg{font:700 12px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;padding:10px 14px;border-radius:999px;border:1.5px solid var(--line-2);background:#fff;color:var(--ink-3);cursor:pointer}
 .tg[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.tg small{margin-left:6px;font-weight:600;opacity:.6;letter-spacing:.04em}
+[id]{scroll-margin-top:76px}
 .card-img{margin:-28px -28px 22px;background:var(--bg-2);border-radius:8px 8px 0 0;overflow:hidden;border-bottom:1px solid var(--line)}
 .card-img img{width:100%;height:auto;aspect-ratio:1}
 .card.feature .card-img{border-bottom-color:var(--ink)}
@@ -105,7 +107,8 @@ a,button,select,input,label{touch-action:manipulation;-webkit-tap-highlight-colo
 .paid{background:#1F7A3D;color:#fff;font-size:15px;padding:14px 0}
 
 /* buy controls */
-.deal-note{margin:-8px 0 14px!important;font-size:14px;font-weight:700;color:var(--heat)!important}
+.deal-note{margin:-8px 0 14px!important;font-size:14px;font-weight:700;color:var(--heat-text)!important}
+.card.feature .deal-note{color:var(--heat-on-ink)!important}
 .buy{margin-top:auto;display:grid;gap:14px}
 .buy .row{display:grid;grid-template-columns:1fr auto;gap:12px}
 .field{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
@@ -212,7 +215,7 @@ section.block{padding:88px 0;border-bottom:1px solid var(--line)}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .card{border:1px solid var(--line);border-radius:8px;padding:28px;display:flex;flex-direction:column;background:#fff;position:relative}
 .card.feature{background:var(--ink);color:#fff;border-color:var(--ink)}
-.tag{position:absolute;top:-12px;left:28px;background:var(--heat);color:#fff;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:3px}
+.tag{position:absolute;top:-12px;left:28px;background:var(--heat-text);color:#fff;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:3px}
 .card h3{font-size:36px;margin-bottom:6px}
 .price{font-family:var(--display);font-size:64px;line-height:1;margin:14px 0 16px}
 .price small{font-family:var(--body);font-size:14px;font-weight:600;color:var(--ink-3);letter-spacing:0;margin-left:6px}
@@ -232,7 +235,7 @@ section.block{padding:88px 0;border-bottom:1px solid var(--line)}
 /* steps */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:s}
 .step{border-top:2px solid var(--ink);padding-top:20px}
-.step b{font-family:var(--display);font-weight:400;font-size:20px;letter-spacing:.06em;color:var(--heat)}
+.step b{font-family:var(--display);font-weight:400;font-size:20px;letter-spacing:.06em;color:var(--heat-text)}
 .step h3{font-size:34px;margin:8px 0 10px}
 .step p{margin:0;color:var(--ink-2)}
 
@@ -286,6 +289,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
   .hero .ctas .btn{width:100%}
   nav .btn{display:none}
   nav .wrap{height:60px}
+  nav{backdrop-filter:none;background:#fff}
   .logo img{height:48px}
   .promo{font-size:12px;padding:9px 12px}
   .fgrid{grid-template-columns:1fr}
@@ -300,7 +304,13 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
   .hero h1 span{display:inline;margin-left:.18em}
   .hero-price{order:3;font-size:15px;margin:0 0 14px}
   .stage{order:4;padding:6px 10px 14px;margin-bottom:16px}
-  .stage .toggle{display:none}
+  .stage .toggle{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px;margin:4px 0 2px}
+  .tg{border:0;border-radius:9px;min-height:48px;padding:8px 4px;font-size:11px;line-height:1.15;letter-spacing:.05em;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+  .tg small{margin:0;font-size:12px;opacity:.65}
+  .tg[aria-pressed="true"] small{opacity:.8}
+  [id]{scroll-margin-top:66px}
+  .buy > .field > span{white-space:nowrap}
+  .dots{gap:10px}
   .tee-photo{max-width:270px;margin:0 auto}
   .swatches{margin-top:4px;gap:12px}
   .hero .open-only{order:5}
@@ -351,7 +361,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
 
 <nav>
   <div class="wrap">
-    <a class="logo" href="#top"><img src="logo-black.png" alt="LAB Prints" width="480" height="409"></a>
+    <a class="logo" href="#top"><img src="logo-black-web.png" alt="LAB Prints" width="480" height="409"></a>
     <a class="btn btn-ink btn-sm open-only" href="#order">Your order <span class="count-pill" data-cart-count>0</span></a>
   </div>
 </nav>
@@ -404,7 +414,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
           <div><b id="cd-s">00</b><small>Secs</small></div>
         </div>
         <div class="ctas">
-          <a class="btn btn-ink" href="#tees">Pre-order now</a>
+          <a class="btn btn-ink" id="hero-cta" href="#card-boxfit">Pre-order now</a>
           <a class="btn btn-line desk-only" href="#how">How it works</a>
         </div>
       </div>
@@ -415,8 +425,9 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
 
     <div class="stage">
       <div class="toggle" role="group" aria-label="Garment">
-        <button class="tg" data-g="boxfit" aria-pressed="true">Heavyweight Box Fit</button>
-        <button class="tg" data-g="adult" aria-pressed="false">Standard Adult</button>
+        <button class="tg" data-g="boxfit" aria-pressed="true">Heavyweight<small>$60</small></button>
+        <button class="tg" data-g="adult" aria-pressed="false">Standard Adult<small>$45</small></button>
+        <button class="tg" data-g="kids" aria-pressed="false">Kids<small>$35</small></button>
       </div>
       <img id="hero-tee" class="tee-photo" src="img/boxfit-black.jpg" alt="685 Samoa design on the Heavyweight Box Fit tee in Black" width="900" height="900" fetchpriority="high">
       <div class="swatches" role="group" aria-label="Tee colour">
@@ -437,7 +448,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
       <p>Every tee comes in Black, Royal Blue, Grey or White with the 685 Samoa chest print (A3 on adult tees, scaled down for kids) and a flag on the left sleeve. Mix garments, colours and sizes in one order. <b>2 or more tees = $5 off every tee.</b></p>
     </div>
     <div class="grid">
-      <article class="card feature">
+      <article id="card-boxfit" class="card feature">
         <div class="card-img"><img data-g="boxfit" src="img/boxfit-black.jpg" alt="685 Samoa print on the Urban Collab heavyweight tee" width="900" height="900" loading="lazy"></div>
         <span class="tag">Streetwear pick</span>
         <h3>Heavyweight Box Fit</h3>
@@ -459,7 +470,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
         </div>
       </article>
 
-      <article class="card">
+      <article id="card-adult" class="card">
         <div class="card-img"><img data-g="adult" src="img/adult-black.jpg" alt="685 Samoa print on the Cloke Outline tee" width="900" height="900" loading="lazy"></div>
         <h3>Standard Adult Tee</h3>
         <div class="price">$45<small>NZD</small></div>
@@ -480,7 +491,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
         </div>
       </article>
 
-      <article class="card">
+      <article id="card-kids" class="card">
         <div class="card-img"><img data-g="kids" src="img/kids-black.jpg" alt="685 Samoa print on the Cloke Outline kids tee" width="900" height="900" loading="lazy"></div>
         <h3>Kids Tee</h3>
         <div class="price">$35<small>NZD</small></div>
@@ -581,7 +592,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
       <details><summary>Can I order different sizes for the whole family?</summary><p>Yes. Add each tee with its own colour, size and quantity, then pay once for the whole order. Sorting a big church, club or team order? Email us at hello@labprints.co.nz.</p></details>
       <details><summary>Where is the print?</summary><p>The 685 Samoa design is printed A3 size across the chest, with a small Samoa flag on the left sleeve.</p></details>
       <details><summary>Which tee should I get?</summary><p>Go heavyweight box fit (Urban Collab, 280GSM) if you like a thick, boxy streetwear tee with a drop shoulder. The standard adult tee (Cloke Outline, 185GSM) is a lighter regular everyday fit.</p></details>
-      <details id="size-guide"><summary>Size guide: Standard Adult Tee (Cloke Outline)</summary><img class="chart" src="img/size-chart-cloke-t101.jpg" alt="Cloke Outline Tee T101 size chart" width="1600" loading="lazy"><p>Measurements are of the garment laid flat. Compare with a tee you already own that fits well.</p></details>
+      <details id="size-guide"><summary>Size guide: Standard Adult Tee (Cloke Outline)</summary><img class="chart" src="img/size-chart-cloke-t101.jpg" alt="Cloke Outline Tee T101 size chart" width="1600" height="1759" loading="lazy"><p>Measurements are of the garment laid flat. Compare with a tee you already own that fits well.</p></details>
       <details><summary>How do I pay?</summary><p>Card payment through Stripe secure checkout. You will get an email receipt straight away.</p></details>
       <details><summary>Something wrong with my order?</summary><p>Email hello@labprints.co.nz with your receipt and we will sort it out.</p></details>
     </div>
@@ -590,7 +601,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
 
 <section class="final">
   <div class="wrap">
-    <img class="final-logo" src="logo-white.png" alt="LAB Prints" width="480" height="409" loading="lazy">
+    <img class="final-logo" src="logo-white-web.png" alt="LAB Prints" width="480" height="409" loading="lazy">
     <h2>Toa Samoa</h2>
     <p class="open-only">Pre-orders close Friday 9 October. Do not miss this run.</p>
     <p class="closed-only">Pre-orders for this run have closed. Fa'afetai lava.</p>
@@ -600,7 +611,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
 
 <footer>
   <div class="wrap">
-    <span class="foot-brand"><img src="logo-black.png" alt="LAB Prints" width="480" height="409" loading="lazy">© 2026 LAB Prints · Printed locally in Hastings, NZ</span>
+    <span class="foot-brand"><img src="logo-black-web.png" alt="LAB Prints" width="480" height="409" loading="lazy">© 2026 LAB Prints · Printed locally in Hastings, NZ</span>
     <span><a href="mailto:hello@labprints.co.nz">hello@labprints.co.nz</a> · <a href="https://instagram.com/labprints" target="_blank" rel="noopener">Instagram</a></span>
   </div>
 </footer>
@@ -846,15 +857,17 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
   // hero: garment toggle + colour swatches swap the real mockup photo
   var hero = document.getElementById('hero-tee'), label = document.getElementById('sw-label');
   var state = { g: 'boxfit', c: 'black', n: 'Black' };
-  var names = { boxfit: 'Heavyweight Box Fit', adult: 'Standard Adult' };
+  var names = { boxfit: 'Heavyweight Box Fit', adult: 'Standard Adult', kids: 'Kids' };
   function press(group, btn){ group.forEach(function(x){ x.setAttribute('aria-pressed', x === btn ? 'true' : 'false'); }); }
-  var GREY = { boxfit: ['#B5B5B5', 'Heather Grey'], adult: ['#55575B', 'Grey'] };
+  var GREY = { boxfit: ['#B5B5B5', 'Heather Grey'], adult: ['#55575B', 'Grey'], kids: ['#55575B', 'Grey'] };
+  var cta = document.getElementById('hero-cta');
   function show(){
     var gs = sws.filter(function(x){ return x.dataset.c === 'grey'; })[0];
     gs.style.background = GREY[state.g][0]; gs.dataset.n = GREY[state.g][1];
     gs.setAttribute('aria-label', GREY[state.g][1]);
     if (state.c === 'grey') state.n = GREY[state.g][1];
     hero.src = 'img/' + state.g + '-' + state.c + '.jpg';
+    if (cta) cta.href = '#card-' + state.g;  // jump straight to the tee they picked
     hero.alt = '685 Samoa design on the ' + names[state.g] + ' tee in ' + state.n;
     label.textContent = state.n;
   }
@@ -867,12 +880,17 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
   }); });
 
   // once the page has loaded, quietly fetch the other colours so swaps are instant (skipped on data saver)
-  window.addEventListener('load', function(){
-    if (navigator.connection && navigator.connection.saveData) return;
-    setTimeout(function(){
-      ['boxfit','adult','kids'].forEach(function(g){ ['black','royal','grey','white'].forEach(function(c){ new Image().src = 'img/' + g + '-' + c + '.jpg'; }); });
-    }, 2500);
+  // once someone starts choosing, quietly fetch that garment's other colours so swaps are instant
+  var warmed = {};
+  function warm(g){
+    if (warmed[g] || (navigator.connection && navigator.connection.saveData)) return;
+    warmed[g] = true;
+    ['black','royal','grey','white'].forEach(function(c){ new Image().src = 'img/' + g + '-' + c + '.jpg'; });
+  }
+  document.querySelector('.stage').addEventListener('pointerdown', function(e){
+    var t = e.target.closest('.tg'); warm(t ? t.dataset.g : state.g);
   });
+  document.querySelectorAll('.buy').forEach(function(b){ b.addEventListener('pointerdown', function(){ warm(b.dataset.g); }); });
 
   // "Size guide" links open the size chart
   document.querySelectorAll('.sg').forEach(function(a){
