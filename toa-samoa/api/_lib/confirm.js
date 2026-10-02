@@ -58,7 +58,7 @@ function render(o, site) {
     </td></tr>
     <tr><td style="padding:24px 28px 0">
       <p style="margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#6B6B66">What happens next</p>
-      <p style="margin:0;font-size:15px;line-height:1.55">Pre-orders close Friday 9 October at 11:59pm. Then we print every tee locally in Hastings and let you know as soon as yours is ready.</p>
+      <p style="margin:0;font-size:15px;line-height:1.55">Pre-orders close Friday 9 October at 11:59pm. Then we print every tee locally in Hastings. Printing takes 2 to 4 days, and all orders will be shipped out or ready for pickup before the first game on <b>Thursday 15 October</b>. We will let you know as soon as yours is ready.</p>
     </td></tr>
     <tr><td style="padding:28px 28px 30px">
       <p style="margin:0;font-size:14px;line-height:1.55;color:#6B6B66">Questions? Just reply to this email with your order number.</p>
@@ -73,7 +73,7 @@ function render(o, site) {
     ...o.items.map(it => `${it.qty} x ${it.name}  ${money(it.amount)}`),
     o.shipping ? `Courier  ${money(o.shipping)}` : '', `Total paid  ${money(o.total)}`, '',
     o.delivery === 'courier' ? `NZ courier to: ${o.address}. Tracking number emailed when it ships.` : 'Free pickup in Hastings. Pickup details emailed when your order is ready.',
-    'Pre-orders close Fri 9 Oct, 11:59pm. Then we print every tee locally in Hastings.', '',
+    'Pre-orders close Fri 9 Oct, 11:59pm. Then we print every tee locally in Hastings. Printing takes 2 to 4 days, and all orders will be shipped out or ready for pickup before the first game on Thursday 15 October.', '',
     'Questions? Just reply to this email with your order number.',
   ].filter(l => l !== null).join('\n');
   return { html, text };

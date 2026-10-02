@@ -86,7 +86,7 @@ module.exports = async (req, res) => {
         ? { display_name: 'NZ-wide courier', type: 'fixed_amount', fixed_amount: { amount: courier, currency: 'nzd' } }
         : { display_name: 'Pickup in Hastings (free)', type: 'fixed_amount', fixed_amount: { amount: 0, currency: 'nzd' } } },
     },
-    custom_text: { submit: { message: `Order ${ref}. Pre-order: tees are printed after orders close on Fri 9 Oct.` } },
+    custom_text: { submit: { message: `Order ${ref}. Pre-order: printing takes 2 to 4 days after orders close Fri 9 Oct. Shipped or ready for pickup before the first game, Thu 15 Oct.` } },
     metadata: meta,
     payment_intent_data: {
       description: `Toa Samoa pre-order ${ref}: ${totalTees} tee${totalTees > 1 ? 's' : ''} (${meta.delivery})`,
