@@ -2,7 +2,9 @@
 // stamped with metadata.confirm_email = 'sent' afterwards, so retries and page reloads skip it.
 // Files under api/_lib are not routes (Vercel ignores underscore paths).
 // Env: STRIPE_SECRET_KEY, BREVO_API_KEY, BREVO_SENDER_EMAIL (default hello@labprints.co.nz),
-//      BREVO_SENDER_NAME (default LAB Prints), ORDER_NOTIFY_EMAIL (optional copy of every order).
+//      BREVO_SENDER_NAME (default LAB Prints), CUSTOMER_EMAILS ('on' to email customers),
+//      ORDER_NOTIFY_EMAIL (owner gets a new-order alert), BREVO_NOTIFY_SENDER (verified sender for it,
+//      default ORDER_NOTIFY_EMAIL).
 
 const STRIPE = 'https://api.stripe.com/v1';
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -75,13 +77,50 @@ function render(o, site) {
   return { html, text };
 }
 
-// Load a paid session, send the email if it has not gone yet. Returns 'sent' | 'already' | 'skipped'.
+async function brevo(msg) {
+  const r = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json', accept: 'application/json' },
+    body: JSON.stringify(msg),
+  });
+  if (!r.ok) throw new Error('brevo ' + r.status + ' ' + (await r.text()).slice(0, 200));
+}
+
+// New-order alert to the shop owner (ORDER_NOTIFY_EMAIL), sent from a verified Brevo sender.
+// Separate from the customer email so one failing never blocks the other.
+async function notifyOwner(s, o, site) {
+  const pi = s.payment_intent, m = s.metadata || {};
+  if (!process.env.ORDER_NOTIFY_EMAIL || (pi && pi.metadata && pi.metadata.owner_notified === 'sent')) return 'already';
+  const lines = o.items.map(it => `${it.qty} x ${it.name}  ${money(it.amount)}`);
+  const rows = [
+    ['Order', o.ref], ['Name', o.name], ['Phone', m.phone], ['Email', o.email],
+    ['Delivery', o.delivery === 'courier' ? `Courier: ${o.address}` : 'Pickup (Hastings)'],
+    ['Notes', m.notes], ['Total paid', money(o.total) + (o.shipping ? ` (incl. ${money(o.shipping)} courier)` : '')],
+  ].filter(r => r[1]);
+  const html = `<div style="font-family:Helvetica,Arial,sans-serif;font-size:15px;color:#111;max-width:560px">
+    <h2 style="margin:0 0 12px">New Toa Samoa order: ${esc(o.ref)}</h2>
+    <table cellpadding="6" style="border-collapse:collapse">${rows.map(([k, v]) => `<tr><td style="color:#6B6B66">${k}</td><td><b>${esc(v)}</b></td></tr>`).join('')}</table>
+    <p style="margin:16px 0 6px;color:#6B6B66">Tees</p><ul style="margin:0;padding-left:18px">${o.items.map(it => `<li>${it.qty} x ${esc(it.name)} (${money(it.amount)})</li>`).join('')}</ul>
+    <p style="margin:20px 0 0"><a href="${site}/admin/" style="color:#C42A0E;font-weight:700">Open orders page</a></p></div>`;
+  const text = [`New Toa Samoa order ${o.ref}`, ...rows.map(([k, v]) => `${k}: ${v}`), '', ...lines, '', `Orders page: ${site}/admin/`].join('\n');
+  await brevo({
+    sender: { name: 'LAB Prints Orders', email: process.env.BREVO_NOTIFY_SENDER || process.env.ORDER_NOTIFY_EMAIL },
+    to: [{ email: process.env.ORDER_NOTIFY_EMAIL }],
+    replyTo: o.email ? { email: o.email, name: o.name || undefined } : undefined,
+    subject: `New order ${o.ref}: ${o.name} · ${money(o.total)} · ${o.delivery === 'courier' ? 'Courier' : 'Pickup'}`,
+    htmlContent: html, textContent: text, tags: ['toa-samoa', 'owner-alert'],
+  });
+  if (pi) await stripe(`/payment_intents/${pi.id}`, 'metadata[owner_notified]=sent');
+  return 'sent';
+}
+
+// Load a paid session, send the owner alert and the customer email if they have not gone yet.
+// Returns the customer email result: 'sent' | 'already' | 'skipped'.
 async function sendConfirmation(sessionId, site) {
   if (!process.env.BREVO_API_KEY) return 'skipped';
   const s = await stripe(`/checkout/sessions/${sessionId}?expand[]=line_items.data.price.product&expand[]=payment_intent`);
   if (s.payment_status !== 'paid') return 'skipped';
   const pi = s.payment_intent;
-  if (pi && pi.metadata && pi.metadata.confirm_email === 'sent') return 'already';
 
   const m = s.metadata || {};
   const o = {
@@ -94,6 +133,11 @@ async function sendConfirmation(sessionId, site) {
     shipping: (s.total_details ? s.total_details.amount_shipping : 0) / 100,
     total: s.amount_total / 100,
   };
+  await notifyOwner(s, o, site).catch(e => console.error('owner alert', e.message));
+  // Customer email stays off until the LAB sender is verified in Brevo (CUSTOMER_EMAILS=on).
+  if (process.env.CUSTOMER_EMAILS !== 'on') return 'skipped';
+  if (pi && pi.metadata && pi.metadata.confirm_email === 'sent') return 'already';
+
   const { html, text } = render(o, site);
   const sender = { name: process.env.BREVO_SENDER_NAME || 'LAB Prints', email: process.env.BREVO_SENDER_EMAIL || 'hello@labprints.co.nz' };
   const msg = {
@@ -102,16 +146,9 @@ async function sendConfirmation(sessionId, site) {
     subject: `Order ${o.ref} confirmed: your Toa Samoa tees`,
     htmlContent: html, textContent: text, tags: ['toa-samoa', 'order-confirmation'],
   };
-  if (process.env.ORDER_NOTIFY_EMAIL) msg.bcc = [{ email: process.env.ORDER_NOTIFY_EMAIL }];
-
-  const r = await fetch('https://api.brevo.com/v3/smtp/email', {
-    method: 'POST',
-    headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json', accept: 'application/json' },
-    body: JSON.stringify(msg),
-  });
-  if (!r.ok) throw new Error('brevo ' + r.status + ' ' + (await r.text()).slice(0, 200));
+  await brevo(msg);
   if (pi) await stripe(`/payment_intents/${pi.id}`, 'metadata[confirm_email]=sent');
   return 'sent';
 }
 
-module.exports = { sendConfirmation, render };
+module.exports = { sendConfirmation, notifyOwner, render };
