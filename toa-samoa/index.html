@@ -371,6 +371,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
 </style>
 </head>
 <body>
+<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1409332891183052&ev=PageView&noscript=1"></noscript>
 
 <div class="promo open-only"><span class="dot"></span><b>Buy 2+ tees, save $5 on every tee.</b> Orders close Fri 9 Oct. Ready before the first game, Thu 15 Oct.</div>
 <div class="promo closed-only">Pre-orders for this run have closed. Thank you, Samoa.</div>
@@ -674,16 +675,17 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
   var money = function(n){ return '$' + (n % 1 ? n.toFixed(2) : n); };
   var clampQ = function(n){ n = parseInt(n, 10); return isNaN(n) ? 1 : Math.max(1, Math.min(50, n)); };
 
-  // ---- Meta pixel. The ID comes from META_PIXEL_ID via GET api/checkout; no ID = no pixel.
-  // Events fired before it loads wait in pxQueue. Purchase uses the order ref as eventID so the
-  // server-side copy from the Stripe webhook (api/_lib/capi.js) is deduplicated.
+  // ---- Meta pixel (LAB Prints). Starts on load with PIXEL_ID; META_PIXEL_ID via GET api/checkout can
+  // override it if this is ever blank. Events fired before it loads wait in pxQueue. Purchase uses the
+  // order ref as eventID so the server-side copy from the Stripe webhook (api/_lib/capi.js) is deduplicated.
+  var PIXEL_ID = '1409332891183052';
   var pxQueue = [], pxOn = false;
   function px(name, data, id){
     var args = ['track', name, data || {}].concat(id ? [{ eventID: id }] : []);
     if (pxOn) fbq.apply(null, args); else pxQueue.push(args);
   }
   function startPixel(id){
-    if (!/^\d{10,20}$/.test(id || '')) return;
+    if (pxOn || !/^\d{10,20}$/.test(id || '')) return;
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
     if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
     t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
@@ -698,6 +700,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
     if (!fbc && click) fbc = 'fb.1.' + Date.now() + '.' + click;
     return { fbp: cookie('_fbp'), fbc: fbc };
   }
+  startPixel(PIXEL_ID);
 
   // ---- cart (kept in this browser between visits) ----
   var cart = [], paying = false;
