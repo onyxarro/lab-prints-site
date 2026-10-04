@@ -87,6 +87,21 @@ a,button,select,input,label{touch-action:manipulation;-webkit-tap-highlight-colo
 .count small{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
 .closes{font-size:14px;color:var(--ink-3);margin:0 0 10px}
 .closes b{color:var(--ink)}
+.proof{font-size:14px;font-weight:600;color:var(--ink-2);margin:-14px 0 24px}
+.proof b{color:var(--heat-text)}
+.deal-meter a{color:inherit;font-weight:700}
+.share{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+.share .btn{padding:12px 20px;font-size:12px}
+.final .share .btn-line{color:#fff;border-color:rgba(255,255,255,.5)}
+.final .share .btn-line:hover{background:#fff;color:var(--ink)}
+.c-share{margin:0 0 24px}
+.c-share p{margin:0 0 4px;font-weight:600}
+.c-share .share{justify-content:flex-start}
+.sizes{border-collapse:collapse;margin:4px 0 16px;font-size:14px;display:block;overflow-x:auto;max-width:100%}
+.sizes th,.sizes td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+.sizes th:first-child{text-align:left;color:var(--ink-3);font-weight:600}
+.sizes thead th{font-weight:700;color:var(--ink)}
+footer small{display:block;flex-basis:100%;font-size:12px}
 
 /* tee stage */
 .stage{background:var(--bg-2);border:1px solid var(--line);border-radius:8px;padding:18px 24px 22px}
@@ -320,6 +335,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
   .count{gap:8px;margin-bottom:14px}
   .count b{font-size:28px}
   .count small{font-size:10px}
+  .proof{margin:-2px 0 14px;font-size:13px}
   .desk-only{display:none!important}
 
   /* product cards: shorter, bigger tap targets */
@@ -393,6 +409,10 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
       </div>
     </div>
     <p class="c-wait" id="c-wait">Loading your order...</p>
+    <div class="c-share">
+      <p>Get the whole whānau in before Fri 9 Oct. Orders of 2+ tees save $5 on every tee.</p>
+      <div class="share" data-share></div>
+    </div>
     <a class="btn btn-line" href="./">Back to the tees</a>
   </div>
 </section>
@@ -403,7 +423,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
       <div class="eyebrow">Toa Samoa supporters tee · 2026</div>
       <h1>Rep the<span>685</span></h1>
       <p class="hero-price">From <b>$35</b> · Buy 2+ and save <b>$5 on every tee</b></p>
-      <p class="lead">Get ready for the first game in our latest Toa Samoa supporter tees by LAB Prints. Full A3 chest print, Samoa flag on the sleeve, printed locally. Buy 2 or more and save $5 on every tee.</p>
+      <p class="lead">Get ready for the first game in our latest Toa Samoa supporter tees by LAB Prints. Full A3 chest print, Samoa flag on the sleeve, printed locally in Hastings. Free pickup in Hastings or <span data-courier>$6</span> courier anywhere in NZ.</p>
 
       <div class="open-only">
         <p class="closes">Pre-orders close in</p>
@@ -413,6 +433,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
           <div><b id="cd-m">00</b><small>Mins</small></div>
           <div><b id="cd-s">00</b><small>Secs</small></div>
         </div>
+        <p class="proof" id="proof" hidden></p>
         <div class="ctas">
           <a class="btn btn-ink" id="hero-cta" href="#card-boxfit">Pre-order now</a>
           <a class="btn btn-line desk-only" href="#how">How it works</a>
@@ -463,7 +484,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
         <div class="buy open-only" data-g="boxfit">
           <div class="field"><span>Colour <b class="cname">Black</b></span><span class="dots"><button type="button" style="background:#141414" data-c="black" data-n="Black" aria-pressed="true" aria-label="Black"></button><button type="button" style="background:#1F5FC0" data-c="royal" data-n="Royal Blue" aria-pressed="false" aria-label="Royal Blue"></button><button type="button" style="background:#B5B5B5" data-c="grey" data-n="Heather Grey" aria-pressed="false" aria-label="Heather Grey"></button><button type="button" style="background:#FFFFFF" data-c="white" data-n="White" aria-pressed="false" aria-label="White"></button></span></div>
           <div class="row">
-            <label class="field"><span>Size</span><select class="size"><option>XS</option><option>S</option><option>M</option><option selected>L</option><option>XL</option><option>2XL</option><option>3XL</option><option>4XL</option><option>5XL</option></select></label>
+            <label class="field"><span>Size <a class="sg" href="#size-guide-boxfit">Size guide</a></span><select class="size"><option>XS</option><option>S</option><option>M</option><option selected>L</option><option>XL</option><option>2XL</option><option>3XL</option><option>4XL</option><option>5XL</option></select></label>
             <div class="field"><span>Qty</span><div class="qty"><button type="button" data-d="-1" aria-label="Fewer">−</button><input type="number" min="1" max="50" value="1" inputmode="numeric" aria-label="Quantity"><button type="button" data-d="1" aria-label="More">+</button></div></div>
           </div>
           <button type="button" class="btn btn-ink add">Add to order</button>
@@ -593,7 +614,17 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
       <details><summary>Can I order different sizes for the whole family?</summary><p>Yes. Add each tee with its own colour, size and quantity, then pay once for the whole order. Sorting a big church, club or team order? Email us at sales@labprints.co.nz.</p></details>
       <details><summary>Where is the print?</summary><p>The 685 Samoa design is printed A3 size across the chest, with a small Samoa flag on the left sleeve.</p></details>
       <details><summary>Which tee should I get?</summary><p>Go heavyweight box fit (Urban Collab, 280GSM) if you like a thick, boxy streetwear tee with a drop shoulder. The standard adult tee (Cloke Outline, 185GSM) is a lighter regular everyday fit.</p></details>
+      <details id="size-guide-boxfit"><summary>Size guide: Heavyweight Box Fit (Urban Collab Club Tee)</summary>
+        <table class="sizes">
+          <thead><tr><th>Size</th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>2XL</th><th>3XL</th><th>4XL</th><th>5XL</th></tr></thead>
+          <tbody>
+            <tr><th>Half chest (cm)</th><td>49</td><td>53</td><td>57</td><td>61</td><td>65</td><td>70</td><td>75</td><td>80</td><td>85</td></tr>
+            <tr><th>Length (cm)</th><td>72</td><td>74</td><td>76</td><td>78</td><td>80</td><td>84</td><td>88</td><td>92</td><td>96</td></tr>
+          </tbody>
+        </table>
+        <p>Half chest is measured flat, armpit to armpit. This is a wide, drop shoulder cut, so lay a tee you like flat and compare. Want it less boxy? Go one size down.</p></details>
       <details id="size-guide"><summary>Size guide: Standard Adult Tee (Cloke Outline)</summary><img class="chart" src="img/size-chart-cloke-t101.jpg" alt="Cloke Outline Tee T101 size chart" width="1600" height="1759" loading="lazy"><p>Measurements are of the garment laid flat. Compare with a tee you already own that fits well.</p></details>
+      <details><summary>What if the size is wrong?</summary><p>No stress. Email <a href="mailto:sales@labprints.co.nz">sales@labprints.co.nz</a> within 7 days of getting your tee. If it is unworn and unwashed, we will swap it for another size while stock allows. You cover the courier to send it back.</p></details>
       <details><summary>How do I pay?</summary><p>Card payment through Stripe secure checkout. You will get an email receipt straight away.</p></details>
       <details><summary>Something wrong with my order?</summary><p>Email sales@labprints.co.nz with your receipt and we will sort it out.</p></details>
     </div>
@@ -607,6 +638,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
     <p class="open-only">Pre-orders close Friday 9 October. Do not miss this run.</p>
     <p class="closed-only">Pre-orders for this run have closed. Fa'afetai lava.</p>
     <a class="btn btn-ink open-only" href="#tees">Pre-order your tees</a>
+    <div class="share open-only" data-share></div>
   </div>
 </section>
 
@@ -614,6 +646,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
   <div class="wrap">
     <span class="foot-brand"><img src="logo-black-web.png" alt="LAB Prints" width="480" height="409" loading="lazy">© 2026 LAB Prints · Printed locally in Hastings, NZ</span>
     <span><a href="mailto:sales@labprints.co.nz">sales@labprints.co.nz</a> · <a href="https://instagram.com/labprints" target="_blank" rel="noopener">Instagram</a></span>
+    <small>We use cookies, including the Meta pixel, to see which of our ads bring people here. Payments are handled by Stripe; we never see your card.</small>
   </div>
 </footer>
 
@@ -641,8 +674,33 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
   var money = function(n){ return '$' + (n % 1 ? n.toFixed(2) : n); };
   var clampQ = function(n){ n = parseInt(n, 10); return isNaN(n) ? 1 : Math.max(1, Math.min(50, n)); };
 
+  // ---- Meta pixel. The ID comes from META_PIXEL_ID via GET api/checkout; no ID = no pixel.
+  // Events fired before it loads wait in pxQueue. Purchase uses the order ref as eventID so the
+  // server-side copy from the Stripe webhook (api/_lib/capi.js) is deduplicated.
+  var pxQueue = [], pxOn = false;
+  function px(name, data, id){
+    var args = ['track', name, data || {}].concat(id ? [{ eventID: id }] : []);
+    if (pxOn) fbq.apply(null, args); else pxQueue.push(args);
+  }
+  function startPixel(id){
+    if (!/^\d{10,20}$/.test(id || '')) return;
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', id);
+    fbq('track', 'PageView');
+    pxOn = true;
+    pxQueue.forEach(function(a){ fbq.apply(null, a); }); pxQueue = [];
+  }
+  function cookie(n){ var m = document.cookie.match('(?:^|; )' + n + '=([^;]*)'); return m ? decodeURIComponent(m[1]) : ''; }
+  function pxIds(){
+    var fbc = cookie('_fbc'), click = new URLSearchParams(location.search).get('fbclid');
+    if (!fbc && click) fbc = 'fb.1.' + Date.now() + '.' + click;
+    return { fbp: cookie('_fbp'), fbc: fbc };
+  }
+
   // ---- cart (kept in this browser between visits) ----
-  var cart = [];
+  var cart = [], paying = false;
   try { cart = JSON.parse(localStorage.getItem('toa-cart') || '[]').filter(function(l){ return G[l.g] && COLOURS[l.c]; }); } catch (e) {}
   function save(){ try { localStorage.setItem('toa-cart', JSON.stringify(cart)); } catch (e) {} }
 
@@ -696,11 +754,13 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
     $('sum-ship').textContent = isCourier() ? money(COURIER) : 'Free';
     $('sum-total').textContent = money(t.total + ship);
     $('checkout').disabled = !cart.length;
+    if (!paying) $('checkout').textContent = cart.length ? 'Pay ' + money(t.total + ship) + ' securely' : 'Pay securely';
 
     var meter = $('deal-meter');
     meter.className = 'deal-meter' + (deal ? ' on' : '');
-    meter.textContent = deal ? 'Multi-buy unlocked: $5 off every tee. You save ' + money(t.save) + '.'
-      : t.n === 1 ? 'Add 1 more tee and save $5 on both.' : 'Buy 2 or more tees and save $5 on every tee.';
+    if (deal) meter.textContent = 'Multi-buy unlocked: $5 off every tee. You save ' + money(t.save) + '.';
+    else if (t.n === 1) meter.innerHTML = 'Add 1 more tee and save $5 on both. <a href="#tees">Add another tee</a>';
+    else meter.textContent = 'Buy 2 or more tees and save $5 on every tee.';
 
     document.querySelectorAll('[data-cart-count]').forEach(function(el){ el.textContent = t.n; });
     var bar = $('bar-text'), barBtn = $('bar-btn');
@@ -740,6 +800,8 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
     buy.querySelector('.add').addEventListener('click', function(){
       var q = clampQ(input.value), size = buy.querySelector('.size').value;
       add(g, colour, size, q);
+      px('AddToCart', { currency: 'NZD', value: G[g].price * q, content_type: 'product', content_name: G[g].name,
+        contents: [{ id: g + '-' + colour, quantity: q }] });
       input.value = 1;
       var btn = this; btn.textContent = 'Added to order'; btn.disabled = true;
       setTimeout(function(){ btn.textContent = 'Add to order'; btn.disabled = false; }, 1100);
@@ -770,6 +832,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
     try { localStorage.setItem('toa-details', JSON.stringify(details())); } catch (er) {}
   });
   fetch('api/checkout').then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+    if (d && d.pixel) startPixel(d.pixel);
     if (d && d.courier >= 0) { COURIER = d.courier; document.querySelectorAll('[data-courier]').forEach(function(el){ el.textContent = money(COURIER); }); render(); }
   }).catch(function(){});
 
@@ -802,8 +865,11 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
     var btn = this, err = $('checkout-err'), d = details(), problem = validate(d);
     err.hidden = true;
     if (problem) { err.textContent = problem; err.hidden = false; return; }
-    btn.disabled = true; btn.textContent = 'Opening secure payment...';
-    fetch('api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: cart, customer: d }) })
+    paying = true; btn.disabled = true; btn.textContent = 'Opening secure payment...';
+    var t = totals();
+    px('InitiateCheckout', { currency: 'NZD', value: t.total + (isCourier() ? COURIER : 0), num_items: t.n, content_type: 'product',
+      contents: cart.map(function(l){ return { id: l.g + '-' + l.c, quantity: l.q }; }) });
+    fetch('api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: cart, customer: d, px: pxIds() }) })
       .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(d){ return { ok: r.ok, status: r.status, d: d }; }); })
       .then(function(res){
         if (res.ok && res.d.url) { location.href = res.d.url; return; }
@@ -811,7 +877,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
         throw new Error(res.d.error || 'Something went wrong. Please try again.');
       })
       .catch(function(e){
-        btn.disabled = false; btn.textContent = 'Pay securely';
+        paying = false; btn.disabled = false; render();
         if (e) { err.textContent = e.message + ' Or email ' + EMAIL + '.'; err.hidden = false; }
       });
   });
@@ -843,6 +909,11 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
         $('c-ship-label').textContent = courier ? 'NZ courier to ' + o.address : 'Pickup in Hastings';
         $('c-ship').textContent = o.shipping ? money(o.shipping) : 'Free';
         $('c-total').textContent = money(o.total);
+        // once per order in this browser; Meta also dedupes against the webhook's copy by eventID
+        var seen = false;
+        try { seen = localStorage.getItem('toa-px-' + o.ref) === '1'; localStorage.setItem('toa-px-' + o.ref, '1'); } catch (er) {}
+        if (!seen) px('Purchase', { currency: 'NZD', value: o.total, content_type: 'product',
+          num_items: o.items.reduce(function(n, it){ return n + it.qty; }, 0) }, o.ref);
         $('c-next').innerHTML = courier
           ? '<b>Shipped with tracking.</b> We will email your courier tracking number once your order is on its way.'
           : '<b>Ready for pickup.</b> We will email you the pickup address and times once your tees are ready.';
@@ -852,6 +923,47 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
         $('c-wait').textContent = 'Your payment went through. Your receipt is on its way by email. If anything looks wrong, email ' + EMAIL + '.';
       });
   }
+
+  // back button from Stripe restores this page from cache with Pay still locked; unlock it
+  window.addEventListener('pageshow', function(e){
+    if (e.persisted && paying) { paying = false; render(); }
+  });
+
+  // social proof: show the running tee count once it is big enough to help, not hurt
+  if (!orderId) px('ViewContent', { currency: 'NZD', value: 45, content_type: 'product', content_name: 'Toa Samoa 685 supporters tee' });
+
+  var PROOF_MIN = 20;
+  if (!orderId) fetch('api/stats').then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+    if (!d || !(d.tees >= PROOF_MIN)) return;
+    var p = $('proof');
+    p.innerHTML = '<b>' + d.tees + ' tees</b> pre-ordered so far. Join the 685 crew.';
+    p.hidden = false;
+  }).catch(function(){});
+
+  // share: native share sheet on phones, WhatsApp / Facebook / copy link elsewhere
+  var SHARE_URL = 'https://lab-toa-samoa.vercel.app/';
+  var SHARE_TEXT = 'Toa Samoa supporter tees from LAB Prints. 2+ tees saves $5 on every tee. Pre-orders close Fri 9 Oct.';
+  document.querySelectorAll('[data-share]').forEach(function(box){
+    if (navigator.share) {
+      box.innerHTML = '<button type="button" class="btn btn-line">Share with the whānau</button>';
+      box.firstChild.addEventListener('click', function(){
+        navigator.share({ title: 'Toa Samoa supporter tees', text: SHARE_TEXT, url: SHARE_URL }).catch(function(){});
+      });
+      return;
+    }
+    var u = encodeURIComponent(SHARE_URL), t = encodeURIComponent(SHARE_TEXT + ' ' + SHARE_URL);
+    box.innerHTML =
+      '<a class="btn btn-line" target="_blank" rel="noopener" href="https://wa.me/?text=' + t + '">Share on WhatsApp</a>' +
+      '<a class="btn btn-line" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=' + u + '">Share on Facebook</a>' +
+      '<button type="button" class="btn btn-line">Copy link</button>';
+    box.lastChild.addEventListener('click', function(){
+      var b = this;
+      (navigator.clipboard ? navigator.clipboard.writeText(SHARE_URL) : Promise.reject()).then(function(){
+        b.textContent = 'Link copied';
+        setTimeout(function(){ b.textContent = 'Copy link'; }, 1500);
+      }).catch(function(){ prompt('Copy this link:', SHARE_URL); });
+    });
+  });
 
   syncDelivery();
 
@@ -895,7 +1007,7 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
 
   // "Size guide" links open the size chart
   document.querySelectorAll('.sg').forEach(function(a){
-    a.addEventListener('click', function(){ var d = document.getElementById('size-guide'); if (d) d.open = true; });
+    a.addEventListener('click', function(){ var d = document.getElementById(a.getAttribute('href').slice(1)); if (d) d.open = true; });
   });
 
   // countdown + auto-close
@@ -916,5 +1028,6 @@ footer a{text-decoration:none;font-weight:600;color:var(--ink)}
   tick();
 })();
 </script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

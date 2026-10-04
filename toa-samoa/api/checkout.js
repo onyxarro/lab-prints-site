@@ -2,7 +2,7 @@
 //   ->  { url }  (Stripe Checkout). Stripe emails the receipt to customer.email.
 // GET  /api/checkout  ->  { courier }  (courier price shown on the page)
 // Prices, deal and deadline are enforced here. The browser only says what was picked.
-// Env: STRIPE_SECRET_KEY (required), COURIER_NZD (default 6)
+// Env: STRIPE_SECRET_KEY (required), COURIER_NZD (default 6), META_PIXEL_ID (optional, turns on the ads pixel)
 
 const DEADLINE = Date.parse('2026-10-09T23:59:00+13:00');
 const MULTI_BUY_MIN = 2;      // tees in the order
@@ -32,7 +32,7 @@ function form(obj, prefix, out) {
 }
 
 module.exports = async (req, res) => {
-  if (req.method === 'GET') return res.status(200).json({ courier: Number(process.env.COURIER_NZD || 6) });
+  if (req.method === 'GET') return res.status(200).json({ courier: Number(process.env.COURIER_NZD || 6), pixel: process.env.META_PIXEL_ID || '' });
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
   if (!process.env.STRIPE_SECRET_KEY) return res.status(503).json({ error: 'Checkout is not set up yet.' });
   if (Date.now() > DEADLINE) return res.status(410).json({ error: 'Pre-orders have closed.' });
@@ -74,6 +74,14 @@ module.exports = async (req, res) => {
     delivery: courierChosen ? 'courier' : 'pickup', address: addressText, notes,
     tees: String(totalTees), multi_buy: deal ? 'yes' : 'no',
   };
+  // Meta ad attribution, read back by the webhook for the server-side Purchase (api/_lib/capi.js)
+  const px = (req.body && req.body.px) || {};
+  const fbId = v => (/^fb\.\d\.\d+\.[\w.-]+$/.test(String(v || '')) ? String(v).slice(0, 300) : '');
+  Object.assign(meta, {
+    px_fbp: fbId(px.fbp), px_fbc: fbId(px.fbc),
+    px_ip: String(req.headers['x-forwarded-for'] || '').split(',')[0].trim().slice(0, 64),
+    px_ua: String(req.headers['user-agent'] || '').slice(0, 450),
+  });
   const session = {
     mode: 'payment',
     currency: 'nzd',

@@ -3,6 +3,7 @@
 // Env: STRIPE_WEBHOOK_SECRET (whsec_..., from Stripe > Developers > Webhooks), plus those in _lib/confirm.js.
 const crypto = require('crypto');
 const { sendConfirmation } = require('./_lib/confirm');
+const { sendPurchase } = require('./_lib/capi');
 
 // Read the raw body ourselves (req.body must not be touched, Stripe signs the exact bytes).
 const rawBody = req => new Promise((ok, fail) => {
@@ -32,9 +33,14 @@ module.exports = async (req, res) => {
   const s = event.data.object;
   if (!s.metadata || s.metadata.campaign !== 'toa-samoa-2026') return res.status(200).json({ ignored: 'other campaign' });
 
+  const site = `https://${req.headers['x-forwarded-host'] || req.headers.host}`;
+  // Meta Purchase first and on its own: a Meta outage must never block the confirmation email.
+  // Stripe retries re-send it, which is fine, Meta dedupes by event_id.
+  let capi = 'capi off';
+  try { capi = await sendPurchase(s, site); } catch (e) { console.error('capi', e.message); capi = 'capi failed'; }
+
   try {
-    const site = `https://${req.headers['x-forwarded-host'] || req.headers.host}`;
-    return res.status(200).json({ email: await sendConfirmation(s.id, site) });
+    return res.status(200).json({ email: await sendConfirmation(s.id, site), capi });
   } catch (e) {
     console.error(e);
     return res.status(500).json({ error: 'send failed' }); // Stripe retries
