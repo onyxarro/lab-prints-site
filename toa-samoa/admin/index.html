@@ -62,6 +62,8 @@ header .btn{border-color:#fff;background:transparent;color:#fff}
 .orders{display:grid;gap:10px;margin-bottom:40px}
 .order{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;grid-template-columns:1.1fr 1.4fr auto;gap:18px;align-items:start}
 .order.done{opacity:.62}
+.badge.open{background:var(--ok-bg);color:var(--ok)}
+.side .btn{justify-content:center}
 .order .ref{font-family:var(--display);font-size:26px;line-height:1}
 .order .date{font-size:12px;color:var(--ink-3)}
 .order .who{margin-top:8px;font-weight:700}
@@ -128,6 +130,7 @@ tr.sum td{font-weight:700;border-bottom:0}
   <div class="tabs" role="tablist">
     <button class="tab" role="tab" aria-selected="true" data-tab="orders">Orders</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="print">Print list</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="abandoned">Not paid</button>
   </div>
 
   <section id="tab-orders">
@@ -147,13 +150,20 @@ tr.sum td{font-weight:700;border-bottom:0}
     <p class="note">Every tee to print, from paid orders. Refunded and test orders are left out.</p>
     <div class="plist" id="plist"></div>
   </section>
+
+  <section id="tab-abandoned" hidden>
+    <p class="note">People who filled in their details and pressed Pay, but never paid. <b>Open</b> = Stripe link still works (24 hours), so you can send it to them. <b>Expired</b> = they need to order again on the site. Anyone who paid later with the same email or phone is marked <b>Bought later</b>.</p>
+    <div class="toolbar"><div class="chips" id="abChips"></div></div>
+    <div class="err" id="abErr" role="alert"></div>
+    <div class="orders" id="abandoned"><div class="empty">Loading…</div></div>
+  </section>
 </main>
 
 <script>
 const STATUSES = [['new','New'],['printed','Printed'],['packed','Packed'],['sent','Sent (courier)'],['collected','Picked up']];
 const SIZE_ORDER = ['2','4','6','8','10','12','14','XS','S','M','L','XL','2XL','3XL','4XL','5XL'];
 const COLOUR_ORDER = ['Black','Royal Blue','Grey','Heather Grey','White'];
-let KEY = '', ORDERS = [], fStatus = 'open', fDel = 'all';
+let KEY = '', ORDERS = [], fStatus = 'open', fDel = 'all', ABANDONED = null, fAb = 'chase';
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -166,8 +176,8 @@ const store = {
   set(v){ try { v ? sessionStorage.setItem('lab-admin', v) : sessionStorage.removeItem('lab-admin'); } catch(e) {} },
 };
 
-async function api(method, body) {
-  const r = await fetch('/api/admin', { method, headers: { 'x-admin-key': KEY, 'Content-Type': 'application/json' },
+async function api(method, body, qs) {
+  const r = await fetch('/api/admin' + (qs || ''), { method, headers: { 'x-admin-key': KEY, 'Content-Type': 'application/json' },
     body: body ? JSON.stringify(body) : undefined });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) { const e = new Error(j.error || 'Something went wrong.'); e.status = r.status; throw e; }
@@ -179,6 +189,7 @@ async function load() {
   try {
     ORDERS = (await api('GET')).orders.sort((a, b) => b.created - a.created);
     render();
+    if (ABANDONED) loadAbandoned();
   } catch (e) {
     if (e.status === 401) return logout('Wrong password.');
     $('appErr').textContent = e.message;
@@ -188,7 +199,7 @@ async function load() {
 function showApp(on) {
   $('login').hidden = on; $('app').hidden = !on; $('hdrBtns').hidden = !on;
 }
-function logout(msg) { KEY = ''; store.set(''); showApp(false); $('loginErr').textContent = msg || ''; }
+function logout(msg) { ABANDONED = null; KEY = ''; store.set(''); showApp(false); $('loginErr').textContent = msg || ''; }
 
 $('login').addEventListener('submit', async e => {
   e.preventDefault(); KEY = $('pw').value; $('loginErr').textContent = '';
@@ -315,8 +326,68 @@ function renderPrint() {
 document.querySelector('.tabs').onclick = e => {
   const t = e.target.closest('[data-tab]'); if (!t) return;
   document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-selected', b === t));
-  $('tab-orders').hidden = t.dataset.tab !== 'orders'; $('tab-print').hidden = t.dataset.tab !== 'print';
+  ['orders', 'print', 'abandoned'].forEach(n => { $('tab-' + n).hidden = t.dataset.tab !== n; });
+  if (t.dataset.tab === 'abandoned' && !ABANDONED) loadAbandoned();
 };
+
+// ---------- not paid (abandoned checkouts) ----------
+const digits = p => String(p || '').replace(/\D/g, '').replace(/^64/, '0');
+async function loadAbandoned() {
+  $('abErr').textContent = '';
+  try {
+    ABANDONED = (await api('GET', null, '?view=abandoned')).abandoned.sort((a, b) => b.created - a.created);
+    ABANDONED.forEach(a => {
+      a.bought = ORDERS.some(o => live(o) && o.created >= a.created &&
+        ((a.email && o.email.toLowerCase() === a.email.toLowerCase()) || (digits(a.phone) && digits(o.phone) === digits(a.phone))));
+    });
+    renderAbandoned();
+  } catch (e) {
+    if (e.status === 401) return logout('Wrong password.');
+    $('abErr').textContent = e.message;
+  }
+}
+$('abChips').onclick = e => { const b = e.target.closest('[data-a]'); if (b) { fAb = b.dataset.a; renderAbandoned(); } };
+
+function followUp(a) {
+  const first = (a.name || '').split(' ')[0] || 'there';
+  const tees = a.items.map(i => `${i.qty} x ${shortGarment(i.garment)} (${i.colour}, ${i.size})`).join(', ');
+  const body = `Kia ora ${first},\n\nWe saw you started a Toa Samoa tee order (${tees}) but it didn't go through. `
+    + (a.url ? `Here's your secure payment link, it's still saved:\n${a.url}\n\n`
+             : `You can grab them here before orders close Fri 9 Oct:\nhttps://lab-toa-samoa.vercel.app\n\n`)
+    + `Any questions just reply to this email.\n\nFa'afetai,\nLAB Prints`;
+  return `mailto:${a.email}?subject=${encodeURIComponent('Your Toa Samoa tee order')}&body=${encodeURIComponent(body)}`;
+}
+
+function renderAbandoned() {
+  const chase = ABANDONED.filter(a => !a.bought);
+  const opts = [['chase', 'To follow up', chase.length], ['bought', 'Bought later', ABANDONED.length - chase.length], ['all', 'All', ABANDONED.length]];
+  $('abChips').innerHTML = opts.map(([v, l, n]) =>
+    `<button class="chip" data-a="${v}" aria-pressed="${fAb === v}">${l}<span class="n">${n}</span></button>`).join('')
+    + `<span class="chip" style="cursor:default">Lost value<span class="n">${money(chase.reduce((n, a) => n + a.total, 0))}</span></span>`;
+  const list = fAb === 'chase' ? chase : fAb === 'bought' ? ABANDONED.filter(a => a.bought) : ABANDONED;
+  if (!list.length) { $('abandoned').innerHTML = `<div class="empty">${ABANDONED.length ? 'Nothing here.' : 'No unpaid checkouts. Everyone who pressed Pay has paid.'}</div>`; return; }
+  $('abandoned').innerHTML = list.map(a => `<article class="order${a.bought ? ' done' : ''}">
+      <div>
+        <div class="ref">${esc(a.ref)}</div>
+        <div class="date">${esc(fmtDate(a.created))}</div>
+        <div class="who">${esc(a.name || 'No name')}</div>
+        <div class="contact">
+          ${a.phone ? `<a href="tel:${esc(a.phone.replace(/\s/g, ''))}">${esc(a.phone)}</a>` : ''}
+          ${a.email ? `<a href="mailto:${esc(a.email)}">${esc(a.email)}</a>` : ''}
+        </div>
+        <div class="del">${a.delivery === 'courier' ? '<span class="badge courier">Courier</span>' : '<span class="badge">Pickup · Hastings</span>'}</div>
+      </div>
+      <div>
+        <ul class="items">${a.items.map(i => `<li><span><span class="g">${i.qty} × ${esc(shortGarment(i.garment))}</span><br><span class="meta">${esc(i.colour)} · Size ${esc(i.size)}</span></span><span>${money(i.amount)}</span></li>`).join('')}</ul>
+        <div class="total"><span>Cart total</span><span>${money(a.total)}</span></div>
+      </div>
+      <div class="side">
+        ${a.bought ? '<span class="badge saved">Bought later</span>' : a.state === 'open' ? '<span class="badge open">Open · link works</span>' : '<span class="badge">Expired</span>'}
+        ${!a.bought && a.email ? `<a class="btn" href="${esc(followUp(a))}">Email them</a>` : ''}
+        ${!a.bought && a.phone ? `<a class="btn ghost" href="sms:${esc(a.phone.replace(/\s/g, ''))}">Text</a>` : ''}
+      </div>
+    </article>`).join('');
+}
 
 $('csv').onclick = () => {
   const cell = v => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;

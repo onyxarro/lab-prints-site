@@ -1,6 +1,7 @@
 // Orders admin for /admin/. Stripe is the only store: paid Checkout Sessions are the orders,
 // and the fulfilment status lives on each PaymentIntent's metadata.
 // GET  /api/admin                         ->  { orders: [...] }
+// GET  /api/admin?view=abandoned          ->  { abandoned: [...] }  (pressed Pay, never paid)
 // POST /api/admin  { pi, status }         ->  { ok: true }
 // Auth: header x-admin-key must equal the ADMIN_PASSWORD env var.
 const crypto = require('crypto');
@@ -75,6 +76,43 @@ async function listOrders() {
   return orders;
 }
 
+// Checkout Sessions that were started but never paid: open (still payable, 24h window) or expired.
+async function listAbandoned() {
+  const out = [];
+  for (const status of ['open', 'expired']) {
+    let after = '';
+    for (let page = 0; page < 10; page++) {
+      const q = `checkout/sessions?limit=100&status=${status}&expand[]=data.line_items`
+        + (after ? `&starting_after=${after}` : '');
+      const list = await stripe(q);
+      for (const s of list.data) {
+        const m = s.metadata || {};
+        if (m.campaign !== CAMPAIGN) continue;
+        const items = (s.line_items ? s.line_items.data : []).map(li => ({
+          ...parseItem(li.description), qty: li.quantity, amount: li.amount_total / 100,
+        }));
+        if (/^TEST \$1/.test((s.line_items && s.line_items.data[0] && s.line_items.data[0].description) || '')) continue;
+        out.push({
+          id: s.id,
+          ref: m.order_ref || s.client_reference_id,
+          created: s.created,
+          state: status,
+          url: status === 'open' ? s.url : '',
+          name: m.name || '',
+          email: s.customer_email || '',
+          phone: m.phone || '',
+          delivery: m.delivery || 'pickup',
+          items,
+          total: s.amount_total / 100,
+        });
+      }
+      if (!list.has_more || !list.data.length) break;
+      after = list.data[list.data.length - 1].id;
+    }
+  }
+  return out;
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   res.setHeader('X-Robots-Tag', 'noindex');
@@ -82,6 +120,7 @@ module.exports = async (req, res) => {
   if (!authed(req)) return res.status(401).json({ error: 'Wrong password.' });
 
   try {
+    if (req.method === 'GET' && req.query && req.query.view === 'abandoned') return res.status(200).json({ abandoned: await listAbandoned() });
     if (req.method === 'GET') return res.status(200).json({ orders: await listOrders() });
     if (req.method === 'POST') {
       const pi = String((req.body && req.body.pi) || ''), status = String((req.body && req.body.status) || '');
