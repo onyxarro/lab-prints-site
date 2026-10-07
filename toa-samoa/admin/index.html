@@ -359,6 +359,14 @@ $('abTest').onclick = function(){
   sendFollowup({ id: a ? a.id : '', test: true }, this).then(() => setTimeout(() => { this.disabled = false; this.textContent = 'Send test email to me'; }, 4000));
 };
 $('abandoned').addEventListener('click', async e => {
+  const pv = e.target.closest('[data-preview]');
+  if (pv) {
+    const w = window.open('', '_blank'); pv.disabled = true;
+    try { const r = await api('POST', { action: 'followup', id: pv.dataset.preview, preview: true }); w.document.write(r.html); w.document.close(); }
+    catch (err) { w.close(); $('abErr').textContent = err.message; }
+    finally { pv.disabled = false; }
+    return;
+  }
   const b = e.target.closest('[data-send]'); if (!b) return;
   const a = ABANDONED.find(x => x.id === b.dataset.send);
   if (!confirm(`Send the $5-off email to ${a.name || a.email} (${a.email})?`)) return;
@@ -393,6 +401,7 @@ function renderAbandoned() {
         ${a.bought ? '<span class="badge saved">Bought later</span>' : a.state === 'open' ? '<span class="badge open">Open · link works</span>' : '<span class="badge">Expired</span>'}
         ${a.followed ? `<span class="badge saved">Emailed ${esc(new Date(a.followed).toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' }))}</span>` : ''}
         ${!a.bought && a.email ? `<button class="btn${a.followed ? ' ghost' : ''}" data-send="${esc(a.id)}">${a.followed ? 'Email again' : 'Email them ($5 off)'}</button>` : ''}
+        ${!a.bought ? `<button class="btn ghost" data-preview="${esc(a.id)}">Preview email</button>` : ''}
         ${!a.bought && a.phone ? `<a class="btn ghost" href="sms:${esc(a.phone.replace(/\s/g, ''))}">Text</a>` : ''}
       </div>
     </article>`).join('');

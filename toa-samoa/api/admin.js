@@ -126,8 +126,8 @@ const SAMPLE = {
   ],
 };
 
-async function sendFollowup(id, test, site) {
-  if (!process.env.BREVO_API_KEY) throw Object.assign(new Error('Email is not set up (BREVO_API_KEY).'), { code: 503 });
+async function sendFollowup(id, test, site, preview) {
+  if (!preview && !process.env.BREVO_API_KEY) throw Object.assign(new Error('Email is not set up (BREVO_API_KEY).'), { code: 503 });
   let o;
   if (id) {
     if (!/^cs_[A-Za-z0-9_]+$/.test(id)) throw Object.assign(new Error('Bad request.'), { code: 400 });
@@ -138,6 +138,7 @@ async function sendFollowup(id, test, site) {
     o = { ...SAMPLE, items: SAMPLE.items.map(i => ({ ...i, img: `${site}/${i.img}` })) };
   } else throw Object.assign(new Error('Bad request.'), { code: 400 });
 
+  if (preview) return { html: followup.render(o, site).html };
   const to = test ? process.env.ORDER_NOTIFY_EMAIL : o.email;
   if (!to) throw Object.assign(new Error(test ? 'ORDER_NOTIFY_EMAIL is not set.' : 'No email on that checkout.'), { code: 400 });
   const { html, text, subject } = followup.render(o, site);
@@ -166,7 +167,10 @@ module.exports = async (req, res) => {
     if (req.method === 'GET') return res.status(200).json({ orders: await listOrders() });
     if (req.method === 'POST' && req.body && req.body.action === 'followup') {
       const site = `https://${req.headers['x-forwarded-host'] || req.headers.host}`;
-      try { return res.status(200).json({ ok: true, to: await sendFollowup(String(req.body.id || ''), !!req.body.test, site) }); }
+      try {
+        if (req.body.preview) return res.status(200).json(await sendFollowup(String(req.body.id || ''), true, site, true));
+        return res.status(200).json({ ok: true, to: await sendFollowup(String(req.body.id || ''), !!req.body.test, site) });
+      }
       catch (e) { if (e.code) return res.status(e.code).json({ error: e.message }); throw e; }
     }
     if (req.method === 'POST') {
