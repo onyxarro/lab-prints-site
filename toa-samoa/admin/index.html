@@ -152,7 +152,7 @@ tr.sum td{font-weight:700;border-bottom:0}
   </section>
 
   <section id="tab-abandoned" hidden>
-    <p class="note">People who filled in their details and pressed Pay, but never paid. <b>Email them</b> sends a LAB Prints email with their tees and code <b>COMEBACK5</b> ($5 off), with a button that loads their order on the site. <b>Open</b> = Stripe link still works (24 hours), so you can send it to them. <b>Expired</b> = they need to order again on the site. Anyone who paid later with the same email or phone is marked <b>Bought later</b>.</p>
+    <p class="note">People who filled in their details and pressed Pay, but never paid. <b>Email them</b> sends a LAB Prints email with their tees and a come-back discount (<b>$5 off under $70, 10% off $70+, 15% off $150+</b>), with a button that loads their order on the site. <b>Open</b> = Stripe link still works (24 hours), so you can send it to them. <b>Expired</b> = they need to order again on the site. Anyone who paid later with the same email or phone is marked <b>Bought later</b>.</p>
     <div class="toolbar"><div class="chips" id="abChips"></div><button class="btn ghost" id="abTest" style="margin-left:auto">Send test email to me</button></div>
     <div class="err" id="abErr" role="alert"></div>
     <div class="orders" id="abandoned"><div class="empty">Loading…</div></div>
@@ -369,7 +369,7 @@ $('abandoned').addEventListener('click', async e => {
   }
   const b = e.target.closest('[data-send]'); if (!b) return;
   const a = ABANDONED.find(x => x.id === b.dataset.send);
-  if (!confirm(`Send the $5-off email to ${a.name || a.email} (${a.email})?`)) return;
+  if (!confirm(`Send the discount email to ${a.name || a.email} (${a.email})?`)) return;
   if (await sendFollowup({ id: a.id }, b)) { a.followed = new Date().toISOString(); setTimeout(renderAbandoned, 1500); }
 });
 $('abChips').onclick = e => { const b = e.target.closest('[data-a]'); if (b) { fAb = b.dataset.a; renderAbandoned(); } };
@@ -400,7 +400,7 @@ function renderAbandoned() {
       <div class="side">
         ${a.bought ? '<span class="badge saved">Bought later</span>' : a.state === 'open' ? '<span class="badge open">Open · link works</span>' : '<span class="badge">Expired</span>'}
         ${a.followed ? `<span class="badge saved">Emailed ${esc(new Date(a.followed).toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' }))}</span>` : ''}
-        ${!a.bought && a.email ? `<button class="btn${a.followed ? ' ghost' : ''}" data-send="${esc(a.id)}">${a.followed ? 'Email again' : 'Email them ($5 off)'}</button>` : ''}
+        ${!a.bought && a.email ? `<button class="btn${a.followed ? ' ghost' : ''}" data-send="${esc(a.id)}">${a.followed ? 'Email again' : 'Email them (discount)'}</button>` : ''}
         ${!a.bought ? `<button class="btn ghost" data-preview="${esc(a.id)}">Preview email</button>` : ''}
         ${!a.bought && a.phone ? `<a class="btn ghost" href="sms:${esc(a.phone.replace(/\s/g, ''))}">Text</a>` : ''}
       </div>

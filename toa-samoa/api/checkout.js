@@ -7,9 +7,9 @@
 const DEADLINE = Date.parse('2026-10-09T23:59:00+13:00');
 const MULTI_BUY_MIN = 2;      // tees in the order
 const MULTI_BUY_OFF = 500;    // cents off every tee
-// Follow-up discount code (sent from /admin/ "Not paid" emails). Applied as a Stripe coupon on the
-// whole order, on top of the multi-buy deal. The coupon is created on first use.
-const PROMOS = { COMEBACK5: { coupon: 'toa-comeback-5', off: 500, name: 'Come back $5 off' } };
+// Follow-up discount code (sent from /admin/ "Not paid" emails), tiered by tees total, see
+// api/_lib/promo.js. Applied as a Stripe coupon on top of the multi-buy deal; created on first use.
+const PROMO = require('./_lib/promo');
 
 const GARMENTS = {
   boxfit: { name: 'Heavyweight Box Fit (Urban Collab 280GSM)', price: 6000, img: 'boxfit',
@@ -39,7 +39,7 @@ async function ensureCoupon(p) {
   const got = await fetch(`https://api.stripe.com/v1/coupons/${p.coupon}`, { headers: auth });
   if (got.ok) return;
   const r = await fetch('https://api.stripe.com/v1/coupons', { method: 'POST', headers: auth,
-    body: form({ id: p.coupon, amount_off: p.off, currency: 'nzd', duration: 'once', name: p.name }) });
+    body: form({ id: p.coupon, duration: 'once', name: `Come back ${p.label}`, ...p.stripe }) });
   if (!r.ok) { const d = await r.json(); if (!(d.error && d.error.code === 'resource_already_exists')) throw new Error('coupon ' + (d.error && d.error.message)); }
 }
 
@@ -80,7 +80,8 @@ module.exports = async (req, res) => {
   const courier = Math.round(Number(process.env.COURIER_NZD || 6) * 100);
   const ref = 'TS-' + Math.random().toString(36).slice(2, 8).toUpperCase();
   const promoCode = String((req.body && req.body.code) || '').trim().toUpperCase();
-  const promo = PROMOS[promoCode] || null;
+  const teesCents = items.reduce((n, it) => n + (it.garment.price - (deal ? MULTI_BUY_OFF : 0)) * it.q, 0);
+  const promo = PROMO.valid(promoCode) ? PROMO.tierFor(teesCents / 100) : null;
   const addressText = courierChosen ? [addr.line1, addr.line2, addr.city, addr.postal_code].filter(Boolean).join(', ') : '';
 
   const meta = {
@@ -88,7 +89,7 @@ module.exports = async (req, res) => {
     delivery: courierChosen ? 'courier' : 'pickup', address: addressText, notes,
     tees: String(totalTees), multi_buy: deal ? 'yes' : 'no',
   };
-  if (promo) meta.promo = promoCode;
+  if (promo) meta.promo = `${promoCode} ${promo.label}`;
   // Meta ad attribution, read back by the webhook for the server-side Purchase (api/_lib/capi.js)
   const px = (req.body && req.body.px) || {};
   const fbId = v => (/^fb\.\d\.\d+\.[\w.-]+$/.test(String(v || '')) ? String(v).slice(0, 300) : '');

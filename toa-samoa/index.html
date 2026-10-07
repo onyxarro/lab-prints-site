@@ -679,7 +679,7 @@ body.has-cart{padding-bottom:76px}
     if (!n || document.body.classList.contains('is-confirm') || document.body.classList.contains('is-closed')) return;
     var el = document.getElementById('toast'), t = n + ' tee' + (n > 1 ? 's' : '');
     var p = window.TOA_PROMO;
-    if (p) { el.innerHTML = 'Your tees are back in your order, with $' + p + ' off applied.<a href="#details">Finish order</a>'; el.hidden = false; setTimeout(function(){ el.hidden = true; }, 8000); return; }
+    if (p) { el.innerHTML = 'Your tees are back in your order, with your discount applied.<a href="#details">Finish order</a>'; el.hidden = false; setTimeout(function(){ el.hidden = true; }, 8000); return; }
     el.innerHTML = (/[?&]cancelled=1/.test(location.search) ? 'Payment not finished. Your ' + t + ' are saved.' : 'Welcome back, your ' + t + ' are saved.')
       .replace(' are saved', n > 1 ? ' are saved' : ' is saved') + '<a href="#details">Finish order</a>';
     el.hidden = false; setTimeout(function(){ el.hidden = true; }, 7000);
@@ -737,9 +737,14 @@ body.has-cart{padding-bottom:76px}
   try { cart = JSON.parse(localStorage.getItem('toa-cart') || '[]').filter(function(l){ return G[l.g] && COLOURS[l.c]; }); } catch (e) {}
   function save(){ try { localStorage.setItem('toa-cart', JSON.stringify(cart)); } catch (e) {} }
 
-  // Follow-up email link: ?code=COMEBACK5&cart=boxfit.black.L.1,kids.royal.8.2 puts their tees back
-  // (on any device) and applies the code. The server re-checks the code; this only shows it.
-  var PROMOS = { COMEBACK5: 5 }, promo = '', restored = false;
+  // Follow-up email link: ?code=COMEBACK&cart=boxfit.black.L.1,kids.royal.8.2 puts their tees back
+  // (on any device) and applies the code. Tiers mirror api/_lib/promo.js; the server re-checks.
+  var PROMOS = { COMEBACK: 1, COMEBACK5: 1 }, promo = '', restored = false;
+  function promoOff(tees){
+    if (tees >= 150) return { pct: 15, off: Math.round(tees * 15) / 100 };
+    if (tees >= 70) return { pct: 10, off: Math.round(tees * 10) / 100 };
+    return { pct: 0, off: Math.min(5, tees) };
+  }
   try { promo = localStorage.getItem('toa-code') || ''; } catch (e) {}
   (function(){
     var qs = new URLSearchParams(location.search), code = (qs.get('code') || '').toUpperCase(), raw = qs.get('cart');
@@ -752,7 +757,7 @@ body.has-cart{padding-bottom:76px}
     if (code || raw) history.replaceState(null, '', location.pathname + location.hash);
   })();
   if (!PROMOS[promo]) promo = '';
-  window.TOA_PROMO = promo ? PROMOS[promo] : 0;
+  window.TOA_PROMO = promo ? 1 : 0;
 
   function add(g, c, s, q){
     var hit = cart.filter(function(l){ return l.g === g && l.c === c && l.s === s; })[0];
@@ -763,8 +768,8 @@ body.has-cart{padding-bottom:76px}
   function totals(){
     var n = 0, sub = 0;
     cart.forEach(function(l){ n += l.q; sub += l.q * G[l.g].price; });
-    var off = n >= DEAL_MIN ? n * DEAL_OFF : 0, code = n && promo ? PROMOS[promo] : 0;
-    return { n: n, sub: sub, save: off, promo: code, total: sub - off - code };
+    var off = n >= DEAL_MIN ? n * DEAL_OFF : 0, p = n && promo ? promoOff(sub - off) : { pct: 0, off: 0 };
+    return { n: n, sub: sub, save: off, promo: p.off, promoPct: p.pct, total: sub - off - p.off };
   }
 
   function render(){
@@ -801,7 +806,7 @@ body.has-cart{padding-bottom:76px}
     $('sum-save-row').hidden = !deal;
     $('sum-save').textContent = '-' + money(t.save);
     $('sum-promo-row').hidden = !t.promo;
-    $('sum-promo-label').textContent = 'Code ' + promo;
+    $('sum-promo-label').textContent = 'Come-back discount' + (t.promoPct ? ' (' + t.promoPct + '%)' : '');
     $('sum-promo').textContent = '-' + money(t.promo);
     $('sum-ship-label').textContent = isCourier() ? 'NZ courier' : 'Pickup in Hastings';
     $('sum-ship').textContent = isCourier() ? money(COURIER) : 'Free';
