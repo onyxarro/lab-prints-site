@@ -51,8 +51,8 @@ function render(o, site) {
     <tr><td style="background:#111;padding:0;line-height:0"><img src="${site}/email-header.png" width="560" alt="LAB Prints" style="display:block;width:100%;max-width:560px;height:auto;border:0"></td></tr>
     <tr><td style="padding:30px 28px 8px">
       <p style="margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C42A0E">Your order is saved</p>
-      <h1 style="margin:0 0 12px;font-size:30px;line-height:1.1;font-weight:800;text-transform:uppercase">Kia ora ${esc(first)}, your tees are still waiting</h1>
-      <p style="margin:0;font-size:15px;line-height:1.55;color:#2A2A28">Looks like your Toa Samoa order didn't quite go through. No stress, we saved your ${tees > 1 ? 'tees' : 'tee'} for you, and here is <b>$${CODE_OFF} off</b> to say fa'afetai for coming back.</p>
+      <h1 style="margin:0 0 12px;font-size:30px;line-height:1.1;font-weight:800;text-transform:uppercase">Hi ${esc(first)}, your tees are still waiting</h1>
+      <p style="margin:0;font-size:15px;line-height:1.55;color:#2A2A28">Looks like your Toa Samoa order didn't quite go through. No stress, we saved your ${tees > 1 ? 'tees' : 'tee'} for you. Plus, here's <b>$${CODE_OFF} off</b> your order.</p>
     </td></tr>
     <tr><td style="padding:18px 28px 0">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}
@@ -78,8 +78,8 @@ function render(o, site) {
 </td></tr></table></body></html>`;
 
   const text = [
-    `Kia ora ${first}, your Toa Samoa tees are still waiting.`, '',
-    `Looks like your order didn't quite go through. We saved your ${tees > 1 ? 'tees' : 'tee'}, and here is $${CODE_OFF} off to say fa'afetai for coming back.`, '',
+    `Hi ${first}, your Toa Samoa tees are still waiting.`, '',
+    `Looks like your order didn't quite go through. No stress, we saved your ${tees > 1 ? 'tees' : 'tee'} for you. Plus, here's $${CODE_OFF} off your order.`, '',
     ...o.items.map(it => `${it.qty} x ${it.name}, ${it.colour}, size ${it.size}  ${money(it.amount)}`),
     `Code ${CODE}  -${money(CODE_OFF)}`, o.shipping ? `Courier  ${money(o.shipping)}` : null, `New total  ${money(total)}`, '',
     `Finish your order (your tees and code ${CODE} load automatically): ${link}`, '',
