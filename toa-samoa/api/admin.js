@@ -3,8 +3,12 @@
 // GET  /api/admin                         ->  { orders: [...] }
 // GET  /api/admin?view=abandoned          ->  { abandoned: [...] }  (pressed Pay, never paid)
 // POST /api/admin  { pi, status }         ->  { ok: true }
+// POST /api/admin  { action: 'followup', id, test }  ->  { ok, to }  ($5-off follow-up email via Brevo;
+//      test sends it to ORDER_NOTIFY_EMAIL instead, using sample tees if no id is given)
 // Auth: header x-admin-key must equal the ADMIN_PASSWORD env var.
 const crypto = require('crypto');
+const followup = require('./_lib/followup');
+const { brevo } = require('./_lib/confirm');
 
 const CAMPAIGN = 'toa-samoa-2026';
 const STATUSES = ['new', 'printed', 'packed', 'sent', 'collected'];
@@ -98,6 +102,7 @@ async function listAbandoned() {
           created: s.created,
           state: status,
           url: status === 'open' ? s.url : '',
+          followed: m.followup_sent || '',
           name: m.name || '',
           email: s.customer_email || '',
           phone: m.phone || '',
@@ -113,6 +118,43 @@ async function listAbandoned() {
   return out;
 }
 
+const SAMPLE = {
+  ref: 'TS-SAMPLE', name: 'Sione Sample', email: '', delivery: 'pickup', shipping: 0,
+  items: [
+    { name: 'Heavyweight Box Fit (Urban Collab 280GSM)', g: 'boxfit', colour: 'Black', size: 'L', qty: 1, amount: 55, img: 'img/boxfit-black.jpg' },
+    { name: 'Kids Tee (Cloke Outline Kids)', g: 'kids', colour: 'Royal Blue', size: '8', qty: 1, amount: 30, img: 'img/kids-royal.jpg' },
+  ],
+};
+
+async function sendFollowup(id, test, site) {
+  if (!process.env.BREVO_API_KEY) throw Object.assign(new Error('Email is not set up (BREVO_API_KEY).'), { code: 503 });
+  let o;
+  if (id) {
+    if (!/^cs_[A-Za-z0-9_]+$/.test(id)) throw Object.assign(new Error('Bad request.'), { code: 400 });
+    const s = await stripe(`checkout/sessions/${id}?expand[]=line_items.data.price.product`);
+    if ((s.metadata || {}).campaign !== CAMPAIGN || s.status === 'complete') throw Object.assign(new Error('That checkout is already paid.'), { code: 400 });
+    o = followup.fromSession(s);
+  } else if (test) {
+    o = { ...SAMPLE, items: SAMPLE.items.map(i => ({ ...i, img: `${site}/${i.img}` })) };
+  } else throw Object.assign(new Error('Bad request.'), { code: 400 });
+
+  const to = test ? process.env.ORDER_NOTIFY_EMAIL : o.email;
+  if (!to) throw Object.assign(new Error(test ? 'ORDER_NOTIFY_EMAIL is not set.' : 'No email on that checkout.'), { code: 400 });
+  const { html, text, subject } = followup.render(o, site);
+  const sender = { name: process.env.BREVO_SENDER_NAME || 'LAB Prints', email: process.env.BREVO_SENDER_EMAIL || 'sales@labprints.co.nz' };
+  await brevo({
+    sender, replyTo: { email: process.env.BREVO_REPLY_TO || sender.email, name: sender.name },
+    to: [{ email: to, name: test ? undefined : (o.name || undefined) }],
+    subject: (test ? '[TEST] ' : '') + subject,
+    htmlContent: html, textContent: text, tags: ['toa-samoa', test ? 'followup-test' : 'followup'],
+  });
+  if (id && !test) {
+    await stripe(`checkout/sessions/${id}`, { method: 'POST', body: `metadata[followup_sent]=${new Date().toISOString()}` })
+      .catch(e => console.error('followup mark', e.message));
+  }
+  return to;
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   res.setHeader('X-Robots-Tag', 'noindex');
@@ -122,6 +164,11 @@ module.exports = async (req, res) => {
   try {
     if (req.method === 'GET' && req.query && req.query.view === 'abandoned') return res.status(200).json({ abandoned: await listAbandoned() });
     if (req.method === 'GET') return res.status(200).json({ orders: await listOrders() });
+    if (req.method === 'POST' && req.body && req.body.action === 'followup') {
+      const site = `https://${req.headers['x-forwarded-host'] || req.headers.host}`;
+      try { return res.status(200).json({ ok: true, to: await sendFollowup(String(req.body.id || ''), !!req.body.test, site) }); }
+      catch (e) { if (e.code) return res.status(e.code).json({ error: e.message }); throw e; }
+    }
     if (req.method === 'POST') {
       const pi = String((req.body && req.body.pi) || ''), status = String((req.body && req.body.status) || '');
       if (!/^pi_[A-Za-z0-9]+$/.test(pi) || !STATUSES.includes(status)) return res.status(400).json({ error: 'Bad request.' });

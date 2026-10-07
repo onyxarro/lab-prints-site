@@ -585,6 +585,7 @@ body.has-cart{padding-bottom:76px}
           <div><dt>Tees</dt><dd id="sum-count">0</dd></div>
           <div><dt>Subtotal</dt><dd id="sum-sub">$0</dd></div>
           <div class="save" id="sum-save-row" hidden><dt>Multi-buy saving</dt><dd id="sum-save">-$0</dd></div>
+          <div class="save" id="sum-promo-row" hidden><dt id="sum-promo-label">Code</dt><dd id="sum-promo">-$0</dd></div>
           <div><dt id="sum-ship-label">Pickup in Hastings</dt><dd id="sum-ship">Free</dd></div>
           <div class="total"><dt>Total</dt><dd id="sum-total">$0</dd></div>
         </dl>
@@ -677,6 +678,8 @@ body.has-cart{padding-bottom:76px}
     try { JSON.parse(localStorage.getItem('toa-cart') || '[]').forEach(function(l){ n += Number(l.q) || 0; }); } catch (e) {}
     if (!n || document.body.classList.contains('is-confirm') || document.body.classList.contains('is-closed')) return;
     var el = document.getElementById('toast'), t = n + ' tee' + (n > 1 ? 's' : '');
+    var p = window.TOA_PROMO;
+    if (p) { el.innerHTML = 'Your tees are back in your order, with $' + p + ' off applied.<a href="#details">Finish order</a>'; el.hidden = false; setTimeout(function(){ el.hidden = true; }, 8000); return; }
     el.innerHTML = (/[?&]cancelled=1/.test(location.search) ? 'Payment not finished. Your ' + t + ' are saved.' : 'Welcome back, your ' + t + ' are saved.')
       .replace(' are saved', n > 1 ? ' are saved' : ' is saved') + '<a href="#details">Finish order</a>';
     el.hidden = false; setTimeout(function(){ el.hidden = true; }, 7000);
@@ -734,6 +737,23 @@ body.has-cart{padding-bottom:76px}
   try { cart = JSON.parse(localStorage.getItem('toa-cart') || '[]').filter(function(l){ return G[l.g] && COLOURS[l.c]; }); } catch (e) {}
   function save(){ try { localStorage.setItem('toa-cart', JSON.stringify(cart)); } catch (e) {} }
 
+  // Follow-up email link: ?code=COMEBACK5&cart=boxfit.black.L.1,kids.royal.8.2 puts their tees back
+  // (on any device) and applies the code. The server re-checks the code; this only shows it.
+  var PROMOS = { COMEBACK5: 5 }, promo = '', restored = false;
+  try { promo = localStorage.getItem('toa-code') || ''; } catch (e) {}
+  (function(){
+    var qs = new URLSearchParams(location.search), code = (qs.get('code') || '').toUpperCase(), raw = qs.get('cart');
+    if (PROMOS[code]) { promo = code; try { localStorage.setItem('toa-code', code); } catch (e) {} }
+    if (raw) {
+      var lines = raw.split(',').map(function(x){ var p = x.split('.'); return { g: p[0], c: p[1], s: p[2], q: clampQ(p[3]) }; })
+        .filter(function(l){ return G[l.g] && COLOURS[l.c] && l.s; });
+      if (lines.length) { cart = lines; restored = true; save(); }
+    }
+    if (code || raw) history.replaceState(null, '', location.pathname + location.hash);
+  })();
+  if (!PROMOS[promo]) promo = '';
+  window.TOA_PROMO = promo ? PROMOS[promo] : 0;
+
   function add(g, c, s, q){
     var hit = cart.filter(function(l){ return l.g === g && l.c === c && l.s === s; })[0];
     if (hit) hit.q = clampQ(hit.q + q); else cart.push({ g: g, c: c, s: s, q: q });
@@ -743,8 +763,8 @@ body.has-cart{padding-bottom:76px}
   function totals(){
     var n = 0, sub = 0;
     cart.forEach(function(l){ n += l.q; sub += l.q * G[l.g].price; });
-    var off = n >= DEAL_MIN ? n * DEAL_OFF : 0;
-    return { n: n, sub: sub, save: off, total: sub - off };
+    var off = n >= DEAL_MIN ? n * DEAL_OFF : 0, code = n && promo ? PROMOS[promo] : 0;
+    return { n: n, sub: sub, save: off, promo: code, total: sub - off - code };
   }
 
   function render(){
@@ -780,6 +800,9 @@ body.has-cart{padding-bottom:76px}
     $('sum-sub').textContent = money(t.sub);
     $('sum-save-row').hidden = !deal;
     $('sum-save').textContent = '-' + money(t.save);
+    $('sum-promo-row').hidden = !t.promo;
+    $('sum-promo-label').textContent = 'Code ' + promo;
+    $('sum-promo').textContent = '-' + money(t.promo);
     $('sum-ship-label').textContent = isCourier() ? 'NZ courier' : 'Pickup in Hastings';
     $('sum-ship').textContent = isCourier() ? money(COURIER) : 'Free';
     $('sum-total').textContent = money(t.total + ship);
@@ -901,7 +924,7 @@ body.has-cart{padding-bottom:76px}
     var t = totals();
     px('InitiateCheckout', { currency: 'NZD', value: t.total + (isCourier() ? COURIER : 0), num_items: t.n, content_type: 'product',
       contents: cart.map(function(l){ return { id: l.g + '-' + l.c, quantity: l.q }; }) });
-    fetch('api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: cart, customer: d, px: pxIds() }) })
+    fetch('api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: cart, customer: d, code: promo, px: pxIds() }) })
       .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(d){ return { ok: r.ok, status: r.status, d: d }; }); })
       .then(function(res){
         if (res.ok && res.d.url) { location.href = res.d.url; return; }
@@ -917,7 +940,7 @@ body.has-cart{padding-bottom:76px}
   // ---- back from Stripe: branded order confirmation ----
   var orderId = new URLSearchParams(location.search).get('order');
   if (orderId) {
-    cart = []; save();
+    cart = []; save(); promo = ''; try { localStorage.removeItem('toa-code'); } catch (e) {}
     document.body.classList.add('is-confirm');
     $('confirm').hidden = false;
     window.scrollTo(0, 0);

@@ -7,6 +7,9 @@
 const DEADLINE = Date.parse('2026-10-09T23:59:00+13:00');
 const MULTI_BUY_MIN = 2;      // tees in the order
 const MULTI_BUY_OFF = 500;    // cents off every tee
+// Follow-up discount code (sent from /admin/ "Not paid" emails). Applied as a Stripe coupon on the
+// whole order, on top of the multi-buy deal. The coupon is created on first use.
+const PROMOS = { COMEBACK5: { coupon: 'toa-comeback-5', off: 500, name: 'Come back $5 off' } };
 
 const GARMENTS = {
   boxfit: { name: 'Heavyweight Box Fit (Urban Collab 280GSM)', price: 6000, img: 'boxfit',
@@ -29,6 +32,15 @@ function form(obj, prefix, out) {
     else if (v !== undefined) out.push(`${encodeURIComponent(key)}=${encodeURIComponent(v)}`);
   }
   return out.join('&');
+}
+
+async function ensureCoupon(p) {
+  const auth = { Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}`, 'Content-Type': 'application/x-www-form-urlencoded' };
+  const got = await fetch(`https://api.stripe.com/v1/coupons/${p.coupon}`, { headers: auth });
+  if (got.ok) return;
+  const r = await fetch('https://api.stripe.com/v1/coupons', { method: 'POST', headers: auth,
+    body: form({ id: p.coupon, amount_off: p.off, currency: 'nzd', duration: 'once', name: p.name }) });
+  if (!r.ok) { const d = await r.json(); if (!(d.error && d.error.code === 'resource_already_exists')) throw new Error('coupon ' + (d.error && d.error.message)); }
 }
 
 module.exports = async (req, res) => {
@@ -67,6 +79,8 @@ module.exports = async (req, res) => {
   const site = `https://${req.headers['x-forwarded-host'] || req.headers.host}`;
   const courier = Math.round(Number(process.env.COURIER_NZD || 6) * 100);
   const ref = 'TS-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+  const promoCode = String((req.body && req.body.code) || '').trim().toUpperCase();
+  const promo = PROMOS[promoCode] || null;
   const addressText = courierChosen ? [addr.line1, addr.line2, addr.city, addr.postal_code].filter(Boolean).join(', ') : '';
 
   const meta = {
@@ -74,6 +88,7 @@ module.exports = async (req, res) => {
     delivery: courierChosen ? 'courier' : 'pickup', address: addressText, notes,
     tees: String(totalTees), multi_buy: deal ? 'yes' : 'no',
   };
+  if (promo) meta.promo = promoCode;
   // Meta ad attribution, read back by the webhook for the server-side Purchase (api/_lib/capi.js)
   const px = (req.body && req.body.px) || {};
   const fbId = v => (/^fb\.\d\.\d+\.[\w.-]+$/.test(String(v || '')) ? String(v).slice(0, 300) : '');
@@ -106,6 +121,7 @@ module.exports = async (req, res) => {
   if (courierChosen) {
     session.payment_intent_data.shipping = { name, phone, address: { ...addr, country: 'NZ' } };
   }
+  if (promo) session.discounts = { 0: { coupon: promo.coupon } };
   items.forEach((it, i) => {
     session.line_items[i] = {
       quantity: it.q,
@@ -123,6 +139,7 @@ module.exports = async (req, res) => {
   });
 
   try {
+    if (promo) await ensureCoupon(promo);
     const r = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: { Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}`,

@@ -152,8 +152,8 @@ tr.sum td{font-weight:700;border-bottom:0}
   </section>
 
   <section id="tab-abandoned" hidden>
-    <p class="note">People who filled in their details and pressed Pay, but never paid. <b>Open</b> = Stripe link still works (24 hours), so you can send it to them. <b>Expired</b> = they need to order again on the site. Anyone who paid later with the same email or phone is marked <b>Bought later</b>.</p>
-    <div class="toolbar"><div class="chips" id="abChips"></div></div>
+    <p class="note">People who filled in their details and pressed Pay, but never paid. <b>Email them</b> sends a LAB Prints email with their tees and code <b>COMEBACK5</b> ($5 off), with a button that loads their order on the site. <b>Open</b> = Stripe link still works (24 hours), so you can send it to them. <b>Expired</b> = they need to order again on the site. Anyone who paid later with the same email or phone is marked <b>Bought later</b>.</p>
+    <div class="toolbar"><div class="chips" id="abChips"></div><button class="btn ghost" id="abTest" style="margin-left:auto">Send test email to me</button></div>
     <div class="err" id="abErr" role="alert"></div>
     <div class="orders" id="abandoned"><div class="empty">Loading…</div></div>
   </section>
@@ -346,17 +346,25 @@ async function loadAbandoned() {
     $('abErr').textContent = e.message;
   }
 }
-$('abChips').onclick = e => { const b = e.target.closest('[data-a]'); if (b) { fAb = b.dataset.a; renderAbandoned(); } };
-
-function followUp(a) {
-  const first = (a.name || '').split(' ')[0] || 'there';
-  const tees = a.items.map(i => `${i.qty} x ${shortGarment(i.garment)} (${i.colour}, ${i.size})`).join(', ');
-  const body = `Kia ora ${first},\n\nWe saw you started a Toa Samoa tee order (${tees}) but it didn't go through. `
-    + (a.url ? `Here's your secure payment link, it's still saved:\n${a.url}\n\n`
-             : `You can grab them here before orders close Fri 9 Oct:\nhttps://lab-toa-samoa.vercel.app\n\n`)
-    + `Any questions just reply to this email.\n\nFa'afetai,\nLAB Prints`;
-  return `mailto:${a.email}?subject=${encodeURIComponent('Your Toa Samoa tee order')}&body=${encodeURIComponent(body)}`;
+async function sendFollowup(body, btn) {
+  const label = btn.textContent; btn.disabled = true; btn.textContent = 'Sending…'; $('abErr').textContent = '';
+  try {
+    const r = await api('POST', { action: 'followup', ...body });
+    btn.textContent = 'Sent to ' + r.to;
+    return true;
+  } catch (e) { $('abErr').textContent = e.message; btn.textContent = label; btn.disabled = false; return false; }
 }
+$('abTest').onclick = function(){
+  const a = (ABANDONED || []).find(x => !x.bought) || null;   // preview with a real cart when there is one
+  sendFollowup({ id: a ? a.id : '', test: true }, this).then(() => setTimeout(() => { this.disabled = false; this.textContent = 'Send test email to me'; }, 4000));
+};
+$('abandoned').addEventListener('click', async e => {
+  const b = e.target.closest('[data-send]'); if (!b) return;
+  const a = ABANDONED.find(x => x.id === b.dataset.send);
+  if (!confirm(`Send the $5-off email to ${a.name || a.email} (${a.email})?`)) return;
+  if (await sendFollowup({ id: a.id }, b)) { a.followed = new Date().toISOString(); setTimeout(renderAbandoned, 1500); }
+});
+$('abChips').onclick = e => { const b = e.target.closest('[data-a]'); if (b) { fAb = b.dataset.a; renderAbandoned(); } };
 
 function renderAbandoned() {
   const chase = ABANDONED.filter(a => !a.bought);
@@ -383,7 +391,8 @@ function renderAbandoned() {
       </div>
       <div class="side">
         ${a.bought ? '<span class="badge saved">Bought later</span>' : a.state === 'open' ? '<span class="badge open">Open · link works</span>' : '<span class="badge">Expired</span>'}
-        ${!a.bought && a.email ? `<a class="btn" href="${esc(followUp(a))}">Email them</a>` : ''}
+        ${a.followed ? `<span class="badge saved">Emailed ${esc(new Date(a.followed).toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' }))}</span>` : ''}
+        ${!a.bought && a.email ? `<button class="btn${a.followed ? ' ghost' : ''}" data-send="${esc(a.id)}">${a.followed ? 'Email again' : 'Email them ($5 off)'}</button>` : ''}
         ${!a.bought && a.phone ? `<a class="btn ghost" href="sms:${esc(a.phone.replace(/\s/g, ''))}">Text</a>` : ''}
       </div>
     </article>`).join('');

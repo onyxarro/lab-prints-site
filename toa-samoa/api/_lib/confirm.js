@@ -153,4 +153,4 @@ async function sendConfirmation(sessionId, site) {
   return 'sent';
 }
 
-module.exports = { sendConfirmation, notifyOwner, render };
+module.exports = { sendConfirmation, notifyOwner, render, brevo };
