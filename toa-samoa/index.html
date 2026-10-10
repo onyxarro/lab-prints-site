@@ -435,7 +435,6 @@ body.has-cart{padding-bottom:76px}
 
       <div class="open-only">
         <p class="closes"><b>Orders open now.</b> Printed in Hastings, ready 5 to 7 days after you order.</p>
-        <p class="proof" id="proof" hidden></p>
         <div class="ctas">
           <a class="btn btn-ink" id="hero-cta" href="#card-boxfit">Order now</a>
           <a class="btn btn-line desk-only" href="#how">How it works</a>
@@ -983,16 +982,8 @@ body.has-cart{padding-bottom:76px}
     if (e.persisted && paying) { paying = false; render(); }
   });
 
-  // social proof: show the running tee count once it is big enough to help, not hurt
   if (!orderId) px('ViewContent', { currency: 'NZD', value: 45, content_type: 'product', content_name: 'Toa Samoa 685 supporters tee' });
 
-  var PROOF_MIN = 20;
-  if (!orderId) fetch('api/stats').then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
-    if (!d || !(d.tees >= PROOF_MIN)) return;
-    var p = $('proof');
-    p.innerHTML = '<b>' + d.tees + ' tees</b> ordered so far. Join the 685 crew.';
-    p.hidden = false;
-  }).catch(function(){});
 
   // share: native share sheet on phones, WhatsApp / Facebook / copy link elsewhere
   var SHARE_URL = 'https://lab-toa-samoa.vercel.app/';
