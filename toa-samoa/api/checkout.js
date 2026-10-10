@@ -1,10 +1,11 @@
 // POST /api/checkout  { items: [{ g, c, s, q }], customer: { name, email, phone, delivery, line1, suburb, city, postcode, notes } }
 //   ->  { url }  (Stripe Checkout). Stripe emails the receipt to customer.email.
 // GET  /api/checkout  ->  { courier }  (courier price shown on the page)
-// Prices, deal and deadline are enforced here. The browser only says what was picked.
+// Prices, deal and deadline (if set) are enforced here. The browser only says what was picked.
 // Env: STRIPE_SECRET_KEY (required), COURIER_NZD (default 6), META_PIXEL_ID (optional, turns on the ads pixel)
 
-const DEADLINE = Date.parse('2026-10-09T23:59:00+13:00');
+// Orders stay open until a deadline is set again, e.g. Date.parse('2026-10-09T23:59:00+13:00').
+const DEADLINE = 0;
 const MULTI_BUY_MIN = 2;      // tees in the order
 const MULTI_BUY_OFF = 500;    // cents off every tee
 // Follow-up discount code (sent from /admin/ "Not paid" emails), tiered by tees total, see
@@ -47,7 +48,7 @@ module.exports = async (req, res) => {
   if (req.method === 'GET') return res.status(200).json({ courier: Number(process.env.COURIER_NZD || 6), pixel: process.env.META_PIXEL_ID || '' });
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' });
   if (!process.env.STRIPE_SECRET_KEY) return res.status(503).json({ error: 'Checkout is not set up yet.' });
-  if (Date.now() > DEADLINE) return res.status(410).json({ error: 'Pre-orders have closed.' });
+  if (DEADLINE && Date.now() > DEADLINE) return res.status(410).json({ error: 'Orders have closed.' });
 
   const raw = (req.body && Array.isArray(req.body.items)) ? req.body.items : [];
   const items = [];
@@ -110,10 +111,10 @@ module.exports = async (req, res) => {
         ? { display_name: 'NZ-wide courier', type: 'fixed_amount', fixed_amount: { amount: courier, currency: 'nzd' } }
         : { display_name: 'Pickup in Hastings (free)', type: 'fixed_amount', fixed_amount: { amount: 0, currency: 'nzd' } } },
     },
-    custom_text: { submit: { message: `Order ${ref}. Pre-order: printing takes 2 to 4 days after orders close Fri 9 Oct. Shipped or ready for pickup before the first game, Thu 15 Oct.` } },
+    custom_text: { submit: { message: `Order ${ref}. Printed in batches in Hastings. Ready for pickup or shipped 5 to 7 days after you order.` } },
     metadata: meta,
     payment_intent_data: {
-      description: `Toa Samoa pre-order ${ref}: ${totalTees} tee${totalTees > 1 ? 's' : ''} (${meta.delivery})`,
+      description: `Toa Samoa order ${ref}: ${totalTees} tee${totalTees > 1 ? 's' : ''} (${meta.delivery})`,
       receipt_email: email,
       metadata: meta,
     },

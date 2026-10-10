@@ -47,7 +47,7 @@ function render(o, site) {
 
   const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Your Toa Samoa tees</title></head>
 <body style="margin:0;padding:0;background:#F3F1EC;font-family:Helvetica,Arial,sans-serif;color:#111">
-<div style="display:none;max-height:0;overflow:hidden">We saved your tees and took ${deal} your order. Orders close Friday 9 October.</div>
+<div style="display:none;max-height:0;overflow:hidden">We saved your tees and took ${deal} your order. Printed locally in Hastings.</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F3F1EC"><tr><td align="center" style="padding:24px 12px">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#fff;border-radius:10px;overflow:hidden">
     <tr><td style="background:#111;padding:0;line-height:0"><img src="${site}/email-header.png" width="560" alt="LAB Prints" style="display:block;width:100%;max-width:560px;height:auto;border:0"></td></tr>
@@ -70,7 +70,7 @@ function render(o, site) {
     </td></tr>
     <tr><td style="padding:24px 28px 0">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F3F1EC;border-radius:8px"><tr><td style="padding:14px 16px;font-size:14px;line-height:1.5;color:#2A2A28">
-        <b style="color:#111">Orders close Friday 9 October, 11:59pm.</b> Every tee is printed locally in Hastings and ready for pickup or shipped before the first game on Thursday 15 October.
+        <b style="color:#111">Orders are open.</b> Every tee is printed locally in Hastings and ready for pickup or shipped 5 to 7 days after you order.
       </td></tr></table>
     </td></tr>
     <tr><td style="padding:24px 28px 30px">
@@ -87,7 +87,7 @@ function render(o, site) {
     `Come-back discount (${deal.replace(' off', '')})  -${money(off)}`, o.shipping ? `Courier  ${money(o.shipping)}` : null, `New total  ${money(total)}`, '',
     `Finish your order (your tees and discount load automatically): ${link}`,
     '$5 off under $70 · 10% off $70+ · 15% off $150+', '',
-    'Orders close Friday 9 October, 11:59pm. Ready for pickup or shipped before the first game on Thursday 15 October.', '',
+    'Orders are open. Printed locally in Hastings, ready for pickup or shipped 5 to 7 days after you order.', '',
     'Stuck on sizes, or had trouble paying? Just reply to this email.',
   ].filter(l => l !== null).join('\n');
 

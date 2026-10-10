@@ -44,7 +44,7 @@ function render(o, site) {
     <tr><td style="padding:30px 28px 8px">
       <p style="margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C42A0E">Order confirmed</p>
       <h1 style="margin:0 0 12px;font-size:30px;line-height:1.1;font-weight:800;text-transform:uppercase">Fa'afetai, ${first}!</h1>
-      <p style="margin:0;font-size:15px;line-height:1.55;color:#2A2A28">Your Toa Samoa pre-order is locked in. Your order number is <b>${esc(o.ref)}</b>. Keep this email, you will need the number if you contact us.</p>
+      <p style="margin:0;font-size:15px;line-height:1.55;color:#2A2A28">Your Toa Samoa order is locked in. Your order number is <b>${esc(o.ref)}</b>. Keep this email, you will need the number if you contact us.</p>
     </td></tr>
     <tr><td style="padding:18px 28px 0">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}
@@ -58,7 +58,7 @@ function render(o, site) {
     </td></tr>
     <tr><td style="padding:24px 28px 0">
       <p style="margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#6B6B66">What happens next</p>
-      <p style="margin:0;font-size:15px;line-height:1.55">Pre-orders close Friday 9 October at 11:59pm. Then we print every tee locally in Hastings. Printing takes 2 to 4 days, and all orders will be shipped out or ready for pickup before the first game on <b>Thursday 15 October</b>. We will let you know as soon as yours is ready.</p>
+      <p style="margin:0;font-size:15px;line-height:1.55">We print every tee locally in Hastings, in batches. Your order will be ready for pickup or shipped <b>5 to 7 days</b> after you ordered. We will let you know as soon as yours is ready.</p>
     </td></tr>
     <tr><td style="padding:28px 28px 30px">
       <p style="margin:0;font-size:14px;line-height:1.55;color:#6B6B66">Questions? Just reply to this email with your order number.</p>
@@ -68,12 +68,12 @@ function render(o, site) {
 </td></tr></table></body></html>`;
 
   const text = [
-    `Fa'afetai, ${(o.name || '').split(' ')[0] || 'there'}! Your Toa Samoa pre-order is confirmed.`,
+    `Fa'afetai, ${(o.name || '').split(' ')[0] || 'there'}! Your Toa Samoa order is confirmed.`,
     `Order number: ${o.ref}`, '',
     ...o.items.map(it => `${it.qty} x ${it.name}  ${money(it.amount)}`),
     o.shipping ? `Courier  ${money(o.shipping)}` : '', `Total paid  ${money(o.total)}`, '',
     o.delivery === 'courier' ? `NZ courier to: ${o.address}. Tracking number emailed when it ships.` : 'Free pickup in Hastings. Pickup details emailed when your order is ready.',
-    'Pre-orders close Fri 9 Oct, 11:59pm. Then we print every tee locally in Hastings. Printing takes 2 to 4 days, and all orders will be shipped out or ready for pickup before the first game on Thursday 15 October.', '',
+    'We print every tee locally in Hastings, in batches. Your order will be ready for pickup or shipped 5 to 7 days after you ordered. We will let you know as soon as it is ready.', '',
     'Questions? Just reply to this email with your order number.',
   ].filter(l => l !== null).join('\n');
   return { html, text };
