@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>LAB POS</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="LAB POS">
+<meta name="theme-color" content="#111111">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFFFF; --bg-2:#F3F1EC; --bg-4:#ECE9E1;
+  --ink:#111111; --ink-2:#2A2A28; --ink-3:#6B6B66; --ink-4:#9A9A93;
+  --line:#E3DFD3; --line-2:#D7D2C2;
+  --heat:#E2381A; --heat-text:#C42A0E; --ok:#1F7A3A; --ok-bg:#E5F2E8; --warn-bg:#FCEBE6;
+  --display:"Bebas Neue","Helvetica Neue Condensed","Arial Narrow",sans-serif;
+  --body:"Inter Tight","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --r:14px; --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg-2);color:var(--ink);font:16px/1.4 var(--body);-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;touch-action:manipulation}
+input,textarea,select{font:inherit;color:var(--ink)}
+.hide{display:none!important}
+h1,h2,h3{margin:0}
+.disp{font-family:var(--display);letter-spacing:.02em;font-weight:400}
+.muted{color:var(--ink-3)}
+.money{font-variant-numeric:tabular-nums}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 20px;border-radius:12px;font-weight:700;font-size:16px;background:var(--bg);border:1.5px solid var(--line-2);transition:transform .08s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.4;pointer-events:none}
+.btn.ink{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.heat{background:var(--heat);color:#fff;border-color:var(--heat)}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.sm{min-height:40px;padding:0 14px;font-size:14px;border-radius:10px}
+.btn.lg{min-height:64px;font-size:19px}
+.btn.block{width:100%}
+
+/* ---------- lock screen ---------- */
+#lock{position:fixed;inset:0;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;z-index:50;padding:24px}
+.lock-box{width:100%;max-width:340px;text-align:center}
+.lock-box .logo{font-family:var(--display);font-size:64px;line-height:1;letter-spacing:.04em}
+.lock-box .sub{color:#9A9A93;margin:4px 0 28px;font-size:15px}
+.dots{display:flex;gap:14px;justify-content:center;margin-bottom:12px;height:18px}
+.dots i{width:16px;height:16px;border-radius:50%;border:2px solid #555}
+.dots i.on{background:#fff;border-color:#fff}
+.lock-err{color:#FF6A4D;min-height:22px;font-size:14px;margin-bottom:10px}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pad button{height:74px;border-radius:50%;width:74px;margin:auto;font-size:28px;font-weight:600;background:#222;color:#fff}
+.pad button:active{background:#3a3a3a}
+.pad .clear{font-size:15px;background:transparent}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+
+/* ---------- app shell ---------- */
+#app{height:100%;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:8px;background:var(--ink);color:#fff;padding:10px 16px;padding-top:max(10px,env(safe-area-inset-top))}
+.top .logo{font-family:var(--display);font-size:30px;letter-spacing:.04em;margin-right:12px;line-height:1}
+.tabs{display:flex;gap:4px;flex:1;overflow-x:auto}
+.tabs button{padding:10px 16px;border-radius:10px;font-weight:600;color:#BDBDB6;white-space:nowrap}
+.tabs button.on{background:#fff;color:var(--ink)}
+.tabs .badge{display:inline-block;min-width:22px;padding:0 6px;margin-left:6px;border-radius:11px;background:var(--heat);color:#fff;font-size:12px;line-height:20px}
+.who{display:flex;align-items:center;gap:10px;font-size:14px;color:#BDBDB6;white-space:nowrap}
+.who .btn{min-height:40px;background:#222;border-color:#333;color:#fff}
+.test-flag{background:#F5B700;color:#111;font-size:12px;font-weight:800;padding:3px 8px;border-radius:6px;letter-spacing:.04em}
+main{flex:1;min-height:0;position:relative}
+.view{position:absolute;inset:0;overflow:auto;-webkit-overflow-scrolling:touch}
+
+/* ---------- sell ---------- */
+#v-sell{display:grid;grid-template-columns:minmax(0,1fr) 380px;overflow:hidden}
+.builder{overflow:auto;padding:16px 18px 40px}
+.subtabs{display:flex;gap:6px;background:var(--bg-4);padding:5px;border-radius:12px;margin-bottom:16px}
+.subtabs button{flex:1;padding:12px;border-radius:9px;font-weight:700;color:var(--ink-3)}
+.subtabs button.on{background:var(--bg);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.sec{margin-bottom:18px}
+.sec-h{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:0 0 8px}
+.grid-g{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.gcard{background:var(--bg);border:2px solid var(--line);border-radius:var(--r);padding:14px;text-align:left;min-height:86px;display:flex;flex-direction:column;justify-content:space-between}
+.gcard b{font-size:17px}
+.gcard span{color:var(--ink-3);font-size:14px}
+.gcard.on{border-color:var(--ink);background:var(--ink);color:#fff}
+.gcard.on span{color:#cfcfc8}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1;min-width:110px;min-height:52px;padding:6px 12px;border-radius:12px;background:var(--bg);border:2px solid var(--line);font-weight:600;font-size:15px;line-height:1.2}
+.seg button small{display:block;font-weight:500;color:var(--ink-3);font-size:12px}
+.seg button.on{border-color:var(--ink);background:var(--ink);color:#fff}
+.seg button.on small{color:#cfcfc8}
+.qty{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.step{display:flex;align-items:center;background:var(--bg);border:2px solid var(--line);border-radius:14px;overflow:hidden}
+.step button{width:60px;height:60px;font-size:28px;font-weight:600}
+.step button:active{background:var(--bg-4)}
+.step input{width:84px;height:60px;border:0;text-align:center;font-size:26px;font-weight:700;background:transparent}
+.chips{display:flex;gap:6px}
+.chips button{min-width:52px;height:44px;border-radius:10px;background:var(--bg);border:1.5px solid var(--line);font-weight:600}
+.hint{margin-top:8px;font-size:14px;color:var(--heat-text);font-weight:600;min-height:20px}
+.addbar{position:sticky;bottom:0;z-index:2;margin:8px -18px -40px;padding:12px 18px calc(12px + var(--safe-b));background:var(--bg-2);border-top:1px solid var(--line);box-shadow:0 -8px 16px rgba(243,241,236,.9);display:flex;align-items:center;gap:14px}
+.addbar .total{flex:1}
+.addbar .total small{display:block;color:var(--ink-3);font-size:13px}
+.addbar .total b{font-size:28px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pcard{background:var(--bg);border:2px solid var(--line);border-radius:var(--r);padding:16px;text-align:left;min-height:96px;display:flex;flex-direction:column;justify-content:space-between}
+.pcard:active{border-color:var(--ink)}
+.pcard b{font-size:17px}
+.field{display:block;margin-bottom:12px}
+.field span{display:block;font-size:13px;font-weight:700;color:var(--ink-3);margin-bottom:6px;letter-spacing:.03em}
+.field input,.field textarea,.field select{width:100%;min-height:54px;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--bg);font-size:17px}
+.field textarea{min-height:84px;resize:vertical}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--ink)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.empty{padding:28px;text-align:center;color:var(--ink-3);background:var(--bg);border:2px dashed var(--line);border-radius:var(--r)}
+
+/* cart */
+.cart{background:var(--bg);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.cart-h{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}
+.cart-h h2{font-size:28px}
+.lines{flex:1;overflow:auto;padding:4px 16px}
+.line{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.line .l-name{font-weight:700}
+.line .l-detail{grid-column:1/2;font-size:13px;color:var(--ink-3)}
+.line .l-amt{font-weight:700;text-align:right}
+.line .l-ctl{grid-column:1/3;display:flex;align-items:center;gap:8px;margin-top:4px;font-size:14px;color:var(--ink-3)}
+.line .l-ctl .sp{flex:1}
+.mini{width:38px;height:38px;border-radius:10px;border:1.5px solid var(--line);font-size:20px;font-weight:600;background:var(--bg)}
+.x{width:38px;height:38px;border-radius:10px;color:var(--ink-3);font-size:22px}
+.cart-empty{color:var(--ink-4);text-align:center;padding:48px 12px}
+.cart-f{border-top:1px solid var(--line);padding:14px 16px calc(14px + var(--safe-b));display:flex;flex-direction:column;gap:10px}
+.sum{display:flex;justify-content:space-between;align-items:baseline}
+.sum b{font-size:34px;font-family:var(--display);letter-spacing:.03em;font-weight:400}
+.gstl{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-3);margin-top:-6px}
+.jobbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.jobbtns .btn{min-height:58px;font-size:14px;line-height:1.2;flex-direction:column;gap:0}
+.jobbtns .btn small{font-weight:500;color:var(--ink-3)}
+
+/* ---------- modal ---------- */
+.scrim{position:fixed;inset:0;background:rgba(17,17,17,.55);display:flex;align-items:center;justify-content:center;z-index:40;padding:16px}
+.modal{background:var(--bg);border-radius:20px;width:100%;max-width:560px;max-height:calc(100% - 16px);overflow:auto;padding:24px}
+.modal h2{font-size:34px;line-height:1}
+.modal .mh{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+.due{background:var(--bg-2);border-radius:var(--r);padding:16px;margin-bottom:16px}
+.due .big{font-family:var(--display);font-size:56px;line-height:1;letter-spacing:.02em}
+.due .rows{margin-top:6px;font-size:14px;color:var(--ink-3)}
+.paybtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.paybtns .btn{min-height:76px;font-size:20px}
+.cashq{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 14px}
+.cashq button{min-height:58px;border-radius:12px;border:2px solid var(--line);font-weight:700;font-size:18px;background:var(--bg)}
+.cashq button.on{border-color:var(--ink);background:var(--ink);color:#fff}
+.change{display:flex;justify-content:space-between;align-items:baseline;padding:14px 16px;border-radius:var(--r);background:var(--ok-bg);color:var(--ok);font-weight:700;margin-bottom:14px}
+.change b{font-family:var(--display);font-size:40px;font-weight:400;line-height:1}
+.change.bad{background:var(--warn-bg);color:var(--heat-text)}
+.wait{text-align:center;padding:12px 0}
+.spin{width:64px;height:64px;border-radius:50%;border:6px solid var(--bg-4);border-top-color:var(--ink);animation:spin 0.9s linear infinite;margin:10px auto 18px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tick{width:84px;height:84px;border-radius:50%;background:var(--ok);color:#fff;display:flex;align-items:center;justify-content:center;margin:6px auto 14px;font-size:46px}
+.fail{background:var(--warn-bg);color:var(--heat-text);border-radius:12px;padding:12px 14px;font-weight:600;margin:12px 0}
+.stack{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.testrow{display:flex;gap:8px;justify-content:center;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+
+/* ---------- jobs ---------- */
+.page{padding:16px 18px 40px;max-width:1200px;margin:0 auto}
+.page-h{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.page-h h1{font-size:40px;line-height:1;flex:1}
+.search{min-height:48px;padding:0 14px;border-radius:12px;border:2px solid var(--line);background:var(--bg);font-size:16px;width:260px}
+.jgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.job{background:var(--bg);border-radius:var(--r);border:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:8px}
+.job-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.job-id{font-family:var(--display);font-size:28px;line-height:1}
+.pill{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:4px 9px;border-radius:999px;background:var(--bg-4)}
+.pill.ready{background:var(--ok-bg);color:var(--ok)}
+.pill.printing{background:#E8EEF9;color:#2B4C8C}
+.pill.due{background:var(--warn-bg);color:var(--heat-text)}
+.job-items{font-size:14px;color:var(--ink-2);margin:0;padding-left:18px}
+.job-money{display:flex;gap:16px;font-size:14px;color:var(--ink-3)}
+.job-money b{color:var(--ink)}
+.job-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.job-acts .btn{flex:1}
+.job a{color:var(--ink)}
+
+/* ---------- today / settings ---------- */
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.tile{background:var(--bg);border-radius:var(--r);padding:14px 16px;border:1px solid var(--line)}
+.tile small{display:block;color:var(--ink-3);font-size:13px;font-weight:600}
+.tile b{font-family:var(--display);font-size:36px;font-weight:400;letter-spacing:.02em;line-height:1.1}
+.tile.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tile.dark small{color:#BDBDB6}
+.card{background:var(--bg);border-radius:var(--r);border:1px solid var(--line);padding:16px;margin-bottom:14px}
+.card h3{font-size:24px;font-family:var(--display);font-weight:400;letter-spacing:.03em;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);padding:8px 6px;border-bottom:1px solid var(--line)}
+td{padding:10px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.r,th.r{text-align:right}
+tr.void td{color:var(--ink-4);text-decoration:line-through}
+.list-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.list-item .grow{flex:1}
+.status-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;background:var(--ink-4)}
+.status-dot.online{background:var(--ok)}
+.status-dot.offline{background:var(--heat)}
+.inline{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.inline .field{flex:1;min-width:140px;margin:0}
+.note{font-size:14px;color:var(--ink-3);margin:6px 0 0}
+
+/* toast */
+#toast{position:fixed;left:50%;top:calc(72px + env(safe-area-inset-top,0px));transform:translateX(-50%) translateY(-200%);background:var(--ink);color:#fff;padding:14px 20px;border-radius:12px;font-weight:600;z-index:60;transition:transform .25s;max-width:calc(100% - 32px)}
+#toast.on{transform:translateX(-50%) translateY(0)}
+#toast.err{background:var(--heat-text)}
+
+@media (max-width:900px){
+  #v-sell{grid-template-columns:minmax(0,1fr) 320px}
+  .grid-g,.pgrid{grid-template-columns:repeat(2,1fr)}
+  .tiles{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:700px){
+  #v-sell{display:block;overflow:auto}
+  .cart{border-left:0;border-top:1px solid var(--line)}
+  .lines{max-height:none}
+  .jgrid{grid-template-columns:1fr}
+  .search{width:100%}
+  .who span{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- PIN lock -->
+<div id="lock">
+  <div class="lock-box">
+    <div class="logo">LAB POS</div>
+    <div class="sub">Enter your PIN</div>
+    <div class="dots" id="dots"></div>
+    <div class="lock-err" id="lockErr"></div>
+    <div class="pad" id="pad"></div>
+  </div>
+</div>
+
+<div id="app" class="hide">
+  <header class="top">
+    <div class="logo">LAB</div>
+    <nav class="tabs" id="tabs">
+      <button data-view="sell" class="on">Sell</button>
+      <button data-view="jobs">Jobs<span class="badge hide" id="jobBadge"></span></button>
+      <button data-view="today" data-owner>Today</button>
+      <button data-view="settings" data-owner>Settings</button>
+    </nav>
+    <div class="who">
+      <span class="test-flag hide" id="testFlag">TEST MODE</span>
+      <span id="whoName"></span>
+      <button class="btn sm" id="lockBtn">Lock</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- SELL -->
+    <section class="view" id="v-sell">
+      <div class="builder">
+        <div class="subtabs" id="subtabs">
+          <button data-sub="print" class="on">Print job</button>
+          <button data-sub="products">Products</button>
+          <button data-sub="custom">Custom item</button>
+        </div>
+
+        <div id="s-print">
+          <div class="sec"><p class="sec-h">Garment</p><div class="grid-g" id="garments"></div></div>
+          <div class="sec">
+            <p class="sec-h">Quantity</p>
+            <div class="qty">
+              <div class="step"><button id="qMinus" aria-label="Less">−</button><input id="qInput" inputmode="numeric" value="1" aria-label="Quantity"><button id="qPlus" aria-label="More">+</button></div>
+              <div class="chips" id="qChips"></div>
+            </div>
+            <div class="hint" id="qHint"></div>
+          </div>
+          <div class="sec"><p class="sec-h">Print</p><div class="seg" id="segLoc"></div></div>
+          <div class="sec"><p class="sec-h">Sleeves</p><div class="seg" id="segSleeve"></div></div>
+          <div class="sec"><p class="sec-h">Extras</p><div class="seg" id="segExtras"></div></div>
+          <div class="sec"><p class="sec-h">Artwork</p><div class="seg" id="segArt"></div></div>
+          <div class="sec"><p class="sec-h">Turnaround</p><div class="seg" id="segRush"></div></div>
+          <div class="addbar">
+            <div class="total"><small id="pUnit"></small><b class="money" id="pTotal">$0.00</b></div>
+            <button class="btn ink lg" id="addPrint">Add to cart</button>
+          </div>
+        </div>
+
+        <div id="s-products" class="hide"><div class="pgrid" id="pgrid"></div></div>
+
+        <div id="s-custom" class="hide">
+          <p class="note" style="margin:0 0 14px">For anything not in the quote builder: DTF transfers, gang sheets, 100+ orders, customer-supplied garments, one-off jobs.</p>
+          <label class="field"><span>Description</span><input id="cLabel" maxlength="80" placeholder="e.g. DTF gang sheet 56 x 100cm"></label>
+          <label class="field"><span>Details (optional)</span><input id="cDetail" maxlength="120" placeholder="Sizes, colours, notes"></label>
+          <div class="row2">
+            <label class="field"><span>Price each (incl. GST)</span><input id="cPrice" inputmode="decimal" placeholder="0.00"></label>
+            <label class="field"><span>Quantity</span><input id="cQty" inputmode="numeric" value="1"></label>
+          </div>
+          <button class="btn ink lg block" id="addCustom">Add to cart</button>
+        </div>
+      </div>
+
+      <aside class="cart">
+        <div class="cart-h"><h2 class="disp">Cart</h2><button class="btn sm ghost" id="clearCart">Clear</button></div>
+        <div class="lines" id="lines"></div>
+        <div class="cart-f">
+          <div class="sum"><span class="muted">Total</span><b class="money" id="cTotal">$0.00</b></div>
+          <div class="gstl"><span>Includes GST</span><span class="money" id="cGst">$0.00</span></div>
+          <button class="btn heat lg block" id="chargeBtn" disabled>Charge</button>
+          <div class="jobbtns">
+            <button class="btn" id="depositBtn" disabled>Job · 50% deposit<small id="depAmt"></small></button>
+            <button class="btn" id="jobFullBtn" disabled>Job · paid in full<small>collect later</small></button>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- JOBS -->
+    <section class="view hide" id="v-jobs">
+      <div class="page">
+        <div class="page-h"><h1 class="disp">Jobs</h1><input class="search" id="jobSearch" placeholder="Search name, phone, job #" type="search"></div>
+        <div class="subtabs" id="jobTabs"></div>
+        <div class="jgrid" id="jobList"></div>
+      </div>
+    </section>
+
+    <!-- TODAY (owner) -->
+    <section class="view hide" id="v-today">
+      <div class="page">
+        <div class="page-h">
+          <h1 class="disp">Takings</h1>
+          <input type="date" class="search" id="repDate" style="width:auto">
+          <button class="btn" id="repCsv">Export CSV</button>
+        </div>
+        <div class="tiles" id="tiles"></div>
+        <div class="card"><h3>By staff</h3><div id="byStaff"></div></div>
+        <div class="card"><h3>Sales</h3><div id="saleTable" style="overflow-x:auto"></div></div>
+      </div>
+    </section>
+
+    <!-- SETTINGS (owner) -->
+    <section class="view hide" id="v-settings">
+      <div class="page" style="max-width:820px">
+        <div class="page-h"><h1 class="disp">Settings</h1></div>
+        <div class="card">
+          <h3>Card reader</h3>
+          <div id="readerBox"></div>
+        </div>
+        <div class="card">
+          <h3>Staff</h3>
+          <div id="staffList"></div>
+          <div class="inline" style="margin-top:12px">
+            <label class="field"><span>Name</span><input id="sName" maxlength="40"></label>
+            <label class="field" style="max-width:150px"><span>PIN (4 digits)</span><input id="sPin" inputmode="numeric" maxlength="4"></label>
+            <label class="field" style="max-width:150px"><span>Role</span><select id="sRole"><option value="staff">Staff</option><option value="owner">Owner</option></select></label>
+            <button class="btn ink" id="addStaff">Add</button>
+          </div>
+          <p class="note">Staff can sell and run jobs. Owners also see takings and settings.</p>
+        </div>
+        <div class="card">
+          <h3>Quick-sell products</h3>
+          <div id="prodList"></div>
+          <div class="inline" style="margin-top:12px">
+            <label class="field"><span>Product</span><input id="prName" maxlength="60" placeholder="e.g. Toa Samoa tee, adult"></label>
+            <label class="field" style="max-width:160px"><span>Price (incl. GST)</span><input id="prPrice" inputmode="decimal" placeholder="0.00"></label>
+            <button class="btn ink" id="addProd">Add</button>
+          </div>
+          <p class="note">Ready-made stock that sells at a fixed price. Print jobs use the quote builder prices.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="modalRoot"></div>
+<div id="toast"></div>
+
+<script>
+'use strict';
+/* =================================================================
+   LAB POS front end. The server re-prices every cart, so the prices
+   here are for display only.
+   ================================================================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const money = c => '$' + (c / 100).toLocaleString('en-NZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const cents = n => Math.round(n * 100);
+
+let cfg = null;               // from /api/session
+let cart = [];                // client copies of cart lines
+let jobs = [];
+let view = 'sell';
+
+async function api(path, body, method) {
+  const r = await fetch('/api/' + path, {
+    method: method || (body ? 'POST' : 'GET'),
+    headers: body ? { 'Content-Type': 'application/json' } : {},
+    body: body ? JSON.stringify(body) : undefined,
+    credentials: 'same-origin',
+  });
+  let d = {};
+  try { d = await r.json(); } catch {}
+  if (r.status === 401 && d.locked) { showLock(); throw new Error('Locked'); }
+  if (!r.ok) throw new Error(d.error || 'Something went wrong');
+  return d;
+}
+
+let toastT;
+function toast(msg, err) {
+  const t = $('#toast');
+  t.textContent = msg; t.className = 'on' + (err ? ' err' : '');
+  clearTimeout(toastT); toastT = setTimeout(() => (t.className = ''), err ? 4500 : 2200);
+}
+const oops = e => { if (e.message !== 'Locked') toast(e.message, true); };
+
+/* ---------------- lock / PIN ---------------- */
+let pin = '';
+function buildPad() {
+  const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'clear', '0', 'del'];
+  $('#pad').innerHTML = keys.map(k => k === 'clear' ? '<button class="clear" data-k="c">Clear</button>'
+    : k === 'del' ? '<button class="clear" data-k="del">Delete</button>' : `<button data-k="${k}">${k}</button>`).join('');
+  $('#pad').addEventListener('click', e => {
+    const k = e.target.closest('button')?.dataset.k; if (!k) return;
+    if (k === 'c') pin = '';
+    else if (k === 'del') pin = pin.slice(0, -1);
+    else if (pin.length < 4) pin += k;
+    drawDots();
+    if (pin.length === 4) setTimeout(submitPin, 150);
+  });
+}
+function drawDots() {
+  $('#dots').innerHTML = Array.from({ length: 4 }, (_, i) => `<i class="${i < pin.length ? 'on' : ''}"></i>`).join('');
+}
+let pinBusy = false;
+async function submitPin() {
+  if (pin.length < 4 || pinBusy) return;
+  pinBusy = true;
+  const tried = pin;
+  try {
+    const r = await fetch('/api/session', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pin: tried }) });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error);
+    pin = ''; drawDots(); $('#lockErr').textContent = '';
+    start(d);
+  } catch (e) {
+    $('#lockErr').textContent = e.message;
+    $('.lock-box').classList.remove('shake'); void $('.lock-box').offsetWidth; $('.lock-box').classList.add('shake');
+    pin = ''; drawDots();
+  } finally { pinBusy = false; }
+}
+function showLock() {
+  cfg = null; pin = ''; drawDots();
+  $('#lock').classList.remove('hide'); $('#app').classList.add('hide');
+  closeModal(); stopPoll();
+}
+async function lock() {
+  try { await fetch('/api/session', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{"logout":1}' }); } catch {}
+  showLock();
+}
+// Auto-lock after 15 minutes without a touch (not while a card payment is in progress)
+let idleT;
+function bumpIdle() { clearTimeout(idleT); idleT = setTimeout(() => { if (cfg && !polling) lock(); }, 15 * 60e3); }
+['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, bumpIdle, { passive: true }));
+
+function start(d) {
+  cfg = d;
+  $('#lock').classList.add('hide'); $('#app').classList.remove('hide');
+  $('#whoName').textContent = d.me.name;
+  $('#testFlag').classList.toggle('hide', !d.testMode);
+  document.querySelectorAll('[data-owner]').forEach(b => b.classList.toggle('hide', d.me.role !== 'owner'));
+  $('#depositBtn').firstChild.textContent = `Job · ${Math.round(d.depositRate * 100)}% deposit`;
+  if (d.me.role !== 'owner' && (view === 'today' || view === 'settings')) view = 'sell';
+  drawGarments(); drawPrint(); drawProducts(); drawCart(); show(view);
+  bumpIdle();
+  loadJobs(true);
+}
+
+/* ---------------- navigation ---------------- */
+function show(v) {
+  view = v;
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.view === v));
+  document.querySelectorAll('.view').forEach(s => s.classList.toggle('hide', s.id !== 'v-' + v));
+  if (v === 'jobs') loadJobs();
+  if (v === 'today') loadReport();
+  if (v === 'settings') loadSettings();
+}
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('button'); if (b) show(b.dataset.view); });
+$('#lockBtn').addEventListener('click', lock);
+$('#subtabs').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  document.querySelectorAll('#subtabs button').forEach(x => x.classList.toggle('on', x === b));
+  ['print', 'products', 'custom'].forEach(s => $('#s-' + s).classList.toggle('hide', s !== b.dataset.sub));
+});
+
+/* ---------------- print quote builder ---------------- */
+const P0 = () => ({ garment: 'tshirt', qty: 1, printLocation: 'front', sleeve: 'none', extras: { oversized: false, nameNumber: false, packaging: false }, artwork: 'ready', rush: false });
+let pb = P0();
+
+const bracketFor = q => cfg.pricing.brackets.find(b => q >= b.min && q <= b.max);
+const unitFor = (g, q, fb) => cfg.pricing.garments[g].brackets[bracketFor(q).key][fb ? 1 : 0];
+
+// Mirror of the server's pricePrint, in cents
+function pricePrint(l) {
+  const P = cfg.pricing, fb = l.printLocation === 'frontBack';
+  const unit = unitFor(l.garment, l.qty, fb);
+  const per = unit + (P.addons.sleeve[l.sleeve] || 0) + (l.extras.oversized ? P.addons.oversized : 0)
+    + (l.extras.nameNumber ? P.addons.nameNumber : 0) + (l.extras.packaging ? P.addons.packaging : 0);
+  const pre = per * l.qty + (P.artwork[l.artwork] || 0);
+  return { unit, perUnit: per, amount: cents(l.rush ? pre * P.rush : pre) };
+}
+function printDetail(l) {
+  return [l.printLocation === 'frontBack' ? 'Front + back' : 'Front only',
+    l.sleeve === 'one' && 'One sleeve', l.sleeve === 'both' && 'Both sleeves',
+    l.extras.oversized && 'Oversized', l.extras.nameNumber && 'Name + number', l.extras.packaging && 'Packaging',
+    l.artwork === 'cleanup' && 'Artwork cleanup', l.artwork === 'scratch' && 'Design from scratch',
+    l.rush && 'Rush'].filter(Boolean).join(' · ');
+}
+
+function drawGarments() {
+  const fb = pb.printLocation === 'frontBack';
+  $('#garments').innerHTML = Object.entries(cfg.pricing.garments).map(([k, g]) =>
+    `<button class="gcard ${pb.garment === k ? 'on' : ''}" data-g="${k}"><b>${esc(g.label)}</b><span class="money">$${unitFor(k, pb.qty, fb)} each</span></button>`).join('');
+}
+function seg(el, opts, cur, multi) {
+  el.innerHTML = opts.map(o => `<button data-v="${o.v}" class="${(multi ? cur[o.v] : cur === o.v) ? 'on' : ''}">${esc(o.l)}${o.s ? `<small>${esc(o.s)}</small>` : ''}</button>`).join('');
+}
+function drawPrint() {
+  const A = cfg.pricing.addons, Art = cfg.pricing.artwork;
+  pb.qty = Math.min(cfg.pricing.maxQty, Math.max(1, Math.floor(Number(pb.qty) || 1)));
+  if (document.activeElement !== $('#qInput')) $('#qInput').value = pb.qty;
+  $('#qChips').innerHTML = [1, 5, 10, 25, 50].map(n => `<button data-q="${n}">${n}</button>`).join('');
+  seg($('#segLoc'), [{ v: 'front', l: 'Front only' }, { v: 'frontBack', l: 'Front + back' }], pb.printLocation);
+  seg($('#segSleeve'), [{ v: 'none', l: 'None' }, { v: 'one', l: 'One sleeve', s: `+$${A.sleeve.one} each` }, { v: 'both', l: 'Both sleeves', s: `+$${A.sleeve.both} each` }], pb.sleeve);
+  seg($('#segExtras'), [{ v: 'oversized', l: 'Oversized', s: `+$${A.oversized} each` }, { v: 'nameNumber', l: 'Name + number', s: `+$${A.nameNumber} each` }, { v: 'packaging', l: 'Packaging', s: `+$${A.packaging} each` }], pb.extras, true);
+  seg($('#segArt'), [{ v: 'ready', l: 'Print-ready' }, { v: 'cleanup', l: 'Cleanup', s: `+$${Art.cleanup} flat` }, { v: 'scratch', l: 'From scratch', s: `+$${Art.scratch} flat` }], pb.artwork);
+  seg($('#segRush'), [{ v: 'std', l: 'Standard' }, { v: 'rush', l: 'Rush', s: `+${Math.round((cfg.pricing.rush - 1) * 100)}%` }], pb.rush ? 'rush' : 'std');
+  drawGarments();
+
+  const p = pricePrint(pb);
+  $('#pUnit').textContent = `${pb.qty} × ${cfg.pricing.garments[pb.garment].label} · $${p.perUnit} each`;
+  $('#pTotal').textContent = money(p.amount);
+  // nudge toward the next price break
+  const fb = pb.printLocation === 'frontBack';
+  const next = cfg.pricing.brackets.find(b => b.min > pb.qty);
+  let hint = '';
+  if (next) {
+    const nu = unitFor(pb.garment, next.min, fb), cu = unitFor(pb.garment, pb.qty, fb);
+    if (nu < cu) hint = `${next.min}+ drops to $${nu} each (saves $${cu - nu} a garment)`;
+  } else if (pb.qty >= cfg.pricing.maxQty) hint = '100+ is a custom quote: use Custom item';
+  $('#qHint').textContent = hint;
+}
+$('#garments').addEventListener('click', e => { const b = e.target.closest('[data-g]'); if (b) { pb.garment = b.dataset.g; drawPrint(); } });
+$('#qMinus').addEventListener('click', () => { pb.qty--; drawPrint(); });
+$('#qPlus').addEventListener('click', () => { pb.qty++; drawPrint(); });
+$('#qInput').addEventListener('input', e => { const v = parseInt(e.target.value, 10); if (v > 0) { pb.qty = v; drawPrint(); } });
+$('#qInput').addEventListener('blur', drawPrint);
+$('#qInput').addEventListener('focus', e => e.target.select());
+$('#qChips').addEventListener('click', e => { const b = e.target.closest('[data-q]'); if (b) { pb.qty = +b.dataset.q; drawPrint(); } });
+$('#segLoc').addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (b) { pb.printLocation = b.dataset.v; drawPrint(); } });
+$('#segSleeve').addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (b) { pb.sleeve = b.dataset.v; drawPrint(); } });
+$('#segExtras').addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (b) { pb.extras[b.dataset.v] = !pb.extras[b.dataset.v]; drawPrint(); } });
+$('#segArt').addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (b) { pb.artwork = b.dataset.v; drawPrint(); } });
+$('#segRush').addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (b) { pb.rush = b.dataset.v === 'rush'; drawPrint(); } });
+$('#addPrint').addEventListener('click', () => {
+  const p = pricePrint(pb);
+  cart.push({ kind: 'print', brand: 'lab', ...JSON.parse(JSON.stringify(pb)),
+    label: cfg.pricing.garments[pb.garment].label + ' print', detail: printDetail(pb), amount: p.amount });
+  const g = pb.garment; pb = P0(); pb.garment = g;
+  drawPrint(); drawCart(); toast('Added to cart');
+});
+
+/* ---------------- products + custom ---------------- */
+function drawProducts() {
+  const ps = cfg.products || [];
+  $('#pgrid').innerHTML = ps.length ? ps.map(p => `<button class="pcard" data-p="${esc(p.id)}"><b>${esc(p.name)}</b><span class="money">${money(p.price)}</span></button>`).join('')
+    : `<div class="empty" style="grid-column:1/-1">No quick-sell products yet.${cfg.me.role === 'owner' ? ' Add them in Settings.' : ' Ask the owner to add them.'}</div>`;
+}
+$('#pgrid').addEventListener('click', e => {
+  const b = e.target.closest('[data-p]'); if (!b) return;
+  const p = cfg.products.find(x => x.id === b.dataset.p);
+  const have = cart.find(l => l.kind === 'product' && l.id === p.id);
+  if (have) have.qty++; else cart.push({ kind: 'product', id: p.id, brand: p.brand, label: p.name, unit: p.price, qty: 1 });
+  drawCart(); toast(p.name + ' added');
+});
+$('#addCustom').addEventListener('click', () => {
+  const label = $('#cLabel').value.trim(), price = Number($('#cPrice').value), qty = Math.floor(Number($('#cQty').value));
+  if (!label) return toast('Add a description', true);
+  if (!(price > 0)) return toast('Enter a price', true);
+  if (!(qty >= 1)) return toast('Enter a quantity', true);
+  cart.push({ kind: 'custom', brand: 'lab', label, detail: $('#cDetail').value.trim(), price, unit: cents(price), qty });
+  $('#cLabel').value = $('#cDetail').value = $('#cPrice').value = ''; $('#cQty').value = 1;
+  drawCart(); toast('Added to cart');
+});
+
+/* ---------------- cart ---------------- */
+const lineAmt = l => l.kind === 'print' ? l.amount : l.unit * l.qty;
+const cartTotal = () => cart.reduce((s, l) => s + lineAmt(l), 0);
+const gstOf = t => Math.round(t * 0.15 / 1.15);
+const depositOf = t => Math.min(t, Math.max(100, Math.round(t * cfg.depositRate / 100) * 100));
+
+function drawCart() {
+  const t = cartTotal();
+  $('#lines').innerHTML = cart.length ? cart.map((l, i) => `
+    <div class="line">
+      <div class="l-name">${esc(l.label)}</div><div class="l-amt money">${money(lineAmt(l))}</div>
+      ${l.detail ? `<div class="l-detail">${esc(l.detail)}</div>` : ''}
+      <div class="l-ctl">
+        ${l.kind === 'print' ? `<span>Qty ${l.qty}</span>` : `<button class="mini" data-dec="${i}">−</button><b>${l.qty}</b><button class="mini" data-inc="${i}">+</button><span>× ${money(l.unit)}</span>`}
+        <span class="sp"></span><button class="x" data-rm="${i}" aria-label="Remove">×</button>
+      </div>
+    </div>`).join('') : '<div class="cart-empty">Cart is empty.<br>Build a print job or tap a product.</div>';
+  $('#cTotal').textContent = money(t);
+  $('#cGst').textContent = money(gstOf(t));
+  $('#chargeBtn').textContent = t ? `Charge ${money(t)}` : 'Charge';
+  $('#depAmt').textContent = t ? `${money(depositOf(t))} now` : '';
+  ['#chargeBtn', '#depositBtn', '#jobFullBtn', '#clearCart'].forEach(s => ($(s).disabled = !cart.length));
+}
+$('#lines').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const d = b.dataset;
+  if (d.rm != null) cart.splice(+d.rm, 1);
+  if (d.inc != null) cart[+d.inc].qty++;
+  if (d.dec != null) { const l = cart[+d.dec]; if (--l.qty < 1) cart.splice(+d.dec, 1); }
+  drawCart();
+});
+$('#clearCart').addEventListener('click', () => { if (confirm('Clear the cart?')) { cart = []; drawCart(); } });
+$('#chargeBtn').addEventListener('click', () => checkout({ mode: 'sale' }));
+$('#depositBtn').addEventListener('click', () => checkout({ mode: 'deposit' }));
+$('#jobFullBtn').addEventListener('click', () => checkout({ mode: 'jobfull' }));
+
+const serverCart = () => cart.map(l => l.kind === 'print'
+  ? { kind: 'print', garment: l.garment, qty: l.qty, printLocation: l.printLocation, sleeve: l.sleeve, extras: l.extras, artwork: l.artwork, rush: l.rush }
+  : l.kind === 'product' ? { kind: 'product', id: l.id, qty: l.qty }
+  : { kind: 'custom', brand: l.brand, label: l.label, detail: l.detail, price: l.price, qty: l.qty });
+
+/* ---------------- checkout modal ---------------- */
+// co = { mode, job?, amount, total, customer, notes, saleId }
+let co = null;
+function modal(html) { $('#modalRoot').innerHTML = `<div class="scrim"><div class="modal">${html}</div></div>`; }
+function closeModal() { $('#modalRoot').innerHTML = ''; co = null; }
+
+const MODE = {
+  sale: { t: 'Charge', now: 'Pay now' },
+  deposit: { t: 'Deposit', now: 'Deposit now' },
+  jobfull: { t: 'Job · paid in full', now: 'Pay now' },
+  balance: { t: 'Final payment', now: 'Balance now' },
+};
+
+function checkout(o) {
+  const total = o.job ? o.job.total : cartTotal();
+  const amount = o.mode === 'deposit' ? depositOf(total) : o.job ? o.job.total - o.job.paid : total;
+  co = { ...o, total, amount, customer: o.job ? { ...o.job.customer } : { name: '', phone: '', email: '' }, notes: '' };
+  drawDetails();
+}
+function dueBox() {
+  const rows = [];
+  if (co.mode === 'deposit') rows.push(`Order total ${money(co.total)} · balance at pickup ${money(co.total - co.amount)}`);
+  if (co.mode === 'balance') rows.push(`Job ${esc(co.job.id)} · total ${money(co.total)} · already paid ${money(co.job.paid)}`);
+  rows.push(`Includes GST ${money(gstOf(co.amount))}`);
+  return `<div class="due"><div class="muted" style="font-weight:600">${MODE[co.mode].now}</div><div class="big money">${money(co.amount)}</div><div class="rows">${rows.join('<br>')}</div></div>`;
+}
+function drawDetails() {
+  const job = co.mode === 'deposit' || co.mode === 'jobfull';
+  const c = co.customer;
+  modal(`
+    <div class="mh"><h2 class="disp">${MODE[co.mode].t}</h2><button class="btn sm" data-close>Cancel</button></div>
+    ${dueBox()}
+    ${co.mode === 'balance' ? `<p class="muted" style="margin:0 0 12px">${esc(c.name)} · ${esc(c.phone)}</p>` : `
+    <div class="row2">
+      <label class="field"><span>Name${job ? '' : ' (optional)'}</span><input id="kName" value="${esc(c.name)}" autocomplete="off"></label>
+      <label class="field"><span>Phone${job ? '' : ' (optional)'}</span><input id="kPhone" type="tel" value="${esc(c.phone)}" autocomplete="off"></label>
+    </div>`}
+    <label class="field"><span>Email for receipt (optional)</span><input id="kEmail" type="email" inputmode="email" value="${esc(c.email)}" autocomplete="off" autocapitalize="off"></label>
+    ${job ? `<label class="field"><span>Job notes (sizes, colours, artwork, due date)</span><textarea id="kNotes">${esc(co.notes)}</textarea></label>` : ''}
+    <div class="paybtns">
+      <button class="btn ink" data-pay="card" ${cfg.readerPaired ? '' : 'disabled'}>Card</button>
+      <button class="btn" data-pay="cash">Cash</button>
+    </div>
+    ${cfg.readerPaired ? '' : `<p class="note">No card reader paired yet${cfg.me.role === 'owner' ? ': pair it in Settings.' : '.'}</p>`}`);
+}
+function readDetails() {
+  const v = id => ($(id) ? $(id).value.trim() : null);
+  if (co.mode !== 'balance') { co.customer.name = v('#kName'); co.customer.phone = v('#kPhone'); }
+  co.customer.email = v('#kEmail');
+  if ($('#kNotes')) co.notes = v('#kNotes');
+  if ((co.mode === 'deposit' || co.mode === 'jobfull') && (!co.customer.name || !co.customer.phone)) { toast('Jobs need a name and phone number', true); return false; }
+  if (co.customer.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(co.customer.email)) { toast('Check the email address', true); return false; }
+  return true;
+}
+function saleBody(method, extra) {
+  return { mode: co.mode, method, customer: co.customer, notes: co.notes,
+    ...(co.mode === 'balance' ? { jobId: co.job.id } : { cart: serverCart() }), ...extra };
+}
+
+// cash
+const cashDue = a => Math.round(a / 10) * 10;
+function drawCash() {
+  const due = cashDue(co.amount);
+  const notes = [due, ...[1000, 2000, 5000, 10000].map(n => Math.ceil(due / n) * n)].filter((v, i, a) => a.indexOf(v) === i).slice(0, 6);
+  modal(`
+    <div class="mh"><h2 class="disp">Cash</h2><button class="btn sm" data-back>Back</button></div>
+    <div class="due"><div class="muted" style="font-weight:600">Cash to collect</div><div class="big money">${money(due)}</div>
+      ${due !== co.amount ? `<div class="rows">Rounded to 10c from ${money(co.amount)}</div>` : ''}</div>
+    <div class="sec-h">Cash given</div>
+    <div class="cashq">${notes.map(n => `<button data-cash="${n}">${n === due ? 'Exact' : money(n)}</button>`).join('')}</div>
+    <label class="field"><span>Or type the amount</span><input id="cashIn" inputmode="decimal" placeholder="0.00"></label>
+    <div class="change" id="changeBox"><span>Change</span><b class="money">$0.00</b></div>
+    <button class="btn heat lg block" id="cashDone" disabled>Complete sale</button>`);
+  const upd = () => {
+    const given = cents(Number($('#cashIn').value) || 0), ch = given - due;
+    $('#changeBox').className = 'change' + (ch < 0 ? ' bad' : '');
+    $('#changeBox').innerHTML = ch < 0 ? `<span>Still owing</span><b class="money">${money(-ch)}</b>` : `<span>Change</span><b class="money">${money(ch)}</b>`;
+    $('#cashDone').disabled = !(given >= due);
+    document.querySelectorAll('[data-cash]').forEach(b => b.classList.toggle('on', +b.dataset.cash === given));
+  };
+  $('#cashIn').addEventListener('input', upd);
+  $('.cashq').addEventListener('click', e => { const b = e.target.closest('[data-cash]'); if (b) { $('#cashIn').value = (b.dataset.cash / 100).toFixed(2); upd(); } });
+  $('#cashDone').addEventListener('click', async () => {
+    $('#cashDone').disabled = true;
+    try {
+      const sale = await api('sale', saleBody('cash', { cashGiven: Number($('#cashIn').value) }));
+      done(sale);
+    } catch (e) { oops(e); $('#cashDone').disabled = false; }
+  });
+}
+
+// card
+let pollT = null, polling = false;
+function stopPoll() { clearTimeout(pollT); polling = false; }
+async function startCard() {
+  drawWaiting('Sending to the reader…');
+  try {
+    const sale = await api('sale', saleBody('card'));
+    co.saleId = sale.id;
+    drawWaiting();
+    poll();
+  } catch (e) { oops(e); drawDetails(); }
+}
+function drawWaiting(msg, failMsg) {
+  modal(`
+    <div class="mh"><h2 class="disp">Card</h2></div>
+    ${dueBox()}
+    <div class="wait">
+      ${failMsg ? `<div class="fail">${esc(failMsg)}</div>` : `<div class="spin"></div><b style="font-size:19px">${esc(msg || 'Tap, insert or swipe on the reader')}</b><p class="muted" id="waitSub" style="margin:6px 0 0">Waiting for the customer…</p>`}
+    </div>
+    <div class="stack">
+      ${failMsg ? '<button class="btn ink lg" data-retry>Try again</button><button class="btn" data-tocash>Pay cash instead</button>' : ''}
+      ${co.saleId ? '<button class="btn" data-cancelcard>Cancel payment</button>' : ''}
+    </div>
+    ${cfg.testMode && co.saleId && !failMsg ? '<div class="testrow"><button class="btn sm" data-sim="simulate">Simulate tap</button><button class="btn sm" data-sim="decline">Simulate decline</button></div>' : ''}`);
+}
+async function poll() {
+  stopPoll(); polling = true;
+  try {
+    const r = await api('sale?id=' + encodeURIComponent(co.saleId));
+    if (!co) return stopPoll();
+    if (r.state === 'paid') { stopPoll(); return done(r.sale); }
+    if (r.state === 'cancelled') { stopPoll(); toast('Payment cancelled'); return drawDetails(); }
+    if (r.state === 'failed') { stopPoll(); return drawWaiting(null, r.message); }
+    if (r.message && $('#waitSub')) $('#waitSub').textContent = r.message;
+  } catch (e) { if (e.message === 'Locked') return; if ($('#waitSub')) $('#waitSub').textContent = 'Connection problem, still checking…'; }
+  if (polling) pollT = setTimeout(poll, 1200);
+}
+async function cancelCard(thenCash) {
+  stopPoll();
+  try {
+    const r = await api('sale', { id: co.saleId, action: 'cancel' });
+    if (r.state === 'paid') return done(r.sale); // customer tapped just in time
+    co.saleId = null;
+    if (thenCash) drawCash(); else { toast('Payment cancelled'); drawDetails(); }
+  } catch (e) { oops(e); poll(); }
+}
+
+function done(sale) {
+  stopPoll();
+  if (co.mode !== 'balance') { cart = []; drawCart(); }
+  const lines = [];
+  if (sale.jobId) lines.push(`<div style="font-size:15px" class="muted">Job number</div><div class="disp" style="font-size:52px;line-height:1">${esc(sale.jobId)}</div>`);
+  if (sale.balanceAfter > 0) lines.push(`<p style="margin:10px 0 0">Balance at pickup: <b>${money(sale.balanceAfter)}</b></p>`);
+  if (sale.customer && sale.customer.email) lines.push(`<p class="muted" style="margin:8px 0 0">${sale.receipt === 'sent' ? 'Receipt emailed to ' + esc(sale.customer.email) : sale.receipt === 'error' ? 'Receipt email failed to send' : 'Receipt email not set up yet'}</p>`);
+  modal(`
+    <div style="text-align:center">
+      <div class="tick">✓</div>
+      <h2 class="disp">Paid ${money(sale.amount)}</h2>
+      <p class="muted" style="margin:4px 0 0">${sale.method === 'card' ? 'Card' : 'Cash'} · ${esc(sale.id)}</p>
+      ${sale.method === 'cash' ? `<div class="change" style="margin:16px 0 0"><span>Change to give</span><b class="money">${money(sale.change)}</b></div>` : ''}
+      <div style="margin-top:14px">${lines.join('')}</div>
+      <button class="btn ink lg block" data-close style="margin-top:20px">${co.mode === 'balance' ? 'Done' : 'New sale'}</button>
+    </div>`);
+  loadJobs(true);
+}
+
+$('#modalRoot').addEventListener('click', async e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const d = b.dataset;
+  if (d.close != null) { closeModal(); if (view === 'jobs') drawJobs(); return; }
+  if (d.back != null) return drawDetails();
+  if (d.pay) { if (!readDetails()) return; return d.pay === 'cash' ? drawCash() : startCard(); }
+  if (d.retry != null) {
+    try { await api('sale', { id: co.saleId, action: 'retry' }); drawWaiting(); poll(); } catch (er) { oops(er); }
+    return;
+  }
+  if (d.tocash != null) return cancelCard(true);
+  if (d.cancelcard != null) return cancelCard(false);
+  if (d.sim) { try { await api('sale', { id: co.saleId, action: d.sim }); } catch (er) { oops(er); } }
+});
+
+/* ---------------- jobs ---------------- */
+const JS = [
+  { k: 'received', l: 'Received' }, { k: 'printing', l: 'Printing' },
+  { k: 'ready', l: 'Ready' }, { k: 'collected', l: 'Collected' },
+];
+let jobTab = 'received';
+async function loadJobs(quiet) {
+  try { jobs = (await api('jobs')).jobs; drawJobs(); }
+  catch (e) { if (!quiet) oops(e); }
+}
+function drawJobs() {
+  const counts = Object.fromEntries(JS.map(s => [s.k, jobs.filter(j => j.status === s.k).length]));
+  const waiting = counts.ready;
+  $('#jobBadge').textContent = waiting; $('#jobBadge').classList.toggle('hide', !waiting);
+  $('#jobTabs').innerHTML = JS.map(s => `<button data-js="${s.k}" class="${jobTab === s.k ? 'on' : ''}">${s.l}${s.k !== 'collected' ? ` (${counts[s.k]})` : ''}</button>`).join('');
+  const q = $('#jobSearch').value.trim().toLowerCase();
+  const list = jobs.filter(j => q ? [j.id, j.customer.name, j.customer.phone, j.customer.email].join(' ').toLowerCase().includes(q) : j.status === jobTab)
+    .slice(0, jobTab === 'collected' && !q ? 60 : 300);
+  $('#jobList').innerHTML = list.length ? list.map(jobCard).join('') : `<div class="empty" style="grid-column:1/-1">${q ? 'No jobs match.' : 'Nothing here.'}</div>`;
+}
+function jobCard(j) {
+  const bal = j.total - j.paid;
+  const when = new Date(j.createdAt).toLocaleString('en-NZ', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+  const idx = JS.findIndex(s => s.k === j.status);
+  let acts = '';
+  if (j.status === 'received') acts += `<button class="btn ink" data-move="printing" data-id="${j.id}">Start printing</button>`;
+  if (j.status === 'printing') acts += `<button class="btn ink" data-move="ready" data-id="${j.id}">Mark ready</button>`;
+  if (j.status === 'ready') acts += bal > 0 ? `<button class="btn heat" data-bal="${j.id}">Take ${money(bal)} &amp; hand over</button>`
+    : `<button class="btn ink" data-move="collected" data-id="${j.id}">Hand over</button>`;
+  if (j.status !== 'ready' && j.status !== 'collected' && bal > 0) acts += `<button class="btn" data-bal="${j.id}">Take balance</button>`;
+  if (idx > 0 && j.status !== 'collected') acts += `<button class="btn sm ghost" data-move="${JS[idx - 1].k}" data-id="${j.id}">Move back</button>`;
+  return `<div class="job">
+    <div class="job-top"><div><div class="job-id">${esc(j.id)}</div><div style="font-weight:700;font-size:17px">${esc(j.customer.name)}</div>
+      <div class="muted" style="font-size:14px"><a href="tel:${esc(j.customer.phone)}">${esc(j.customer.phone)}</a>${j.customer.email ? ' · ' + esc(j.customer.email) : ''}</div></div>
+      <div style="text-align:right"><span class="pill ${j.status}">${j.status}</span>${bal > 0 ? '<div style="margin-top:6px"><span class="pill due">balance due</span></div>' : ''}</div></div>
+    <ul class="job-items">${j.lines.map(l => `<li>${l.qty} × ${esc(l.label)}${l.detail ? ` <span class="muted">(${esc(l.detail)})</span>` : ''}</li>`).join('')}</ul>
+    ${j.notes ? `<div style="font-size:14px;background:var(--bg-2);padding:8px 10px;border-radius:8px;white-space:pre-wrap">${esc(j.notes)}</div>` : ''}
+    <div class="job-money"><span>Total <b class="money">${money(j.total)}</b></span><span>Paid <b class="money">${money(j.paid)}</b></span>${bal > 0 ? `<span>Due <b class="money" style="color:var(--heat-text)">${money(bal)}</b></span>` : ''}</div>
+    <div class="muted" style="font-size:12px">Taken ${esc(when)} by ${esc(j.createdBy)}${j.readyEmail === 'sent' ? ' · ready email sent' : ''}</div>
+    ${acts ? `<div class="job-acts">${acts}</div>` : ''}
+  </div>`;
+}
+$('#jobTabs').addEventListener('click', e => { const b = e.target.closest('[data-js]'); if (b) { jobTab = b.dataset.js; $('#jobSearch').value = ''; drawJobs(); } });
+$('#jobSearch').addEventListener('input', drawJobs);
+$('#jobList').addEventListener('click', async e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.bal) { const j = jobs.find(x => x.id === b.dataset.bal); return checkout({ mode: 'balance', job: j }); }
+  if (b.dataset.move) {
+    b.disabled = true;
+    try {
+      const j = await api('jobs', { id: b.dataset.id, status: b.dataset.move });
+      jobs = jobs.map(x => (x.id === j.id ? j : x)); drawJobs();
+      toast(`${j.id} moved to ${j.status}${j.readyEmail === 'sent' && b.dataset.move === 'ready' ? ' · customer emailed' : ''}`);
+    } catch (er) { oops(er); b.disabled = false; }
+  }
+});
+
+/* ---------------- today (owner) ---------------- */
+let report = null;
+const nzToday = () => new Date().toLocaleDateString('en-CA', { timeZone: 'Pacific/Auckland' });
+const MODE_L = { sale: 'Sale', deposit: 'Deposit', jobfull: 'Job (paid in full)', balance: 'Balance' };
+async function loadReport() {
+  if (!$('#repDate').value) $('#repDate').value = nzToday();
+  try { report = await api('report?date=' + $('#repDate').value); drawReport(); } catch (e) { oops(e); }
+}
+function drawReport() {
+  const t = report.totals;
+  $('#tiles').innerHTML = [
+    ['Total taken', money(t.taken), 'dark'], ['Card', money(t.card)], ['Cash in drawer', money(t.cash + t.cashRounding)], ['GST included', money(t.gst)],
+    ['Sales', t.count], ['Deposits taken', money(t.byMode.deposit)], ['Balances collected', money(t.byMode.balance)], ['Walk-in + paid jobs', money(t.byMode.sale + t.byMode.jobfull)],
+  ].map(([k, v, c]) => `<div class="tile ${c || ''}"><small>${k}</small><b class="money">${v}</b></div>`).join('');
+  const st = Object.entries(t.byStaff);
+  $('#byStaff').innerHTML = st.length ? `<table><tr><th>Staff</th><th class="r">Sales</th><th class="r">Taken</th></tr>${st.map(([n, s]) => `<tr><td>${esc(n)}</td><td class="r">${s.count}</td><td class="r money">${money(s.amount)}</td></tr>`).join('')}</table>` : '<p class="muted" style="margin:0">No sales yet.</p>';
+  const rows = report.sales.slice().reverse();
+  $('#saleTable').innerHTML = rows.length ? `<table><tr><th>Time</th><th>Sale</th><th>Type</th><th>Customer</th><th>Paid by</th><th>Staff</th><th class="r">Amount</th><th></th></tr>
+    ${rows.map(s => `<tr class="${s.status === 'void' ? 'void' : ''}"><td>${new Date(s.paidAt).toLocaleTimeString('en-NZ', { timeZone: 'Pacific/Auckland', hour: 'numeric', minute: '2-digit' })}</td>
+      <td>${esc(s.id)}${s.jobId ? '<br><span class="muted">' + esc(s.jobId) + '</span>' : ''}</td><td>${MODE_L[s.mode]}</td><td>${esc(s.customer.name || '')}</td>
+      <td>${s.method === 'card' ? 'Card' : 'Cash'}</td><td>${esc(s.staff.name)}</td><td class="r money">${money(s.amount)}</td>
+      <td class="r">${s.status === 'paid' && s.method === 'cash' && s.mode === 'sale' ? `<button class="btn sm" data-void="${s.id}">Void</button>` : s.status === 'void' ? 'Void' : ''}</td></tr>`).join('')}</table>`
+    : '<p class="muted" style="margin:0">No sales on this day.</p>';
+}
+$('#repDate').addEventListener('change', loadReport);
+$('#saleTable').addEventListener('click', async e => {
+  const b = e.target.closest('[data-void]'); if (!b) return;
+  if (!confirm(`Void ${b.dataset.void}? Only do this if the cash was handed back or it was rung up by mistake.`)) return;
+  try { await api('sale', { id: b.dataset.void, action: 'void' }); toast('Sale voided'); loadReport(); } catch (er) { oops(er); }
+});
+$('#repCsv').addEventListener('click', () => {
+  if (!report) return;
+  const q = v => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
+  const head = ['date', 'time', 'sale', 'job', 'type', 'status', 'method', 'staff', 'customer', 'phone', 'email', 'amount', 'gst', 'order_total', 'cash_rounding', 'items'];
+  const rows = report.sales.map(s => [s.date, new Date(s.paidAt).toLocaleTimeString('en-NZ', { timeZone: 'Pacific/Auckland' }), s.id, s.jobId, s.mode, s.status, s.method,
+    s.staff.name, s.customer.name, s.customer.phone, s.customer.email, (s.amount / 100).toFixed(2), (s.gst / 100).toFixed(2), (s.orderTotal / 100).toFixed(2),
+    ((s.cashRounding || 0) / 100).toFixed(2), s.lines.map(l => `${l.qty} x ${l.label}${l.detail ? ' (' + l.detail + ')' : ''}`).join('; ')]);
+  const csv = [head, ...rows].map(r => r.map(q).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = `lab-pos-${report.date}.csv`; a.click();
+});
+
+/* ---------------- settings (owner) ---------------- */
+let settings = null;
+async function loadSettings() {
+  try { settings = await api('settings'); drawSettings(); } catch (e) { oops(e); }
+}
+function drawSettings() {
+  const r = settings.reader;
+  $('#readerBox').innerHTML = r ? `
+    <div class="list-item"><div class="grow"><b>${esc(r.label)}</b><div class="muted" style="font-size:14px"><span class="status-dot ${esc(r.status)}"></span>${r.status === 'online' ? 'Online' : r.status === 'offline' ? 'Offline: check power and wifi' : esc(r.error || r.status || '')}${r.device ? ' · ' + esc(r.device) : ''}</div></div>
+    <button class="btn sm" id="unpair">Unpair</button></div>` : `
+    <p class="note" style="margin:0 0 12px">On the WisePOS E: swipe right from the left edge, tap Settings, enter the admin PIN 07139, then tap <b>Generate pairing code</b>.${settings.testMode ? ' In test mode, type <b>simulated-wpe</b> to use Stripe\'s pretend reader.' : ''}</p>
+    <div class="inline">
+      <label class="field"><span>Pairing code</span><input id="rCode" autocapitalize="off" autocomplete="off"></label>
+      <label class="field"><span>Name</span><input id="rLabel" value="Counter reader"></label>
+    </div>
+    <p class="note" style="margin:12px 0 8px">Shop address (needed the first time only, Stripe registers the reader to it):</p>
+    <div class="inline">
+      <label class="field"><span>Street</span><input id="rLine1"></label>
+      <label class="field" style="max-width:180px"><span>City</span><input id="rCity" value="Hastings"></label>
+      <label class="field" style="max-width:130px"><span>Postcode</span><input id="rPost" inputmode="numeric"></label>
+    </div>
+    <button class="btn ink" id="pair" style="margin-top:12px">Pair reader</button>`;
+  $('#staffList').innerHTML = (settings.ownerFromEnv ? `<div class="list-item"><div class="grow"><b>${esc(cfg.me.role === 'owner' && cfg.me.id === 'owner' ? cfg.me.name : 'Owner')}</b> <span class="muted">· owner · main PIN (set in Vercel)</span></div></div>` : '')
+    + settings.staff.map(s => `<div class="list-item"><div class="grow"><b>${esc(s.name)}</b> <span class="muted">· ${s.role}</span></div><button class="btn sm" data-rmstaff="${esc(s.id)}">Remove</button></div>`).join('');
+  $('#prodList').innerHTML = settings.products.length ? settings.products.map(p => `<div class="list-item"><div class="grow"><b>${esc(p.name)}</b></div><span class="money">${money(p.price)}</span><button class="btn sm" data-rmprod="${esc(p.id)}">Remove</button></div>`).join('')
+    : '<p class="muted" style="margin:0">None yet.</p>';
+}
+async function setAction(body, msg) {
+  try {
+    await api('settings', body); toast(msg);
+    await loadSettings();
+    const d = await api('session'); cfg = { ...cfg, ...d }; drawProducts();
+    return true;
+  } catch (e) { oops(e); return false; }
+}
+$('#v-settings').addEventListener('click', async e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.id === 'addStaff') { if (await setAction({ action: 'addStaff', name: $('#sName').value, pin: $('#sPin').value, role: $('#sRole').value }, 'Staff added')) { $('#sName').value = ''; $('#sPin').value = ''; } }
+  if (b.dataset.rmstaff && confirm('Remove this staff member? Their PIN stops working.')) setAction({ action: 'removeStaff', id: b.dataset.rmstaff }, 'Removed');
+  if (b.id === 'addProd') { if (await setAction({ action: 'addProduct', name: $('#prName').value, price: $('#prPrice').value, brand: 'lab' }, 'Product added')) { $('#prName').value = ''; $('#prPrice').value = ''; } }
+  if (b.dataset.rmprod && confirm('Remove this product from the till?')) setAction({ action: 'removeProduct', id: b.dataset.rmprod }, 'Removed');
+  if (b.id === 'pair') {
+    b.disabled = true; b.textContent = 'Pairing…';
+    const ok = await setAction({ action: 'pairReader', code: $('#rCode').value, label: $('#rLabel').value,
+      address: { line1: $('#rLine1').value, city: $('#rCity').value, postal_code: $('#rPost').value } }, 'Reader paired');
+    if (!ok) { b.disabled = false; b.textContent = 'Pair reader'; }
+  }
+  if (b.id === 'unpair' && confirm('Unpair this reader? Card payments stop until you pair again.')) setAction({ action: 'removeReader' }, 'Reader unpaired');
+});
+
+/* ---------------- boot ---------------- */
+buildPad(); drawDots();
+document.addEventListener('keydown', e => { // hardware keyboard on the lock screen
+  if ($('#lock').classList.contains('hide')) return;
+  if (/^\d$/.test(e.key) && pin.length < 4) { pin += e.key; drawDots(); if (pin.length === 4) setTimeout(submitPin, 150); }
+  if (e.key === 'Backspace') { pin = pin.slice(0, -1); drawDots(); }
+  if (e.key === 'Enter') submitPin();
+});
+fetch('/api/session', { credentials: 'same-origin' }).then(r => (r.ok ? r.json() : null)).then(d => d && start(d)).catch(() => {});
+</script>
+</body>
+</html>
